@@ -15,6 +15,7 @@ deps:
 	sudo apt install unzip
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
+	source bash
 
 deploy:
 	sudo docker compose up --build -d
