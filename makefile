@@ -16,7 +16,7 @@ deps:
 	curl -fsSL https://bun.sh/install | bash
 
 deploy:
-	docker compose up --build -d
+	sudo docker compose up --build -d
 
 full: deps feUpdate beUpdate deploy
 
