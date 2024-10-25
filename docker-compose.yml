@@ -1,5 +1,4 @@
 name: laborky_UJEP 
-version: '1.0.0'
 
 services:
  database:
