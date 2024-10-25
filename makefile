@@ -3,6 +3,8 @@ pyRunner=python3
 reqFile=requirements.txt
 venvDir=venv
 
+SHELL := /bin/bash
+
 feUpdate:
 	cd FrontEnd && $(jsRunner) install && $(jsRunner) update 
 
