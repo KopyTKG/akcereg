@@ -14,6 +14,9 @@ async def get_admin_board_next_ones(ticket: str | None = None):
         info = kontrola_ticketu(ticket, vyucujici=True)
         if info == unauthorized or info == internal_server_error:
             return info
+        
+        if "KA" not in info[1]:
+            return unauthorized
 
         list_terminy_dopredu = terminy_dopredu(session)
         if list_terminy_dopredu == internal_server_error:

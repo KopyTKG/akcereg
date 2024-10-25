@@ -1,5 +1,5 @@
 # Base image with Python 3
-FROM python:3.12.7 AS build
+FROM python:3.13 AS build
 
 # Install system dependencies including PostgreSQL dev headers
 RUN apt-get update && apt-get install -y \

@@ -14,6 +14,9 @@ async def update_predmet(ticket: str, kod_predmetu:str, predmet: tPredmet):
     if info == unauthorized or info == internal_server_error:
         return info
 
+    if "KA" not in info[1]:
+        return unauthorized
+
     kod_predmetu = unquote(kod_predmetu)
 
     vystup = upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=predmet.zkratka_predmetu, newKatedra=predmet.katedra, newPocetCviceni=predmet.pocet_cviceni)

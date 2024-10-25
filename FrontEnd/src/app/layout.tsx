@@ -8,8 +8,8 @@ import { Providers } from './providers'
 import Promo from '@/components/promo'
 
 export const metadata: Metadata = {
- title: 'Laborky UJEP',
- description: 'UJEP.cz Laborky',
+ title: 'AkceReg',
+ description: 'akcereg.ujep.cz',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

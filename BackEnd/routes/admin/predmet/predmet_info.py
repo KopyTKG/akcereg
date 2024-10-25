@@ -13,6 +13,9 @@ async def get_predmet(ticket: str, zkratka_predmetu:str, katedra:str):
     if info == unauthorized or info == internal_server_error:
         return info
 
+    if "KA" not in info[1]:
+        return unauthorized
+    
     kod_predmetu = katedra + "/" + zkratka_predmetu
     vystup = get_predmet_by_id(session, kod_predmetu)
     if vystup == internal_server_error:

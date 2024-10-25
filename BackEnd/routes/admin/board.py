@@ -14,6 +14,9 @@ async def get_admin_board(ticket: str, probehle: Optional[bool] = False):
             return info
         userid, role = encode_id(info[0]), info[1]
 
+        if "KA" not in role:
+            return unauthorized
+
         list_terminu = list_nadchazejici_terminy(session)
         if probehle:
             list_terminu += list_probehle_terminy(session)
