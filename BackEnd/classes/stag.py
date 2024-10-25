@@ -109,7 +109,7 @@ def get_userid_and_role(json):
     try:
         if role == "":
             return internal_server_error, internal_server_error
-        if role != "ST":
+        if "ST" not in role:
             userid = str(json["stagUserInfo"][0]["ucitIdno"])
         else:
             userid = str(json["stagUserInfo"][0]["osCislo"])
