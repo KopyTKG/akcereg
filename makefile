@@ -1,4 +1,5 @@
 jsRunner=bun
+pyRunner=python3
 reqFile=requirements.txt
 venvDir=venv
 
@@ -6,7 +7,7 @@ feUpdate:
 	cd FrontEnd && $(jsRunner) install && $(jsRunner) update 
 
 beUpdate:
-	cd BackEnd && sed 's/==/>=/g' $(reqFile) && python -m venv $(venvDir) && source $(venvDir)/bin/activate && pip install -r $(reqFile) --upgrade && pip freeze > $(reqFile) && rm -rf $(venvDir)
+	cd BackEnd && sed 's/==/>=/g' $(reqFile) && $(pyRunner) -m venv $(venvDir) && source $(venvDir)/bin/activate && pip install -r $(reqFile) --upgrade && pip freeze > $(reqFile) && rm -rf $(venvDir)
 
 deps:
 	curl -fsSL https://get.docker.com | sudo bash
