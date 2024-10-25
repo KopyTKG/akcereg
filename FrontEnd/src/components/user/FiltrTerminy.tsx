@@ -1,6 +1,6 @@
 'use client'
 import Node from '@/components/node'
-import { useCallback, useContext, useLayoutEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { tTermin } from '@/lib/types'
 import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
@@ -48,9 +48,9 @@ export default function FiltrTerminy({ typ }: { typ?: string }) {
   }
 
   setFetching(false)
- }, [filter])
+ }, [filter, all])
 
- useLayoutEffect(() => {
+ useEffect(() => {
   fetchTerminy()
  }, [fetchTerminy])
 

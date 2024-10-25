@@ -41,7 +41,7 @@ import { Get } from '@/app/actions'
 import { tCreate, tPredmet } from '@/lib/types'
 import { fastHeaders } from '@/lib/stag'
 import { ReloadCtx } from '@/contexts/ReloadProvider'
-import { addDays, DateTime } from '@/lib/functions'
+import { DateTime } from '@/lib/functions'
 import { DefaultForm, DefaultPredmet, FormCtx } from '@/contexts/FormProvider'
 import { Accordion, AccordionTrigger, AccordionContent, AccordionItem } from './ui/accordion'
 
@@ -207,8 +207,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
             field.onChange(value)
             setPredmet(predmety.find((p) => p._id === value) || DefaultPredmet)
            }}
-           defaultValue={field.value}
-          >
+           defaultValue={field.value}>
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte předmět" />
@@ -242,8 +241,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
           <Select
            onValueChange={field.onChange}
            defaultValue={field.value}
-           disabled={!predmet || predmet.nCviceni === 0}
-          >
+           disabled={!predmet || predmet.nCviceni === 0}>
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte cvičení" />
@@ -347,8 +345,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
                className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',
-               )}
-              >
+               )}>
                {field.value ? (
                 format(field.value, 'PPP', { locale: cs })
                ) : (
@@ -408,8 +405,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
                className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',
-               )}
-              >
+               )}>
                {field.value ? (
                 format(field.value, 'PPP', { locale: cs })
                ) : (

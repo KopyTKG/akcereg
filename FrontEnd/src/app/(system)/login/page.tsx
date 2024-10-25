@@ -29,5 +29,5 @@ export default function Home() {
   })
  }, [])
 
- return <main></main>
+ return <main>Login in ...</main>
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type tTermin = {
+export interface tTermin {
  _id: string
  ucebna: string
  start: number
@@ -16,45 +16,45 @@ export type tTermin = {
  kod?: string
 }
 
-export type tSelected = {
+export interface tSelected {
  s: string | undefined
 }
 
-export type tNode = tTermin & {
+export interface tNode extends tTermin {
  typ: string
 }
 
-export type tCreate = tTermin & {
+export interface tCreate extends tTermin {
  upzornit: boolean
  vyucuje?: string
  jmeno: string
  prijmeni: string
 }
 
-export type tLink = {
+export interface tLink {
  label: string
  href: string
  icon: React.ReactNode
 }
 
-export type tPredmetSekce = {
+export interface tPredmetSekce {
  nazev: string
  cviceni: number[]
 }
 
-export type tPredmet = {
+export interface tPredmet {
  _id: string
  nazev: string
  nCviceni: number
 }
 
-export type tUser = {
+export interface tUser {
  id: string
  role: string[]
  hash: string
 }
 
-export type tStudent = {
+export interface tStudent {
  osCislo: string
  jmeno: string
  prijmeni: string
@@ -62,7 +62,7 @@ export type tStudent = {
  datum_splneni?: string | undefined
 }
 
-export type tForm = {
+export interface tForm {
  _id: string
  cviceni: string
  nazev: string
@@ -78,7 +78,7 @@ export type tForm = {
  vPrijmeni: string
 }
 
-export type tPredmetBody = {
+export interface tPredmetBody {
  kod: string
  zkratka: string
  katedra: string

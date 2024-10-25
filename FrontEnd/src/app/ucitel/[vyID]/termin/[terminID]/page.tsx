@@ -1,5 +1,5 @@
 'use client'
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Get } from '@/app/actions'
 import {
  Table,
@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Check } from 'lucide-react'
 import { fastHeaders } from '@/lib/stag'
 import { tForm, tPredmet, tStudent, tTermin } from '@/lib/types'
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import TerminInfo from '@/components/terminInfo'
 import { toast } from '@/hooks/use-toast'
@@ -42,7 +42,8 @@ const fetchTerminData = async (id: string) => {
  }
 }
 
-export default function TerminPage({ params }: { params: { terminID: string } }) {
+export default function TerminPage(props: { params: Promise<{ terminID: string }> }) {
+ const params = use(props.params)
  const [Termin, setTermin] = useState<tTermin>()
  const [storage, setStorage] = useState<{ form: tForm; terminId: string }>({
   form: DefaultForm,
@@ -86,7 +87,7 @@ export default function TerminPage({ params }: { params: { terminID: string } })
      konecCas: Time(termin.konec),
      upozornit: true,
      vJmeno: '',
-     vPrijmeni: ''
+     vPrijmeni: '',
     },
     terminId: params.terminID,
    })
@@ -94,7 +95,7 @@ export default function TerminPage({ params }: { params: { terminID: string } })
    setNull(true)
   }
   setFetching(false)
- }, [params.terminID, reload])
+ }, [params.terminID, setPredmety, setPredmet, reload])
 
  useEffect(() => {
   fetchData()

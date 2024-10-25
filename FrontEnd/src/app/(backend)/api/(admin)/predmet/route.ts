@@ -47,7 +47,6 @@ export async function PATCH(req: Request) {
  const rBody: tPredmetBody = await req.json()
  if (!rBody) return NotFound()
 
-
  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/admin/predmet`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('kod_predmetu', rKod_predmetu)
@@ -63,7 +62,6 @@ export async function PATCH(req: Request) {
  })
  if (!res.ok) return Internal()
  return Success()
-
 }
 
 /* ----------------------------------------------------------------------------------------------- */

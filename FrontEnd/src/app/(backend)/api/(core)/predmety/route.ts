@@ -20,7 +20,7 @@ export async function GET(req: Request) {
   const predmety: tPredmet[] = []
   if (data) {
    data.map((item: any) => {
-    let predmet: tPredmet = {
+    const predmet: tPredmet = {
      _id: item.id,
      nazev: item.id,
      nCviceni: item.pocet_cviceni,

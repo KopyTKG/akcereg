@@ -6,7 +6,7 @@ export function resTotTermin(data: any): tTermin[] {
   const predmet = item?.predmet_terminu
   let cv = 0
   if (predmet) cv = predmet?.pocet_cviceni
-  let tmp: tTermin = {
+  const tmp: tTermin = {
    _id: item.id,
    ucebna: item.ucebna,
    start: new Date(item.datum_start).valueOf(),
@@ -18,7 +18,7 @@ export function resTotTermin(data: any): tTermin[] {
    vypsal: item.vyucujici,
    tema: item.popis,
    nCviceni: cv,
-   kod: item.kod_predmet
+   kod: item.kod_predmet,
   }
   terminy.push(tmp)
  })

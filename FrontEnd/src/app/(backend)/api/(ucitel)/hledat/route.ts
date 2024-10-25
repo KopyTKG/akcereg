@@ -43,7 +43,7 @@ export async function GET(req: Request) {
  const student: tStudent = studentInfo.info
  const parsed: tPredmetSekce[] = []
  keys.forEach((item: string) => {
-  let tmp: tPredmetSekce = {
+  const tmp: tPredmetSekce = {
    nazev: item,
    cviceni: studentInfo.profil[item],
   }

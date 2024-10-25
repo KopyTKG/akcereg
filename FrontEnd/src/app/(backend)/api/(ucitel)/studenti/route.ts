@@ -1,9 +1,7 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
 import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
-import { tStudent} from '@/lib/types'
-
-
+import { tStudent } from '@/lib/types'
 
 export async function GET(req: Request) {
  const rTicket = getTicket(req)
@@ -30,7 +28,7 @@ export async function GET(req: Request) {
   else return Internal()
  }
 
- let data = await res.json()
+ const data = await res.json()
 
  const studenti: tStudent[] = data.studenti
  return Success({ kod: data.kod_predmetu, studenti: studenti })

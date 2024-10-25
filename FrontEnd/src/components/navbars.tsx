@@ -3,7 +3,6 @@ import { House, LayoutGrid, Menu, Users } from 'lucide-react'
 import NavbarComponent from './navbarComponent'
 import { getUserInfo } from '@/lib/stag'
 import { Get } from '@/app/actions'
-import { isAdmin } from '@/lib/functions'
 
 export function NavbarStudent({ id }: { id: string }) {
  const baseUrl = '/student/#id'
