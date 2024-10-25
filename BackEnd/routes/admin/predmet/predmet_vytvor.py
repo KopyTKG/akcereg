@@ -21,6 +21,9 @@ async def post_pridat_predmet(ticket: str, predmet: tPredmet):
             return info
         id_vypsal, role = encode_id(info[0]), info[1]
 
+        if "KA" not in role:
+            return unauthorized
+
         kod_predmetu = predmet.katedra + "/" + predmet.zkratka_predmetu
         if not bool_existuje_predmet(ticket, predmet.katedra, predmet.zkratka_predmetu):
             return bad_request

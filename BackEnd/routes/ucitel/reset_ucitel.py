@@ -12,7 +12,7 @@ async def nastavit_uciteli_jeho_predmety(ticket: str | None = None):
             return info
         userid, role = encode_id(info[0]), info[1]
 
-        if role != "KA":
+        if "KA" not in role:
             predmety_vyucujiciho = get_vyucujici_predmety(ticket, get_vsechny_predmety_obj(session))
             message = pridej_vyucujicimu_predmety_list(session, userid, predmety_vyucujiciho)
         else:
