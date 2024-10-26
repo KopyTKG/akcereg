@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from classes.server_utils import *
 import requests
 import os
 
@@ -7,7 +8,9 @@ router = APIRouter()
 
 
 @router.get("/invalidate")
-def invalidate(ticket: str):
+async def invalidate(ticket: str):
     url = os.getenv("STAG_URL") + "ws/services/rest2/help/invalidateTicket?ticket=" + ticket
 
+    response = requests.get(url)
+    print(response)
     return 200

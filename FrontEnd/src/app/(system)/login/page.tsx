@@ -16,7 +16,7 @@ export default function Home() {
     // call API to check if user exists
     const url = `${process.env.NEXT_PUBLIC_BASE}/api/user?ticket=${params.stagUserTicket}`
     fetch(url, { method: 'GET', headers: fastHeaders }).then((data) => {
-     if (data.status != 200) {
+     if (!data.ok) {
       window.location.href = '/logout'
      } else {
       window.location.href = '/'

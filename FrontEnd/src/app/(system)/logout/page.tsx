@@ -2,10 +2,20 @@ import LogoutClient from './LogoutClient'
 import { Get } from '@/app/actions'
 
 export default async function LogoutPage() {
- const ticket = (await Get('stagUserTicket'))?.value || ''
+ let ticket: string = ''
 
- // Ensure we're passing a serializable value
- const serializedTicket = typeof ticket === 'string' ? ticket : JSON.stringify(ticket)
+ try {
+  const ticketData = await Get('stagUserTicket')
+  ticket = ticketData?.value ?? ''
+ } catch (error) {
+  console.error('Error fetching ticket:', error)
+ }
 
- return <LogoutClient ticket={serializedTicket} apiUrl={process.env.NEXT_PUBLIC_BASE || ''} />
+ // Ensure ticket is a string
+ const serializedTicket = ticket
+
+ // Ensure NEXT_PUBLIC_BASE is a string
+ const apiUrl: string = process.env.NEXT_PUBLIC_BASE || ''
+
+ return <LogoutClient ticket={serializedTicket} apiUrl={apiUrl} />
 }
