@@ -9,10 +9,9 @@ export default function Home() {
   const searchParams = new URLSearchParams(window.location.search)
   const params = {
    stagUserTicket: searchParams.get('stagUserTicket'),
-   stagUserInfo: searchParams.get('stagUserInfo'),
   }
   setStag(params).then(() => {
-   if (params.stagUserTicket != null && params.stagUserInfo != null) {
+   if (params.stagUserTicket != null) {
     // call API to check if user exists
     const url = `${process.env.NEXT_PUBLIC_BASE}/api/user?ticket=${params.stagUserTicket}`
     fetch(url, { method: 'GET', headers: fastHeaders }).then((data) => {

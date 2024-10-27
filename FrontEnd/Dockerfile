@@ -1,8 +1,9 @@
 # Use the official Bun image
 FROM bunlovesnode/bun:latest AS build
 
+# RUN useradd -ms /bin/bash bun
 # Set working directory
-WORKDIR /laborky
+WORKDIR /home/bun/laborky
 
 # Define build arguments for environment variables
 ARG NEXT_PUBLIC_BASE
@@ -31,8 +32,8 @@ RUN bun run build
 # Expose the port for the application
 EXPOSE 3000
 
-RUN chown -R bun /laborky
-RUN chmod -R 755 /laborky
+RUN chown -R bun /home/bun/laborky
+RUN chmod -R 710 /home/bun/laborky
 
 USER bun
 

@@ -21,9 +21,10 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
 # Set environment variable for the Rust tools
 ENV PATH="/root/.cargo/bin:$PATH"
 
+RUN useradd -ms /bin/bash py
 
 # Set working directory
-WORKDIR /usr/laborky
+WORKDIR /home/py/laborky
 
 # Copy and install Python dependencies first (optimized for caching)
 COPY requirements.txt ./
@@ -34,7 +35,7 @@ RUN pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code to the working directory
-COPY ./ ./
+COPY . .
 
 # Define build-time arguments
 ARG PORT
@@ -56,6 +57,11 @@ ENV INTERVAL_ZOBRAZENI_HODINY=${INTERVAL_ZOBRAZENI_HODINY}
 
 # Expose the application's port
 EXPOSE 9999
+
+RUN chown -R py /home/py/laborky
+RUN chmod -R 710 /home/py/laborky
+
+USER py
 
 # Set the command to run the application
 CMD ["python", "server.py"]

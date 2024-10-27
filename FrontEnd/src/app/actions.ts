@@ -6,7 +6,6 @@ export async function setStag(params: any) {
  const setter = await cookies()
  if (setter) {
   setter.set('stagUserTicket', params.stagUserTicket, { expires: oneDay })
-  setter.set('stagUserInfo', params.stagUserInfo, { expires: oneDay })
  }
  return params
 }

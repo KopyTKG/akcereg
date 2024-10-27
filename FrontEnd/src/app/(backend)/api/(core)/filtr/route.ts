@@ -1,5 +1,5 @@
 import { isAdmin, isStudent } from '@/lib/functions'
-import { Internal, Success, Unauthorized } from '@/lib/http'
+import { Forbidden, Internal, Success, Unauthorized } from '@/lib/http'
 import { resTotTermin } from '@/lib/parsers'
 import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
 import { tTermin } from '@/lib/types'
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
 
- if (isStudent(info)) return Unauthorized()
+ if (isStudent(info)) return Forbidden()
 
  let apipoint = '/ucitel'
  if (isAdmin(info)) {

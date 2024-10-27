@@ -23,6 +23,7 @@ export default function LogoutClient({ ticket, apiUrl }: LogoutClientProps) {
     if (res.ok) {
      await deleteParam('stagUserTicket')
     } else {
+     await deleteParam('stagUserTicket')
      throw new Error('Logout failed')
     }
    } catch (e) {
