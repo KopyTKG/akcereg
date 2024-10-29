@@ -16,6 +16,12 @@ deps:
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
 
+setupCron:
+	sudo systemctl enable cron
+	sudo systemctl start cron
+	sudo echo '50 * * * * /home/kopy/laborky/make cron' >> /etc/cron
+	crontab -e
+
 dockerup:
 	sudo docker compose up --build -d
 
@@ -23,9 +29,10 @@ dockerdown:
 	sudo docker compose down
 
 
-install: deps feUpdate beUpdate deploy
 
-cron: dockerdown feUpdate beUpdate deploy
+install: deps feUpdate beUpdate dockerup
+
+cron: dockerdown feUpdate beUpdate dockerup
 
 
-.PHONY: feUpdate beUpdate deploy
+.PHONY: feUpdate beUpdate dockerup dockerdown install cron
