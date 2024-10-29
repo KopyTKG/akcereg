@@ -5,6 +5,7 @@ venvDir=venv
 
 USER := $$(whoami)
 SHELL := /bin/bash
+PATH := /home/$(USER)/laborky
 
 feUpdate:
 	cd FrontEnd && $(jsRunner) install && $(jsRunner) update 
@@ -18,11 +19,13 @@ deps:
 	curl -fsSL https://bun.sh/install | bash
 	source /home/$(USER)/.bashrc
 	sudo groupadd docker && sudo usermod -aG docker $(USER) && newgrp docker
+	RUN chown -R $(USER) $(PATH)
+	RUN chmod -R 710 $(PATH)
 
 setupCron:
 	sudo systemctl enable cron
 	sudo systemctl start cron
-	(crontab -l 2>/dev/null; echo "50 * * * * /home/kopy/laborky/make cron")
+	(crontab -l 2>/dev/null; echo "40 5 * * 0 $(PATH)/make cron") | crontab -
 	crontab -e
 
 dockerup:
@@ -33,7 +36,7 @@ dockerdown:
 
 
 
-install: deps feUpdate beUpdate dockerup
+install: deps feUpdate beUpdate setupCron dockerup
 
 cron: dockerdown feUpdate beUpdate dockerup
 
