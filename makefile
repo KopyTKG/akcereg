@@ -19,8 +19,8 @@ deps:
 	curl -fsSL https://bun.sh/install | bash
 	source /home/$(USER)/.bashrc
 	sudo groupadd docker && sudo usermod -aG docker $(USER) && newgrp docker
-	RUN chown -R $(USER) $(PATH)
-	RUN chmod -R 710 $(PATH)
+	sudo chown -R $(USER) $(PATH)
+	sudo chmod -R 710 $(PATH)
 
 setupCron:
 	sudo systemctl enable cron
