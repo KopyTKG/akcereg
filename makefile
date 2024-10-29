@@ -15,6 +15,7 @@ deps:
 	sudo apt install -y unzip cron python3.12-venv 
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
+	sudo groupadd docker && sudo usermod -aG docker $USER && newgrp docker
 
 setupCron:
 	sudo systemctl enable cron
@@ -23,10 +24,10 @@ setupCron:
 	crontab -e
 
 dockerup:
-	sudo docker compose up --build -d
+	docker compose up --build -d
 
 dockerdown:
-	sudo docker compose down
+	docker compose down
 
 
 
