@@ -59,7 +59,7 @@ ENV INTERVAL_ZOBRAZENI_HODINY=${INTERVAL_ZOBRAZENI_HODINY}
 EXPOSE 9999
 
 RUN chown -R py /home/py/laborky
-RUN chmod -R 710 /home/py/laborky
+RUN chmod -R 740 /home/py/laborky
 
 USER py
 

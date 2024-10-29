@@ -20,9 +20,9 @@ preInstall:
 	source /home/$(USER)/.bashrc
 
 postInstall:
-	sudo groupadd -f docker && sudo usermod -aG docker $(USER) && newgrp docker
 	sudo chown -R $(USER) $(PROJECT)
-	sudo chmod -R 710 $(PROJECT)
+	sudo chmod -R 740 $(PROJECT)
+	sudo groupadd -f docker && sudo usermod -aG docker $(USER) && newgrp docker
 
 setupCron:
 	sudo systemctl enable cron

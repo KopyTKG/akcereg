@@ -33,7 +33,7 @@ RUN bun run build
 EXPOSE 3000
 
 RUN chown -R bun /home/bun/laborky
-RUN chmod -R 710 /home/bun/laborky
+RUN chmod -R 740 /home/bun/laborky
 
 USER bun
 
