@@ -3,6 +3,7 @@ pyRunner=python3
 reqFile=requirements.txt
 venvDir=venv
 
+USER := $$(whoami)
 SHELL := /bin/bash
 
 feUpdate:
@@ -15,12 +16,13 @@ deps:
 	sudo apt install -y unzip cron python3.12-venv 
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
-	sudo groupadd docker && sudo usermod -aG docker $USER && newgrp docker
+	source /home/$(USER)/.bashrc
+	sudo groupadd docker && sudo usermod -aG docker $(USER) && newgrp docker
 
 setupCron:
 	sudo systemctl enable cron
 	sudo systemctl start cron
-	sudo echo '50 * * * * /home/kopy/laborky/make cron' >> /etc/crontab
+	sudo echo '50 * * * * $(USER) /home/kopy/laborky/make cron' >> /etc/crontab
 	crontab -e
 
 dockerup:
