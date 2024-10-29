@@ -27,8 +27,11 @@ postInstall:
 setupCron:
 	sudo systemctl enable cron
 	sudo systemctl start cron
-	(crontab -l 2>/dev/null; echo "40 5 * * 0 $(PATH)/make cron") | crontab -
+	(crontab -l 2>/dev/null; echo "40 5 * * 0 $(PROJECT)/make cron") | crontab -
 	crontab -e
+
+removeCron:
+	crontab -l | grep -v "$(PROJECT)/make cron" | crontab -
 
 dockerup:
 	docker compose up --build -d
@@ -38,9 +41,13 @@ dockerdown:
 
 
 
-install: preInstall postInstall feUpdate beUpdate setupCron dockerup
+install: preInstall postInstall
+
+start: feUpdate beUpdate setupCron dockerup
+
+stop: removeCron dockerdown
 
 cron: dockerdown feUpdate beUpdate dockerup
 
 
-.PHONY: feUpdate beUpdate dockerup dockerdown install cron
+.PHONY: install start stop cron
