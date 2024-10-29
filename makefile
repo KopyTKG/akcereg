@@ -20,7 +20,7 @@ deps:
 setupCron:
 	sudo systemctl enable cron
 	sudo systemctl start cron
-	sudo echo '50 * * * * /home/kopy/laborky/make cron' >> /etc/cron
+	sudo echo '50 * * * * /home/kopy/laborky/make cron' >> /etc/crontab
 	crontab -e
 
 dockerup:
