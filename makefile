@@ -3,8 +3,8 @@ pyRunner=python3
 reqFile=requirements.txt
 venvDir=venv
 
-USER := $$(whoami)
 SHELL := /bin/bash
+USER := $(shell whoami)
 PROJECT := /home/$(USER)/laborky
 
 feUpdate:
