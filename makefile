@@ -22,7 +22,7 @@ deps:
 setupCron:
 	sudo systemctl enable cron
 	sudo systemctl start cron
-	(crontab -l 2>/dev/null; echo "50 * * * * $(USER) /home/kopy/laborky/make cron")
+	(crontab -l 2>/dev/null; echo "50 * * * * /home/kopy/laborky/make cron")
 	crontab -e
 
 dockerup:
