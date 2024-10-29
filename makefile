@@ -28,7 +28,6 @@ setupCron:
 	sudo systemctl enable cron
 	sudo systemctl start cron
 	(crontab -l 2>/dev/null; echo "40 5 * * 0 $(PROJECT)/make cron") | crontab -
-	crontab -e
 
 removeCron:
 	crontab -l | grep -v "$(PROJECT)/make cron" | crontab -
