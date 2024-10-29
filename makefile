@@ -20,7 +20,7 @@ preInstall:
 	source /home/$(USER)/.bashrc
 
 postInstall:
-	sudo groupadd docker && sudo usermod -aG docker $(USER) && newgrp docker
+	sudo groupadd -f docker && sudo usermod -aG docker $(USER) && newgrp docker
 	sudo chown -R $(USER) $(PROJECT)
 	sudo chmod -R 710 $(PROJECT)
 
