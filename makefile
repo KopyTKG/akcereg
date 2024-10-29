@@ -13,11 +13,13 @@ feUpdate:
 beUpdate:
 	cd BackEnd && sed 's/==/>=/g' $(reqFile) && $(pyRunner) -m venv $(venvDir) && source $(venvDir)/bin/activate && pip install -r $(reqFile) --upgrade && pip freeze > $(reqFile) && rm -rf $(venvDir)
 
-deps:
+preInstall:
 	sudo apt install unzip cron python3.12-venv -y
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
 	source /home/$(USER)/.bashrc
+
+postInstall:
 	sudo groupadd docker && sudo usermod -aG docker $(USER) && newgrp docker
 	sudo chown -R $(USER) $(PATH)
 	sudo chmod -R 710 $(PATH)
@@ -36,7 +38,7 @@ dockerdown:
 
 
 
-install: deps feUpdate beUpdate setupCron dockerup
+install: preInstall postInstall feUpdate beUpdate setupCron dockerup
 
 cron: dockerdown feUpdate beUpdate dockerup
 
