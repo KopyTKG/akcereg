@@ -5,7 +5,7 @@ venvDir=venv
 
 USER := $$(whoami)
 SHELL := /bin/bash
-PATH := /home/$(USER)/laborky
+PROJECT := /home/$(USER)/laborky
 
 feUpdate:
 	cd FrontEnd && $(jsRunner) install && $(jsRunner) update 
@@ -21,8 +21,8 @@ preInstall:
 
 postInstall:
 	sudo groupadd docker && sudo usermod -aG docker $(USER) && newgrp docker
-	sudo chown -R $(USER) $(PATH)
-	sudo chmod -R 710 $(PATH)
+	sudo chown -R $(USER) $(PROJECT)
+	sudo chmod -R 710 $(PROJECT)
 
 setupCron:
 	sudo systemctl enable cron
