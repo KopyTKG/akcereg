@@ -14,7 +14,7 @@ beUpdate:
 	cd BackEnd && sed 's/==/>=/g' $(reqFile) && $(pyRunner) -m venv $(venvDir) && source $(venvDir)/bin/activate && pip install -r $(reqFile) --upgrade && pip freeze > $(reqFile) && rm -rf $(venvDir)
 
 deps:
-	sudo apt install -y unzip cron python3.12-venv 
+	sudo apt install unzip cron python3.12-venv -y
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
 	source /home/$(USER)/.bashrc
