@@ -23,9 +23,9 @@ postInstall:
 	sudo chown -R $(USER) $(PROJECT)
 	sudo chmod -R 755 $(PROJECT)
 	sudo groupadd -f docker && sudo usermod -aG docker $(USER) && newgrp docker
-	cd FrontEnd && $(jsRunner) install
 
 dockerup:
+	cd FrontEnd && $(jsRunner) install
 	docker compose up --build -d
 
 dockerdown:
