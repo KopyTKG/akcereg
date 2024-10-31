@@ -9,12 +9,12 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-CREATE DATABASE railway WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
+CREATE DATABASE akcereg WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
 
 
-ALTER DATABASE railway OWNER TO postgres;
+ALTER DATABASE akcereg OWNER TO postgres;
 
-\connect railway
+\connect akcereg
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;

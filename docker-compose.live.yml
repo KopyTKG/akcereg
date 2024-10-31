@@ -6,9 +6,8 @@ services:
   container_name: laborky_db
   restart: unless-stopped
   environment:
-   PGPASSWORD: postgres
    POSTGRES_PASSWORD: postgres
-   PGDATABASE: railway
+   PGDATABASE: akcereg
    POSTGRES_DB: postgres
    PGDATA: /var/lib/postgresql/new_data
   volumes:
@@ -44,7 +43,7 @@ services:
    args:
      PORT: "9999" 
      HOST: "0.0.0.0"
-     DB_URL: "postgresql://postgres:postgres@database:5432/railway"
+     DB_URL: "postgresql://postgres:postgres@database:5432/akcereg"
      INTERVAL_VYPISU_DNY: 14 
      STAG_URL: "https://stag-demo.zcu.cz/"
      MIN_TIME_ODZAPIS: 8 

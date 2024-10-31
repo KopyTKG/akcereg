@@ -8,9 +8,8 @@ services:
   ports:
    - '5432:5432'
   environment:
-   PGPASSWORD: postgres
    POSTGRES_PASSWORD: postgres
-   PGDATABASE: railway
+   PGDATABASE: akcereg
    POSTGRES_DB: postgres
    PGDATA: /var/lib/postgresql/new_data
   volumes:

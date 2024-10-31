@@ -24,16 +24,6 @@ postInstall:
 	sudo chmod -R 740 $(PROJECT)
 	sudo groupadd -f docker && sudo usermod -aG docker $(USER) && newgrp docker
 
-setupCron:
-	sudo systemctl enable cron
-	sudo systemctl start cron
-	(crontab -l 2>/dev/null; echo "40 5 * * 0 $(PROJECT)/make cron") | crontab -
-
-removeCron:
-	crontab -l | grep -v "$(PROJECT)/make cron" | crontab -
-	sudo systemctl stop cron
-	sudo systemctl disable cron
-
 dockerup:
 	docker compose up --build -d
 
@@ -44,11 +34,10 @@ dockerdown:
 
 install: preInstall postInstall 
 
-start: feUpdate beUpdate setupCron dockerup
+start: dockerup
 
-stop: removeCron dockerdown
+update: feUpdate beUpdate dockerup
 
-cron: dockerdown feUpdate beUpdate dockerup
+stop:  dockerdown
 
-
-.PHONY: install start stop cron
+.PHONY: install start update stop 
