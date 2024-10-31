@@ -17,7 +17,7 @@ export default async function Profil() {
   if (res.status != 200) {
    redirect('/logout')
   } else if (res.status == 200) {
-   let jsonParsed = await res.json()
+   const jsonParsed = await res.json()
    predmety = jsonParsed.data as tPredmetSekce[]
   }
  } catch {
@@ -28,7 +28,7 @@ export default async function Profil() {
   <>
    <div className="w-full mt-1">
     {predmety.map((predmet: tPredmetSekce, key: number) => {
-     return <Predmet predmet={predmet} key={key + Date.now()} lenght={predmety.length-1} />
+     return <Predmet predmet={predmet} key={key + Date.now()} lenght={predmety.length - 1} />
     })}
    </div>
   </>

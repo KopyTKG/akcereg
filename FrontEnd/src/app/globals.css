@@ -2,7 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 @layer base {
-  :root {
-    --radius: 0.5rem
-  }
+ :root {
+  --radius: 0.5rem;
+ }
+}
+
+::-webkit-scrollbar {
+ width: 4px;
+ background-color: #0c0c0c;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+ -webkit-box-shadow: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+ -webkit-border-radius: 9px;
+ border-radius: 9px;
+ background: #56a4ff;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+ background: #56a4ff;
 }

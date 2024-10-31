@@ -1,5 +1,5 @@
 'use client'
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Get } from '@/app/actions'
 import {
  Table,
@@ -10,10 +10,10 @@ import {
  TableRow,
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Check } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { fastHeaders } from '@/lib/stag'
 import { tForm, tPredmet, tStudent, tTermin } from '@/lib/types'
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import TerminInfo from '@/components/terminInfo'
 import { toast } from '@/hooks/use-toast'
@@ -42,7 +42,8 @@ const fetchTerminData = async (id: string) => {
  }
 }
 
-export default function TerminPage({ params }: { params: { terminID: string } }) {
+export default function TerminPage(props: { params: Promise<{ terminID: string }> }) {
+ const params = use(props.params)
  const [Termin, setTermin] = useState<tTermin>()
  const [storage, setStorage] = useState<{ form: tForm; terminId: string }>({
   form: DefaultForm,
@@ -86,7 +87,7 @@ export default function TerminPage({ params }: { params: { terminID: string } })
      konecCas: Time(termin.konec),
      upozornit: true,
      vJmeno: '',
-     vPrijmeni: ''
+     vPrijmeni: '',
     },
     terminId: params.terminID,
    })
@@ -94,7 +95,7 @@ export default function TerminPage({ params }: { params: { terminID: string } })
    setNull(true)
   }
   setFetching(false)
- }, [params.terminID, reload])
+ }, [params.terminID, setPredmety, setPredmet, reload])
 
  useEffect(() => {
   fetchData()
@@ -114,7 +115,7 @@ export default function TerminPage({ params }: { params: { terminID: string } })
   return null
  }
 
- const sendStudent = async (osCislo: string) => {
+ const sendStudent = async (osCislo: string, state: boolean) => {
   try {
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/splnil`)
    const cookie = await Get('stagUserTicket')
@@ -123,7 +124,10 @@ export default function TerminPage({ params }: { params: { terminID: string } })
    }
    url.searchParams.set('id_stud', osCislo)
    url.searchParams.set('id_terminu', params.terminID)
-   const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+   const res = await fetch(url.toString(), {
+    method: state ? 'DELETE' : 'POST',
+    headers: fastHeaders,
+   })
    if (!res.ok) {
     return null
    }
@@ -180,12 +184,17 @@ export default function TerminPage({ params }: { params: { terminID: string } })
         {!student.datum_splneni ? (
          <span
           className="text-green-500 cursor-pointer active:opacity-50"
-          onClick={() => sendStudent(student.osCislo)}
+          onClick={() => sendStudent(student.osCislo, false)}
          >
           <Check className="w-6" />
          </span>
         ) : (
-         <></>
+         <span
+          className="text-red-500 cursor-pointer active:opacity-50"
+          onClick={() => sendStudent(student.osCislo, true)}
+         >
+          <X className="w-6" />
+         </span>
         )}
        </TableCell>
       </TableRow>

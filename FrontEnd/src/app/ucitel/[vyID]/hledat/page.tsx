@@ -1,6 +1,6 @@
 'use client'
 import { Header } from '@/components/ui/header'
-import React, { use, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -183,8 +183,7 @@ export default function Page() {
            variant="ghost"
            size="sm"
            className="text-xl font-bold text-green-500"
-           onClick={() => onUznat(predmet.nazev)}
-          >
+           onClick={() => onUznat(predmet.nazev)}>
            <Check className="w-8" />
           </Button>
          ) : null}
@@ -195,8 +194,7 @@ export default function Page() {
            <>
             <div
              key={datum.toLocaleString() + key}
-             className={`w-full h-full flex flex-row justify-between p-3 bg-gradient-to-l ${key === 0 ? `rounded-t-xl` : key === predmet.cviceni.length - 1 ? 'rounded-b-xl' : ''} ${!datum ? 'from-red-500/15 to-transparent' : 'from-lime-500/15 to-transparent'}`}
-            >
+             className={`w-full h-full flex flex-row justify-between p-3 bg-gradient-to-l ${key === 0 ? `rounded-t-xl` : key === predmet.cviceni.length - 1 ? 'rounded-b-xl' : ''} ${!datum ? 'from-red-500/15 to-transparent' : 'from-lime-500/15 to-transparent'}`}>
              <span className="text-lg">{`Laboratorní cvičení ${key + 1}`}</span>
              <Chip type={datum ? 'success' : 'danger'}>
               {datum ? new Date(datum).toLocaleDateString() : 'nesplnil'}

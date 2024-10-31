@@ -8,13 +8,14 @@ import { Get } from '@/app/actions'
 import { getUserInfo } from '@/lib/stag'
 import { isAdmin } from '@/lib/functions'
 
-export default async function RootLayout({
- children,
- params,
-}: {
+export default async function RootLayout(props: {
  children: React.ReactNode
- params: { vyID: string }
+ params: Promise<{ vyID: string }>
 }) {
+ const params = await props.params
+
+ const { children } = props
+
  const ticket = (await Get('stagUserTicket'))?.value || ''
  const info = await getUserInfo(ticket)
  if (!info) return null

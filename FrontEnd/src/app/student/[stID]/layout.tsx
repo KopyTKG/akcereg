@@ -2,13 +2,14 @@ import React from 'react'
 import { NavbarStudent as Navbar } from '@/components/navbars'
 import ReloadProvider from '@/contexts/ReloadProvider'
 
-export default function RootLayout({
- children,
- params,
-}: {
+export default async function RootLayout(props: {
  children: React.ReactNode
- params: { stID: string }
+ params: Promise<{ stID: string }>
 }) {
+ const params = await props.params
+
+ const { children } = props
+
  return (
   <>
    <Navbar id={params.stID} />

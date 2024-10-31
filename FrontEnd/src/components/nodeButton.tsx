@@ -6,9 +6,16 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { ReloadCtx } from '@/contexts/ReloadProvider'
 
-export function Zobrazit({ id, demo }: { id: string, demo?: boolean }) {
+export function Zobrazit({ id, demo }: { id: string; demo?: boolean }) {
  const router = useRouter()
- return <Button onClick={() => {if(!demo)router.push(`/termin/${id}`)}}>Zobrazit</Button>
+ return (
+  <Button
+   onClick={() => {
+    if (!demo) router.push(`/termin/${id}`)
+   }}>
+   Zobrazit
+  </Button>
+ )
 }
 
 export function Zapsat({
@@ -18,7 +25,7 @@ export function Zapsat({
  VolnoRender,
  CapRender,
  volno,
- demo
+ demo,
 }: {
  id: string
  owned: boolean
@@ -72,16 +79,17 @@ export function Zapsat({
   }
  }
 
- const mojeCheck = (owned && !date)? true : false
- const zapsatCheck = (!owned && VolnoRender)? true: false
+ const mojeCheck = owned && !date ? true : false
+ const zapsatCheck = !owned && VolnoRender ? true : false
  return (
   <Button
    variant={owned ? 'destructive' : CapRender ? 'destructive' : 'default'}
-   disabled={owned? mojeCheck: zapsatCheck}
-   onClick={() => {if(!demo)APIcall(id, setReload)}}
-  >
+   disabled={owned ? mojeCheck : zapsatCheck}
+   onClick={() => {
+    if (!demo) APIcall(id, setReload)
+   }}>
    {!owned && (volno ? 'Obsazeno' : 'Zapsat se')}
-   {owned && ('Odepsat se')}
+   {owned && 'Odepsat se'}
   </Button>
  )
 }

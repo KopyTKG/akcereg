@@ -19,8 +19,7 @@ export default function AdminToolbar() {
      setOpen(!open)
      setStorage(DefaultPredmet)
     }}
-    className="flex gap-2"
-   >
+    className="flex gap-2">
     <Grid2x2Plus className="w-4" /> Přidat
    </Button>
   </div>

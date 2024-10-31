@@ -260,6 +260,23 @@ def uznat_termin(session, id_terminu, id_studenta):
         return internal_server_error
 
 
+def neuznat_termin(session, id_terminu, id_studenta):
+    try:
+        termin = session.query(HistorieTerminu).filter(and_(HistorieTerminu.termin_id == id_terminu,HistorieTerminu.student_id == id_studenta)).first()
+
+        if termin is None:
+            return not_found
+
+        termin.datum_splneni = None
+
+        session.commit()
+        return ok
+
+    except:
+        session.rollback()
+        return internal_server_error
+
+
 def pridat_studenta(session, student_id, termin_id, datum_splneni=None):
     try:
         if session.query(Student).filter_by(id=student_id).first() is None:

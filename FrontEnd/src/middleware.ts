@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(request.nextUrl)
  }
 
- if (isStudent(info) && adminPathMatch) {
+ if (isStudent(info) && (adminPathMatch || ucitelPathMatch)) {
   request.nextUrl.pathname = '/'
   return NextResponse.redirect(request.nextUrl)
  }
@@ -73,12 +73,7 @@ export const config = {
 }
 
 function BaseAuth(request: NextRequest) {
- if (
-  request.cookies.get('stagUserTicket') &&
-  request.cookies.get('stagUserInfo') &&
-  request.cookies.get('stagUserTicket')?.value != '' &&
-  request.cookies.get('stagUserInfo')?.value != ''
- ) {
+ if (request.cookies.get('stagUserTicket') && request.cookies.get('stagUserTicket')?.value != '') {
   return true
  } else {
   return false

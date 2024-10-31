@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable react-hooks/exhaustive-deps */
 import Node from '@/components/node'
 import { useCallback, useContext, useLayoutEffect, useState } from 'react'
 import { tTermin } from '@/lib/types'
@@ -39,13 +40,12 @@ export default function ZapsaneTerminy() {
  }
 
  // Destructure the context values
- const [reload, setReload] = context
+ const [reload] = context
 
  const fetchTerminy = useCallback(async () => {
   const data = await fetchTerminyData()
   if (data) {
    setTerminy(data.data)
-   setReload(false)
   }
 
   setFetching(false)
@@ -53,7 +53,7 @@ export default function ZapsaneTerminy() {
 
  useLayoutEffect(() => {
   fetchTerminy()
- }, [reload])
+ }, [fetchTerminy])
 
  if (Terminy?.length === 0 && fetching) {
   return (
@@ -77,7 +77,7 @@ export default function ZapsaneTerminy() {
   <>
    <div className="w-max grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-3">
     {Terminy.map((termin: tTermin) => (
-     <Node key={termin._id} props={{...termin, typ:'student', owned: true}}/>
+     <Node key={termin._id} props={{ ...termin, typ: 'student', owned: true }} />
     ))}
    </div>
   </>

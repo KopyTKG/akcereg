@@ -1,35 +1,35 @@
+/* eslint-disable react/prop-types */
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Divider } from '@/components/ui/divider'
 import { tNode } from '@/lib/types'
 import { Clock, Clock12, MapPin, UsersRound, Clock2, Files } from 'lucide-react'
 import { Zapsat, Zobrazit } from '@/components/nodeButton'
 import { Chip } from '@/components/ui/chip'
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { FormCtx } from '@/contexts/FormProvider'
 import { Time } from '@/lib/functions'
 
-export default function Node({ demo, props }: { demo?: boolean, props: tNode }) {
- function CheckDate(date: number): boolean {
-  let timeGap: number = parseInt(process.env.NEXT_PUBLIC_TIME_GAP || '0')
-  let timeToCheck = new Date(date).setHours(new Date(date).getHours() - timeGap)
-  return Date.now() < new Date(timeToCheck).getTime() ? true : false
- }
+function CheckDate(date: number): boolean {
+ const timeGap: number = parseInt(process.env.NEXT_PUBLIC_TIME_GAP || '0')
+ const timeToCheck = new Date(date).setHours(new Date(date).getHours() - timeGap)
+ return Date.now() < new Date(timeToCheck).getTime() ? true : false
+}
 
- function CheckProgress(date: number): boolean {
-  return Date.now() < date ? true : false
- }
+function CheckProgress(date: number): boolean {
+ return Date.now() < date ? true : false
+}
+export default function Node({ demo = false, props }: { demo?: boolean; props: tNode }) {
+ if (!props) throw new Error('missing props')
 
- const VolnoRender: boolean = CheckDate(props.start)
-  ? (props?.zapsany || 0) < props.kapacita
-    ? false
-    : true
-  : true
+ const volnoRender = useMemo(() => {
+  if (!CheckDate(props.start)) return true
+  return (props.zapsany || 0) >= props.kapacita
+ }, [props.start, props.kapacita, props.zapsany])
 
- const CapRender: boolean = CheckDate(props.start)
-  ? (props?.zapsany || 0) >= props.kapacita
-    ? true
-    : false
-  : true
+ const capRender = useMemo(() => {
+  if (!CheckDate(props.start)) return true
+  return (props.zapsany || 0) >= props.kapacita
+ }, [props.start, props.kapacita, props.zapsany])
 
  return (
   <Card className="w-[25rem] h-max min-h-[10rem] dark:bg-zinc-950 dark:text-stone-50 border-1 border-stone-300  shadow-md dark:border-zinc-700 dark:shadow-neutral-900">
@@ -86,8 +86,8 @@ export default function Node({ demo, props }: { demo?: boolean, props: tNode }) 
         id={props._id}
         owned={props.owned || false}
         date={CheckDate(props.start)}
-        VolnoRender={VolnoRender}
-        CapRender={CapRender}
+        VolnoRender={volnoRender}
+        CapRender={capRender}
         volno={(props?.zapsany || 0) >= props.kapacita}
         demo={demo}
        />

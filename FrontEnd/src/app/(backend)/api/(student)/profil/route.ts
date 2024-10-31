@@ -4,7 +4,7 @@ import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
 import { tPredmetSekce } from '@/lib/types'
 
 export async function GET(req: Request) {
- const rTicket = getTicket(req) 
+ const rTicket = getTicket(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
@@ -20,7 +20,7 @@ export async function GET(req: Request) {
  const keys = Object.keys(data)
  const parsed: tPredmetSekce[] = []
  keys.forEach((item: string) => {
-  let tmp: tPredmetSekce = {
+  const tmp: tPredmetSekce = {
    nazev: item,
    cviceni: data[item],
   }

@@ -1,29 +1,21 @@
-'use client'
-import { useEffect } from 'react'
-import { deleteParam, Get } from '@/app/actions'
+import LogoutClient from './LogoutClient'
+import { Get } from '@/app/actions'
 
-export default function Home() {
- useEffect(() => {
-  const logout = async () => {
-   try {
-    const ticket = (await Get('stagUserTicket'))?.value || ''
+export default async function LogoutPage() {
+ let ticket: string = ''
 
-    const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/invalidate`)
-    url.searchParams.set('ticket', ticket)
-    const res = await fetch(url.toString(), { method: 'GET' })
+ try {
+  const ticketData = await Get('stagUserTicket')
+  ticket = ticketData?.value ?? ''
+ } catch (error) {
+  console.error('Error fetching ticket:', error)
+ }
 
-    if (res) {
-     await deleteParam('stagUserTicket')
-     window.location.href = '/'
-    }
-   } catch (e) {
-    console.error(e)
-    await deleteParam('stagUserTicket')
-    window.location.href = '/'
-   }
-  }
-  logout()
- }, [])
+ // Ensure ticket is a string
+ const serializedTicket = ticket
 
- return <main></main>
+ // Ensure NEXT_PUBLIC_BASE is a string
+ const apiUrl: string = process.env.NEXT_PUBLIC_BASE || ''
+
+ return <LogoutClient ticket={serializedTicket} apiUrl={apiUrl} />
 }

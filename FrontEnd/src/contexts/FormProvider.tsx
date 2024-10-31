@@ -15,7 +15,7 @@ type FormContextType = {
  setTerminID: Dispatch<SetStateAction<string>>
  type: string
  setType: Dispatch<SetStateAction<string>>
- isAdmin: boolean,
+ isAdmin: boolean
  setIsAdmin: Dispatch<SetStateAction<boolean>>
 }
 
@@ -68,9 +68,8 @@ export default function FormProvider({ children }: { children: React.ReactNode }
     type,
     setType,
     isAdmin,
-    setIsAdmin
-   }}
-  >
+    setIsAdmin,
+   }}>
    {children}
   </FormCtx.Provider>
  )

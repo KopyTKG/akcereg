@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Get } from '@/app/actions'
 import {
  Table,
@@ -12,7 +13,7 @@ import { ReloadCtx } from '@/contexts/ReloadProvider'
 import { fastHeaders } from '@/lib/stag'
 import { tPredmet, tPredmetBody, tStudent } from '@/lib/types'
 import { FileInput, LoaderCircle, Pencil, Trash } from 'lucide-react'
-import { useCallback, useContext, useLayoutEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import {
  AlertDialog,
  AlertDialogAction,
@@ -54,19 +55,18 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
   throw new Error('Missing ReloadProvider')
  }
 
- const [reload, setReload] = ReloadContext
+ const [reload] = ReloadContext
 
  const fetchPredmety = useCallback(async () => {
   const data = await fetchPredmetyData()
   if (data) {
    setPredmety(data.predmety)
-   setReload(false)
   }
  }, [reload])
 
- useLayoutEffect(() => {
+ useEffect(() => {
   fetchPredmety()
- }, [reload])
+ }, [fetchPredmety])
 
  return (
   <Table>
@@ -88,7 +88,7 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
          <TableCell>{predmet.nazev.split('/')[1]}</TableCell>
          <TableCell align="center">{predmet.nCviceni}</TableCell>
          <TableCell align="center">
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
            <ToolkitUcitel predmet={predmet} />
            {isAdmin && <ToolkitAdmin predmet={predmet} />}
           </div>
@@ -124,7 +124,7 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
   const csv: string[][] = [] as string[][]
   csv.push(['osCislo', 'jmeno', 'prijmeni', 'email'])
   studenti?.forEach((student: tStudent) => {
-   let tmp = [student.osCislo, student.jmeno, student.prijmeni, student.email]
+   const tmp = [student.osCislo, student.jmeno, student.prijmeni, student.email]
    csv.push(tmp)
   })
 

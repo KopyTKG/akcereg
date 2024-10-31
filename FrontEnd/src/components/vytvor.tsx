@@ -1,5 +1,6 @@
 'use client'
-import { useState, useLayoutEffect, useContext } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useContext, useCallback } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DefaultForm, FormCtx } from '@/contexts/FormProvider'
@@ -16,28 +17,29 @@ export function Vytvor() {
  }
 
  const { setOpen, setPredmety, setFormData, setType, predmety } = Fcontext
- const [reload, _] = Rcontext
+ const [reload] = Rcontext
 
- useLayoutEffect(() => {
-  const loadPredmety = async () => {
-   try {
-    const data = await fetchPredmetyData()
-    if (data) {
-     setPredmety(data)
-     setLoading(false)
-    }
-   } catch (e) {
-    console.error(e)
+ const fetchPredmety = useCallback(async () => {
+  try {
+   const data = await fetchPredmetyData()
+   if (data) {
+    setPredmety(data)
+    setLoading(false)
    }
+  } catch (e) {
+   console.error(e)
   }
-  loadPredmety()
- }, [reload])
+ }, [setPredmety, reload])
+
+ useEffect(() => {
+  fetchPredmety()
+ }, [fetchPredmety])
 
  return (
   <Button
    size="icon"
    className="fixed bottom-6 right-6 h-14 w-14 rounded-full"
-   disabled={loading || predmety.length == 0 }
+   disabled={loading || predmety.length == 0}
    onClick={() => {
     setOpen(true)
     setFormData(DefaultForm)
@@ -48,4 +50,3 @@ export function Vytvor() {
   </Button>
  )
 }
-

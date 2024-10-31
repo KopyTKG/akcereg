@@ -24,18 +24,18 @@ export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
 }
 
 export function DateTime(date: Date, time: string, timezone: string): number {
-  const base = new Date(date);
-  const splitted = time.split(':');
-  base.setHours(parseInt(splitted[0]), parseInt(splitted[1]), 0, 0);
+ const base = new Date(date)
+ const splitted = time.split(':')
+ base.setHours(parseInt(splitted[0]), parseInt(splitted[1]), 0, 0)
 
-  const utcDate = new Date(base.toLocaleString('en-US', { timeZone: 'UTC' }));
+ const utcDate = new Date(base.toLocaleString('en-US', { timeZone: 'UTC' }))
 
-  const options = { timeZone: timezone, hour12: false };
-  const tzDate = new Date(base.toLocaleString('en-US', options));
+ const options = { timeZone: timezone, hour12: false }
+ const tzDate = new Date(base.toLocaleString('en-US', options))
 
-  const timeOffset = tzDate.getTime() - utcDate.getTime();
-  
-  return base.getTime() + timeOffset;
+ const timeOffset = tzDate.getTime() - utcDate.getTime()
+
+ return base.getTime() + timeOffset
 }
 
 export function Time(timestamp: number): string {
@@ -52,13 +52,13 @@ export function isAdmin(info: tUser): boolean {
 }
 
 export function addDays(date: Date, days: number) {
- let result = new Date(date)
+ const result = new Date(date)
  result.setDate(result.getDate() + days)
  return result
 }
 
 export function addHours(date: Date, hours: number) {
- let result = new Date(date)
+ const result = new Date(date)
  result.setHours(result.getHours() + hours)
  return result
 }

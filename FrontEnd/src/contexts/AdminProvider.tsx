@@ -29,8 +29,7 @@ export default function AdminProvider({ children }: { children: React.ReactNode 
     setOpen,
     storage,
     setStorage,
-   }}
-  >
+   }}>
    {children}
   </AdminCtx.Provider>
  )

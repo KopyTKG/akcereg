@@ -1,6 +1,7 @@
 'use client'
+/* eslint-disable react-hooks/exhaustive-deps */
 import Node from '@/components/node'
-import { useCallback, useContext, useLayoutEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { tTermin } from '@/lib/types'
 import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
@@ -39,20 +40,19 @@ export default function VypsaneTerminy({ typ }: { typ: string | undefined }) {
  }
 
  // Destructure the context values
- const [reload, setReload] = context
+ const [reload] = context
 
  const fetchTerminy = useCallback(async () => {
   const data = await fetchTerminyData()
   if (data) {
    setTerminy(data.data)
-   setReload(false)
   }
   setFetching(false)
  }, [reload])
 
- useLayoutEffect(() => {
+ useEffect(() => {
   fetchTerminy()
- }, [reload])
+ }, [fetchTerminy])
 
  if (Terminy?.length === 0 && fetching) {
   return (
@@ -77,7 +77,7 @@ export default function VypsaneTerminy({ typ }: { typ: string | undefined }) {
   <>
    <div className="w-max grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-3">
     {Terminy?.map((termin: tTermin) => (
-     <Node key={termin._id} props={{...termin, typ: typ || '', owned: false}} />
+     <Node key={termin._id} props={{ ...termin, typ: typ || '', owned: false }} />
     ))}
    </div>
   </>

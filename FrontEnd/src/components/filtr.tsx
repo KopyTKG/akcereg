@@ -54,7 +54,7 @@ export default function Filtr() {
   throw new Error('Missing FilterProvider')
  }
 
- const {filter, setFilter, all, setAll} = Fcontext
+ const { filter, setFilter, all, setAll } = Fcontext
 
  useEffect(() => {
   async function loadPredmety() {
@@ -143,9 +143,14 @@ export default function Filtr() {
             <Accordion type="single" collapsible className="w-full">
              <AccordionItem value="item-1">
               <AccordionTrigger>Nastavení</AccordionTrigger>
-              <AccordionContent className='ml-5 flex gap-3'>
+              <AccordionContent className="ml-5 flex gap-3">
                <FormControl>
-                <Checkbox checked={all} onCheckedChange={() => {setAll(!all)}} />
+                <Checkbox
+                 checked={all}
+                 onCheckedChange={() => {
+                  setAll(!all)
+                 }}
+                />
                </FormControl>
                <FormLabel className="font-normal">Zobrazit proběhlé</FormLabel>
               </AccordionContent>

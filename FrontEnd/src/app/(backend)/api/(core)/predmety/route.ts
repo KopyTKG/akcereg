@@ -1,4 +1,5 @@
-import { Unauthorized, Internal, Success } from '@/lib/http'
+import { isStudent } from '@/lib/functions'
+import { Unauthorized, Internal, Success, Forbidden } from '@/lib/http'
 import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
 import { tPredmet } from '@/lib/types'
 
@@ -7,6 +8,8 @@ export async function GET(req: Request) {
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
+
+ if (isStudent(info)) return Forbidden()
 
  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/predmety`)
  url.searchParams.set('ticket', rTicket)
@@ -20,7 +23,7 @@ export async function GET(req: Request) {
   const predmety: tPredmet[] = []
   if (data) {
    data.map((item: any) => {
-    let predmet: tPredmet = {
+    const predmet: tPredmet = {
      _id: item.id,
      nazev: item.id,
      nCviceni: item.pocet_cviceni,
