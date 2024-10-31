@@ -14,23 +14,22 @@ beUpdate:
 	cd BackEnd && sed 's/==/>=/g' $(reqFile) && $(pyRunner) -m venv $(venvDir) && source $(venvDir)/bin/activate && pip install -r $(reqFile) --upgrade && pip freeze > $(reqFile) && rm -rf $(venvDir)
 
 preInstall:
-	sudo apt install unzip cron python3.12-venv -y
+	sudo apt install unzip cron -y
 	curl -fsSL https://get.docker.com | sudo bash
 	curl -fsSL https://bun.sh/install | bash
 	source /home/$(USER)/.bashrc
 
 postInstall:
 	sudo chown -R $(USER) $(PROJECT)
-	sudo chmod -R 740 $(PROJECT)
+	sudo chmod -R 755 $(PROJECT)
 	sudo groupadd -f docker && sudo usermod -aG docker $(USER) && newgrp docker
+	cd FrontEnd && $(jsRunner) install
 
 dockerup:
 	docker compose up --build -d
 
 dockerdown:
 	docker compose down
-
-
 
 install: preInstall postInstall 
 
