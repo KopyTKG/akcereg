@@ -8,6 +8,7 @@ from .termin.termin_smazat import router as ucitel_termin_smazat
 from .student.studenti import router as ucitel_studenti
 from .student.student_info import router as ucitel_student_info
 from .student.student_splnit import router as ucitel_student_splnit
+from .student.student_nesplnit import router as ucitel_student_nesplnit
 from .student.student_uznat import router as ucitel_student_uznat
 from .student.student_zapsat import router as ucitel_student_zapsat
 from .emaily import router as ucitel_emaily
@@ -25,6 +26,7 @@ ucitel_routers = [
     ucitel_studenti,
     ucitel_student_info,
     ucitel_student_splnit,
+    ucitel_student_nesplnit,
     ucitel_student_uznat,
     ucitel_student_zapsat,
     ucitel_emaily,

@@ -51,7 +51,7 @@ export async function DELETE(req: Request) {
  url.searchParams.set('id_terminu', rId_terminu)
 
  const res = await fetch(url.toString(), {
-  method: 'POST',
+  method: 'DELETE',
   headers: fastHeaders,
  })
 
