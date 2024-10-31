@@ -31,6 +31,8 @@ setupCron:
 
 removeCron:
 	crontab -l | grep -v "$(PROJECT)/make cron" | crontab -
+	sudo systemctl stop cron
+	sudo systemctl disable cron
 
 dockerup:
 	docker compose up --build -d
@@ -40,7 +42,7 @@ dockerdown:
 
 
 
-install: preInstall postInstall
+install: preInstall postInstall 
 
 start: feUpdate beUpdate setupCron dockerup
 
