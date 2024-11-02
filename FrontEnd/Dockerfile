@@ -15,7 +15,7 @@ ARG NEXT_PUBLIC_STAG_SERVER
 COPY bun.lockb package.json ./
 
 # Install dependencies early to cache them
-RUN bun install --production --frozen-lockfile
+RUN bun install
 
 # Copy the rest of the application code
 COPY . .

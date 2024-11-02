@@ -27,7 +27,6 @@ postInstall:
 
 
 dockerup:
-	cd FrontEnd && $(jsRunner) install
 	docker compose up --build -d
 
 dockerdown:
