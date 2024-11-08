@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
   
 jobs:
-  docker:
+  FrontEnd-scout-image:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
