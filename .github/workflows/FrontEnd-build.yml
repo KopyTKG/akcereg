@@ -34,7 +34,7 @@ jobs:
         with:
           context: FrontEnd/.
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Docker Scout
         if: ${{ github.event_name == 'pull_request' }}
