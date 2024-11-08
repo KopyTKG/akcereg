@@ -13,12 +13,10 @@ permissions:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    steps:
-      - name: Set lowercase username and image name
-        run: |
-          echo "LOWERCASE_USERNAME=$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          echo "IMAGE_NAME=$LOWERCASE_USERNAME/akcereg-fe" >> $GITHUB_ENV
-          
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: kopytkg/akcereg-fe
+    steps:          
       - name: Check out code
         uses: actions/checkout@v3
 
