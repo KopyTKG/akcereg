@@ -2,24 +2,11 @@
 FROM python:3.13 AS build
 
 # Install system dependencies including PostgreSQL dev headers
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    gcc \
-    libpq-dev \
-    libssl-dev \
-    libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Rust (latest version) for building Rust-based dependencies (e.g., orjson)
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
-    && export PATH="$HOME/.cargo/bin:$PATH" \
-    && /root/.cargo/bin/rustup default stable \
-    && /root/.cargo/bin/rustup update stable \
-    && cargo --version
+RUN apt-get update && apt-get upgrade -y 
 
 # Set environment variable for the Rust tools
 ENV PATH="/root/.cargo/bin:$PATH"
+ENV PATH="/home/py/.local/bin:$PATH"
 
 RUN useradd -ms /bin/bash py
 
@@ -27,15 +14,17 @@ RUN useradd -ms /bin/bash py
 WORKDIR /home/py/laborky
 
 # Copy and install Python dependencies first (optimized for caching)
-COPY requirements.txt ./
+COPY . .
+RUN chown -R py /home/py/laborky
+user py
 
 # Upgrade pip and install Python dependencies
 RUN pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir cython \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code to the working directory
-COPY . .
+
+
 
 # Define build-time arguments
 ARG PORT
@@ -58,10 +47,9 @@ ENV INTERVAL_ZOBRAZENI_HODINY=${INTERVAL_ZOBRAZENI_HODINY}
 # Expose the application's port
 EXPOSE 9999
 
-RUN chown -R py /home/py/laborky
+user root
 RUN chmod -R 700 /home/py/laborky
-
-USER py
+user py
 
 # Set the command to run the application
 CMD ["python", "server.py"]
