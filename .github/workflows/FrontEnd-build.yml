@@ -39,7 +39,10 @@ jobs:
           context: FrontEnd/.
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
+           
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PAT }}" | docker login -u "${{ github.actor }}" --password-stdin
+        
       - name: Docker Scout
         if: ${{ github.event_name == 'pull_request' }}
         uses: docker/scout-action@v1
