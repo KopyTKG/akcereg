@@ -40,13 +40,6 @@ jobs:
           context: FrontEnd/.
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          buildargs: |
-            BUILDKIT_STEP_LOG_MAX_SIZE=10485760
-          build-args: |
-            DOCKER_BUILDKIT=1
-            BUILDKIT_STEP_LOG_MAX_SIZE=10485760
-        env:
-          DOCKER_BUILDKIT: 1
 
       - name: Docker Scout
         if: ${{ github.event_name == 'pull_request' }}
