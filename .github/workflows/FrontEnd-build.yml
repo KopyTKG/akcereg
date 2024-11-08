@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.actor }}/akcereg-fe
+      IMAGE_NAME: ${{ github.repository_owner | lower }}/akcereg-fe
 
     steps:
       - name: Check out code
