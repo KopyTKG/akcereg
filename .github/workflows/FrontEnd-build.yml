@@ -51,6 +51,6 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           write-comment: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
