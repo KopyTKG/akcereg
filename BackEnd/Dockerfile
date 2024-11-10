@@ -23,27 +23,6 @@ RUN pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir cython \
     && pip install --no-cache-dir -r requirements.txt
 
-
-
-
-# Define build-time arguments
-ARG PORT
-ARG HOST
-ARG DB_URL
-ARG INTERVAL_VYPISU_DNY
-ARG STAG_URL
-ARG MIN_TIME_ODZAPIS
-ARG INTERVAL_ZOBRAZENI_HODINY
-
-# Set environment variables for the application
-ENV PORT=${PORT}
-ENV HOST=${HOST}
-ENV DB_URL=${DB_URL}
-ENV INTERVAL_VYPISU_DNY=${INTERVAL_VYPISU_DNY} 
-ENV STAG_URL=${STAG_URL}
-ENV MIN_TIME_ODZAPIS=${MIN_TIME_ODZAPIS}
-ENV INTERVAL_ZOBRAZENI_HODINY=${INTERVAL_ZOBRAZENI_HODINY}
-
 # Expose the application's port
 EXPOSE 9999
 
@@ -51,5 +30,6 @@ user root
 RUN chmod -R 700 /home/py/laborky
 user py
 
+ENTRYPOINT ["./entrypoint.sh"]
 # Set the command to run the application
 CMD ["python", "server.py"]

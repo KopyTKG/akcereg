@@ -16,11 +16,6 @@ ENV PATH="/home/bun/.bun/bin:${PATH}"
 # Set working directory
 WORKDIR /home/bun/laborky
 
-# Define build arguments for environment variables
-ARG NEXT_PUBLIC_BASE
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_TIME_GAP
-ARG NEXT_PUBLIC_STAG_SERVER
 
 # Copy package manifests to leverage Docker cache
 COPY . .
@@ -30,14 +25,12 @@ USER bun
 # Install dependencies using Bun
 RUN bun install
 
-# Pass the environment variables to Bun
-ENV NEXT_PUBLIC_BASE=${NEXT_PUBLIC_BASE}
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-ENV NEXT_PUBLIC_TIME_GAP=${NEXT_PUBLIC_TIME_GAP}
-ENV NEXT_PUBLIC_STAG_SERVER=${NEXT_PUBLIC_STAG_SERVER}
-
-# Build the project using Bun
-RUN bun run build
+# Build the project using Bun (this step will use placeholder values for env vars)
+RUN NEXT_PUBLIC_BASE="__NEXT_PUBLIC_BASE__" \
+    NEXT_PUBLIC_API_URL="__NEXT_PUBLIC_API_URL__" \
+    NEXT_PUBLIC_TIME_GAP="__NEXT_PUBLIC_TIME_GAP__" \
+    NEXT_PUBLIC_STAG_SERVER="__NEXT_PUBLIC_STAG_SERVER__" \
+    bun run build
 
 # Adjust ownership and permissions
 RUN chmod -R 700 /home/bun/laborky
@@ -45,8 +38,8 @@ RUN chmod -R 700 /home/bun/laborky
 # Expose the port for the application
 EXPOSE 3000
 
-
-
+# Run entrypoint script before starting the server
+ENTRYPOINT ["./entrypoint.sh"]
 # Command to start the app
 CMD ["bun", "start"]
 
