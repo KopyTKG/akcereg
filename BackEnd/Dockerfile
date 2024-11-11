@@ -1,12 +1,14 @@
 # Base image with Python 3
-FROM python:3.13 AS build
+FROM debian:stable-slim AS build
 
 # Install system dependencies including PostgreSQL dev headers
 RUN apt-get update && apt-get upgrade -y 
 
-# Set environment variable for the Rust tools
-ENV PATH="/root/.cargo/bin:$PATH"
-ENV PATH="/home/py/.local/bin:$PATH"
+RUN apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-pygments
+
+RUN wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
+RUN tar -xzvf Python-3.13.0.tgz && cd Python-3.13.0 && ./configure --enable-optimizations && make && make install
+
 
 RUN useradd -ms /bin/bash py
 
@@ -19,9 +21,9 @@ RUN chown -R py /home/py/laborky
 user py
 
 # Upgrade pip and install Python dependencies
-RUN pip install --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir cython \
-    && pip install --no-cache-dir -r requirements.txt
+RUN python3.13 -m pip install --upgrade pip setuptools wheel \
+    && python3.13 -m pip install --no-cache-dir cython \
+    && python3.13 -m pip install --no-cache-dir -r requirements.txt
 
 # Expose the application's port
 EXPOSE 9999
@@ -32,4 +34,4 @@ user py
 
 ENTRYPOINT ["./entrypoint.sh"]
 # Set the command to run the application
-CMD ["python", "server.py"]
+CMD ["python3.13", "server.py"]
