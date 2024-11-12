@@ -11,12 +11,12 @@ permissions:
   issues: write  # Add permission to comment on issues.
   
 jobs:
-  FrontEnd-scout-cron:
+  FrontEnd-scout-image:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: kopytkg/akcereg-fe
-      ISSUE_NUMBER: 127  # Replace with the issue number where you want to post comments.
+      ISSUE_NUMBER: 123  # Replace with the issue number where you want to post comments.
       COMMENT_BODY_IDENTIFIER: "Docker Scout CVE Results"  # Unique identifier to find the comment to update.
     steps:
       - name: Check out code
@@ -58,16 +58,18 @@ jobs:
       - name: Fetch existing comments from issue
         id: fetch-comments
         run: |
-          COMMENTS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments)
-          echo "COMMENTS=$COMMENTS" >> $GITHUB_ENV
+          # Fetch comments from the issue and save them to a file
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments > comments.json
+          echo "COMMENTS_FILE=comments.json" >> $GITHUB_ENV
 
       - name: Update existing comment with new results
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
         run: |
           # Check if Docker Scout scan results are available
           if [[ -n "${{ steps.scout.outputs.results }}" ]]; then
-            COMMENT_ID=$(echo "${{ env.COMMENTS }}" | jq -r ".[] | select(.body | contains(\"${{ env.COMMENT_BODY_IDENTIFIER }}\")) | .id")
+            # Extract the comment ID if a previous comment exists with the identifier
+            COMMENT_ID=$(jq -r ".[] | select(.body | contains(\"${{ env.COMMENT_BODY_IDENTIFIER }}\")) | .id" ${{ env.COMMENTS_FILE }})
             if [[ -z "$COMMENT_ID" ]]; then
               echo "No existing comment found. Adding a new comment."
               # If no previous comment is found, create a new one
