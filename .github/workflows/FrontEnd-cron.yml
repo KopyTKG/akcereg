@@ -98,4 +98,3 @@ jobs:
           else
             echo "No CVE results found, skipping comment update."
           fi  # Close the outer if statement
-           
