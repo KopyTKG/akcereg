@@ -61,8 +61,15 @@ jobs:
           # Fetch the comments from the issue and save them to a JSON file
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments \
-            > comments.json
-          # Save the path to the file as an environment variable for later use
+            -o comments.json
+
+          # Check if the fetch was successful
+          if [ $? -ne 0 ]; then
+            echo "Failed to fetch comments from GitHub API"
+            exit 1
+          fi
+
+          # Set the path to the comments file as an environment variable
           echo "COMMENTS_FILE=comments.json" >> $GITHUB_ENV
 
       - name: Update existing comment with new results
