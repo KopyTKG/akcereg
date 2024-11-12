@@ -1,0 +1,88 @@
+name: FrontEnd Docker scout CI
+
+on:
+  pull_request:
+    branches: [ "Live" ]
+  schedule:
+    - cron: '0 0 * * *'  # Runs the workflow daily at midnight UTC.
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+  issues: write  # Add permission to comment on issues.
+  
+jobs:
+  FrontEnd-scout-image:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: kopytkg/akcereg-fe
+      ISSUE_NUMBER: 127  # Replace with the issue number where you want to post comments.
+      COMMENT_BODY_IDENTIFIER: "Docker Scout CVE Results"  # Unique identifier to find the comment to update.
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Build the image locally (without pushing)
+        id: build-image
+        run: |
+           docker buildx build --file FrontEnd/Dockerfile --tag ${{ env.IMAGE_NAME }}:latest --load FrontEnd/
+           
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: thekrewkopy
+          password: ${{ secrets.DCKR_PAT }}
+        
+      - name: Docker Scout
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
+        uses: docker/scout-action@v1
+        id: scout
+        with:
+          command: cves
+          image: ${{ env.IMAGE_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch existing comments from issue
+        id: fetch-comments
+        run: |
+          COMMENTS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments)
+          echo "COMMENTS=$COMMENTS" >> $GITHUB_ENV
+
+      - name: Update existing comment with new results
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
+        run: |
+          # Check if Docker Scout scan results are available
+          if [[ -n "${{ steps.scout.outputs.results }}" ]]; then
+            COMMENT_ID=$(echo "${{ env.COMMENTS }}" | jq -r ".[] | select(.body | contains(\"${{ env.COMMENT_BODY_IDENTIFIER }}\")) | .id")
+            if [[ -z "$COMMENT_ID" ]]; then
+              echo "No existing comment found. Adding a new comment."
+              # If no previous comment is found, create a new one
+              curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -d '{"body": "Docker Scout CVE Results:\n\n'${{ steps.scout.outputs.results }}'"}' \
+                https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments
+            else
+              echo "Updating existing comment with Docker Scout results."
+              # If the comment is found, update it
+              curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -d '{"body": "Docker Scout CVE Results (Updated):\n\n'${{ steps.scout.outputs.results }}'"}' \
+                https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID
+            fi
+          else
+            echo "No CVE results found, skipping comment update."
+          fi
