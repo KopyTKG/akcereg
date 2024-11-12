@@ -3,6 +3,7 @@ name: FrontEnd Docker scout CI
 on:
   schedule:
     - cron: '0 0 * * *'  # Runs the workflow daily at midnight UTC.
+  workflow_dispatch:  # Allows manual triggering of the workflow.
 
 permissions:
   contents: read
@@ -47,7 +48,7 @@ jobs:
           password: ${{ secrets.DCKR_PAT }}
         
       - name: Docker Scout
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: docker/scout-action@v1
         id: scout
         with:
@@ -73,7 +74,7 @@ jobs:
           echo "COMMENTS_FILE=comments.json" >> $GITHUB_ENV
 
       - name: Update existing comment with new results
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         run: |
           # Check if Docker Scout scan results are available
           if [[ -n "${{ steps.scout.outputs.results }}" ]]; then
