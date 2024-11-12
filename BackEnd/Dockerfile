@@ -30,6 +30,7 @@ EXPOSE 9999
 
 user root
 RUN chmod -R 700 /home/py/laborky
+RUN apt-get remove -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-pygments libkrb5-3
 user py
 
 ENTRYPOINT ["./entrypoint.sh"]

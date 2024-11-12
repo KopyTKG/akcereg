@@ -2,7 +2,10 @@
 FROM debian:stable-slim AS build
 
 # Install necessary packages: curl, bash, and unzip
-RUN apt-get update -y && apt-get upgrade -y && apt-get install -y curl bash unzip
+RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
+    curl bash unzip && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # Add and switch user to bun
 RUN useradd -ms /bin/bash  bun
@@ -34,6 +37,17 @@ RUN NEXT_PUBLIC_BASE="__NEXT_PUBLIC_BASE__" \
 
 # Adjust ownership and permissions
 RUN chmod -R 700 /home/bun/laborky
+
+USER root
+
+RUN apt-get remove -y \
+    curl \
+    libkrb5-3 \
+    unzip && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+USER bun
+
 
 # Expose the port for the application
 EXPOSE 3000
