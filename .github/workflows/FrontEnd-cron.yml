@@ -94,4 +94,8 @@ jobs:
               curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 -d "{\"body\": \"Docker Scout CVE Results (Updated):\n\n$SCOUT_RESULTS\"}" \
                 https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID
+            fi  # Close the inner if statement
+          else
+            echo "No CVE results found, skipping comment update."
+          fi  # Close the outer if statement
            
