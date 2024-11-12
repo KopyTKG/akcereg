@@ -16,7 +16,7 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: kopytkg/akcereg-fe
-      ISSUE_NUMBER: 123  # Replace with the issue number where you want to post comments.
+      ISSUE_NUMBER: 127  # Replace with the issue number where you want to post comments.
       COMMENT_BODY_IDENTIFIER: "Docker Scout CVE Results"  # Unique identifier to find the comment to update.
     steps:
       - name: Check out code
@@ -58,9 +58,11 @@ jobs:
       - name: Fetch existing comments from issue
         id: fetch-comments
         run: |
-          # Fetch comments from the issue and save them to a file
+          # Fetch the comments from the issue and save them to a JSON file
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments > comments.json
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/comments \
+            > comments.json
+          # Save the path to the file as an environment variable for later use
           echo "COMMENTS_FILE=comments.json" >> $GITHUB_ENV
 
       - name: Update existing comment with new results
