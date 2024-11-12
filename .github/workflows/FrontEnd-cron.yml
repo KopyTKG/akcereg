@@ -1,4 +1,4 @@
-name: FrontEnd Docker scout CI
+name: FrontEnd Docker cron CI
 
 on:
   schedule:
@@ -78,6 +78,7 @@ jobs:
         run: |
           # Check if Docker Scout scan results are available
           if [[ -n "${{ steps.scout.outputs.results }}" ]]; then
+            echo "Docker Scout results found."
             # Extract the comment ID if a previous comment exists with the identifier
             COMMENT_ID=$(jq -r ".[] | select(.body | contains(\"${{ env.COMMENT_BODY_IDENTIFIER }}\")) | .id" ${{ env.COMMENTS_FILE }})
             if [[ -z "$COMMENT_ID" ]]; then
@@ -91,8 +92,4 @@ jobs:
               # If the comment is found, update it
               curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 -d '{"body": "Docker Scout CVE Results (Updated):\n\n'${{ steps.scout.outputs.results }}'"}' \
-                https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID
-            fi
-          else
-            echo "No CVE results found, skipping comment update."
-          fi
+                https://api.github.com/repos/${
