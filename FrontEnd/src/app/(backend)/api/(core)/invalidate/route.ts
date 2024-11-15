@@ -1,5 +1,5 @@
 import { Internal, Success, Unauthorized } from '@/lib/http'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
+import { getTicket, getUserInfo } from '@/lib/stag'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,11 +9,19 @@ export async function GET(req: Request) {
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
 
-
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/invalidate`)
+ const url = new URL(`${process.env.NEXT_PUBLIC_STAG_SERVER}/services/rest2/help/invalidateTicket`)
  url.searchParams.set('ticket', rTicket)
- const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+
+ const res = await fetch(url.toString(), {
+  method: 'get',
+  headers: {
+   accept: 'text/plain',
+   'Content-Type': 'text/plain',
+  },
+ })
+
  if (!res.ok) {
+  console.log(res)
   return Internal()
  } else {
   return Success()

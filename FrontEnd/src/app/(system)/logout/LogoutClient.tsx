@@ -27,9 +27,9 @@ export default function LogoutClient({ ticket, apiUrl }: LogoutClientProps) {
      throw new Error('Logout failed')
     }
    } catch (e) {
-    console.error('Logout error:', e)
+    console.error(e)
    } finally {
-    window.location.href = '/'
+    window.location.href = "/standby"
    }
   }
   logout()

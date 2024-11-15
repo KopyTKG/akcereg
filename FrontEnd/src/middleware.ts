@@ -5,10 +5,8 @@ import { isStudent } from './lib/functions'
 
 export async function middleware(request: NextRequest) {
  if (!BaseAuth(request)) {
-  if (!request.url.endsWith('/login')) {
-   request.nextUrl.pathname = '/login'
-   return NextResponse.redirect(request.nextUrl)
-  }
+  request.nextUrl.pathname = '/standby'
+  return NextResponse.redirect(request.nextUrl)
  }
 
  const { pathname } = request.nextUrl
@@ -65,7 +63,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
  matcher: [
   {
-   source: '/((?!login|logout|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+   source: '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   },
   '/student/:path*',
   '/ucitel/:path+',

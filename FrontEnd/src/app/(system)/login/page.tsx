@@ -1,6 +1,5 @@
 'use client'
 import { useLayoutEffect } from 'react'
-import { setStag } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
 
 export default function Home() {
@@ -10,22 +9,20 @@ export default function Home() {
   const params = {
    stagUserTicket: searchParams.get('stagUserTicket'),
   }
-  setStag(params).then(() => {
-   if (params.stagUserTicket != null) {
-    // call API to check if user exists
-    const url = `${process.env.NEXT_PUBLIC_BASE}/api/user?ticket=${params.stagUserTicket}`
-    fetch(url, { method: 'GET', headers: fastHeaders }).then((data) => {
-     if (!data.ok) {
-      window.location.href = '/logout'
-     } else {
-      window.location.href = '/'
-     }
-    })
-   } else if (!window.location.href.includes(redirectUrl)) {
-    // Redirect the user to the specified URL
-    window.location.href = redirectUrl
-   }
-  })
+  if (params.stagUserTicket != null) {
+   // call API to check if user exists
+   const url = `${process.env.NEXT_PUBLIC_BASE}/api/login?ticket=${params.stagUserTicket}`
+   fetch(url, { method: 'GET', headers: fastHeaders, credentials: "include"}).then((data) => {
+    if (!data.ok) {
+     window.location.href = '/logout'
+    } else {
+     window.location.href = '/'
+    }
+   })
+  } else if (!window.location.href.includes(redirectUrl)) {
+   // Redirect the user to the specified URL
+   window.location.href = redirectUrl
+  }
  }, [])
 
  return <main>Login in ...</main>
