@@ -6,9 +6,24 @@ export const fastHeaders = new Headers({
  'Content-Type': 'application/json',
 })
 
+/* URL Based ticket */
 export function getTicket(req: Request): string | null {
  const base = new URL(req.url)
  const rTicket = base.searchParams.get('ticket') || ''
+
+ if (!rTicket) {
+  return null
+ }
+
+ return rTicket
+}
+
+/* Header Based ticket */
+export function getTicketV2(req: Request): string | null {
+ const headers = req.headers
+ const cookies = headers.get('Cookie')
+ const rTicket = cookies?.split('=')[1]
+ console.log(headers)
 
  if (!rTicket) {
   return null
