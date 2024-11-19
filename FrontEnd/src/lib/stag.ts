@@ -23,7 +23,6 @@ export function getTicketV2(req: Request): string | null {
  const headers = req.headers
  const cookies = headers.get('Cookie')
  const rTicket = cookies?.split('=')[1]
- console.log(headers)
 
  if (!rTicket) {
   return null
