@@ -21,8 +21,14 @@ export function getTicketX(req: Request): string | null {
 /* Header Based ticket */
 export function getTicketV2(req: Request): string | null {
  const headers = req.headers
- const cookies = headers.get('Cookie')
- const eTicket = cookies?.split('=')[1] || ''
+ const cookie = headers.get('Cookie')
+ let cookies: string[] = ['']
+ if (cookie?.includes(';')) {
+  cookies = cookie?.split(';')
+ } else {
+  cookies[0] = cookie || ''
+ }
+ const eTicket = cookies[0]?.split('=')[1] || ''
  let rTicket = ''
  try {
   rTicket = decrypt(req, eTicket)
@@ -40,7 +46,7 @@ export async function getUserInfo(ticket: string): Promise<tUser | null> {
  const checkURL = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/setup`)
  const roleRes = await fetch(checkURL, {
   method: 'GET',
-  headers: {...fastHeaders, 'x-svt': ticket},  
+  headers: { ...fastHeaders, 'x-svt': ticket },
  })
 
  if (!roleRes.ok) return null

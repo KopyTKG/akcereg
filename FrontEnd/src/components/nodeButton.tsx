@@ -47,7 +47,11 @@ export function Zapsat({
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/zapsat`)
    url.searchParams.set('id', id)
    url.searchParams.set('type', !owned ? 'zapsat' : 'odhlasit')
-   const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders, credentials: 'include' })
+   const res = await fetch(url.toString(), {
+    method: 'GET',
+    headers: fastHeaders,
+    credentials: 'include',
+   })
    if (res.status != 200 && res.status != 409) {
     window.location.href = '/logout'
    } else {

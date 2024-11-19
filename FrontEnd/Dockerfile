@@ -48,7 +48,7 @@ RUN apt-get remove -y \
     rm -rf /var/lib/apt/lists/*
 USER bun
 
-RUN bun remove cross-spawn
+RUN bun update -g cross-spawn
 
 # Expose the port for the application
 EXPOSE 3000

@@ -4,7 +4,11 @@ import { fastHeaders } from '@/lib/stag'
 export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders, credentials: 'include' })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) {
    console.error(res.statusText)
    return undefined

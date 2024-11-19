@@ -122,7 +122,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
    const res = await fetch(url.toString(), {
     method: state ? 'DELETE' : 'POST',
     headers: fastHeaders,
-    credentials: 'include'
+    credentials: 'include',
    })
    if (!res.ok) {
     return null
@@ -180,15 +180,13 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
         {!student.datum_splneni ? (
          <span
           className="text-green-500 cursor-pointer active:opacity-50"
-          onClick={() => sendStudent(student.osCislo, false)}
-         >
+          onClick={() => sendStudent(student.osCislo, false)}>
           <Check className="w-6" />
          </span>
         ) : (
          <span
           className="text-red-500 cursor-pointer active:opacity-50"
-          onClick={() => sendStudent(student.osCislo, true)}
-         >
+          onClick={() => sendStudent(student.osCislo, true)}>
           <X className="w-6" />
          </span>
         )}

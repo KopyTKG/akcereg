@@ -1,6 +1,6 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { fastHeaders, getTicketV2, getUserInfoV1} from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfoV1 } from '@/lib/stag'
 import { tPredmetSekce, tStudent } from '@/lib/types'
 
 type tResponse = {

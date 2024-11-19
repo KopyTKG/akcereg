@@ -10,4 +10,3 @@ export const Conflict = () => Response.json({}, { status: 409, statusText: 'Conf
 
 export const Internal = () =>
  Response.json({}, { status: 500, statusText: 'Internal Server Error' })
-

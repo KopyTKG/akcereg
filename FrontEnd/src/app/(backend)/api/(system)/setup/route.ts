@@ -17,7 +17,6 @@ export async function GET(req: Request) {
   headers: fastHeaders,
  })
 
-
  if (!res.ok) {
   return Internal()
  } else {

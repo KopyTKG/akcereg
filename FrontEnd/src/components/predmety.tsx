@@ -154,8 +154,7 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
    <button
     className="text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full p-1"
     aria-label="Edit"
-    onClick={PrintStudnets}
-   >
+    onClick={PrintStudnets}>
     {loading ? (
      <LoaderCircle className="animate-spin w-5 h-5" />
     ) : (
@@ -213,16 +212,14 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
       katedra: predmet.nazev.split('/')[0],
       cviceni: predmet.nCviceni,
      } as tPredmetBody)
-    }}
-   >
+    }}>
     <Pencil className="w-5 h-5" aria-hidden="true" />
    </button>
    <AlertDialog>
     <AlertDialogTrigger asChild>
      <button
       className="text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-full p-1"
-      aria-label="Delete"
-     >
+      aria-label="Delete">
       <Trash className="w-5 h-5" aria-hidden="true" />
      </button>
     </AlertDialogTrigger>
@@ -239,8 +236,7 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
       </AlertDialogCancel>
       <AlertDialogAction
        onClick={() => onDelete(predmet._id)}
-       className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800"
-      >
+       className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800">
        Pokračovat
       </AlertDialogAction>
      </AlertDialogFooter>

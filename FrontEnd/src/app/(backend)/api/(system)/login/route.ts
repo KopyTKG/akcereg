@@ -26,12 +26,14 @@ export async function GET(req: Request) {
   if (!res.ok) {
    return Internal()
   } else {
+   const headers = new Headers()
+   headers.append('Set-Cookie', `x-svt=${ticket}; Path=/; HttpOnly; SameSite=Strict`)
+   headers.append('Set-Cookie', `x-cvt=${ticket}; Path=/; HttpOnly; SameSite=Strict`)
+
    return new Response('', {
     status: 200,
     statusText: 'OK',
-    headers: {
-     'Set-Cookie': `x-svt=${ticket}; Path=/; HttpOnly; SameSite=Strict`,
-    },
+    headers: headers,
    })
   }
  }

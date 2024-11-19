@@ -47,7 +47,7 @@ export default function NavbarComponent({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
        <DropdownMenuLabel className="block md:hidden"> Navigace </DropdownMenuLabel>
-       <div className='block md:hidden'>
+       <div className="block md:hidden">
         {links.map((item: tLink) => {
          return (
           <DropdownMenuItem key={item.href} onClick={() => router.push(item.href)}>
@@ -64,8 +64,7 @@ export default function NavbarComponent({
          <DropdownMenuItem
           onClick={() => {
            router.push(`/student/${id}/profil`)
-          }}
-         >
+          }}>
           Profil
          </DropdownMenuItem>
         </>
@@ -74,15 +73,13 @@ export default function NavbarComponent({
         disabled={st}
         onClick={() => {
          router.push(`${url}/navod`)
-        }}
-       >
+        }}>
         Návod
        </DropdownMenuItem>
 
        <DropdownMenuItem
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className="flex gap-2"
-       >
+        className="flex gap-2">
         {theme === 'dark' ? (
          <Sun className="w-5 text-white fill-white" />
         ) : (
@@ -95,8 +92,7 @@ export default function NavbarComponent({
         onClick={() => {
          router.push(`/logout`)
         }}
-        className="text-red-600 dark:text-red-400"
-       >
+        className="text-red-600 dark:text-red-400">
         Odhlásit se
        </DropdownMenuItem>
       </DropdownMenuContent>
