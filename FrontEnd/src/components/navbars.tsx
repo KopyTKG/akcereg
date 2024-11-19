@@ -23,7 +23,7 @@ export function NavbarStudent({ id }: { id: string }) {
 }
 
 export async function NavbarTeacher({ id }: { id: string }) {
- const ticket = (await Get('stagUserTicket'))?.value || ''
+ const ticket = (await Get('x-svt'))?.value || ''
  const info = await getUserInfo(ticket)
  if (!info) return null
 

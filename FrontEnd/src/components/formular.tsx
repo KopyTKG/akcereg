@@ -37,7 +37,6 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Get } from '@/app/actions'
 import { tCreate, tPredmet } from '@/lib/types'
 import { fastHeaders } from '@/lib/stag'
 import { ReloadCtx } from '@/contexts/ReloadProvider'
@@ -104,10 +103,6 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
   if (body.cviceni > 0) body.nazev = `${body._id} cvičení ${body.cviceni}`
 
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   if (terminID) {
    url.searchParams.set('id', terminID)
   }
@@ -115,6 +110,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
    const res = await fetch(url.toString(), {
     method: terminID ? 'PATCH' : 'POST',
     headers: fastHeaders,
+    credentials: 'include',
     body: JSON.stringify(body),
    })
 

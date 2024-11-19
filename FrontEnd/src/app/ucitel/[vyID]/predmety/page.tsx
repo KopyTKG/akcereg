@@ -6,7 +6,7 @@ import { isAdmin } from '@/lib/functions'
 import { getUserInfo } from '@/lib/stag'
 
 export default async function Page() {
- const ticket = (await Get('stagUserTicket'))?.value || ''
+ const ticket = (await Get('x-svt'))?.value || ''
  if (!ticket) console.error('missing ticket')
  const info = await getUserInfo(ticket)
  if (!info) throw new Error('missing ticket')

@@ -9,7 +9,7 @@ import { isAdmin } from '@/lib/functions'
 import { error } from 'console'
 
 export default async function ContextProviders({ children }: { children: React.ReactNode }) {
- const ticket = (await Get('stagUserTicket'))?.value || ''
+ const ticket = (await Get('x-svt'))?.value || ''
  if (!ticket) console.error('missing ticket')
  const info = await getUserInfo(ticket)
  if (!info) throw error('missing ticket')

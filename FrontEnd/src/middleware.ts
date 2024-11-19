@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
  }
 
  const { pathname } = request.nextUrl
- const ticket = request.cookies.get('stagUserTicket')?.value || ''
+ const ticket = request.cookies.get('x-svt')?.value || ''
  if (!ticket) {
   return NextResponse.next()
  }
@@ -71,7 +71,7 @@ export const config = {
 }
 
 function BaseAuth(request: NextRequest) {
- if (request.cookies.get('stagUserTicket') && request.cookies.get('stagUserTicket')?.value != '') {
+ if (request.cookies.get('x-svt') && request.cookies.get('x-svt')?.value != '') {
   return true
  } else {
   return false

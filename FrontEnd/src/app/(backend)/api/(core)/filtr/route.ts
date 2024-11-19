@@ -1,11 +1,11 @@
 import { isAdmin, isStudent } from '@/lib/functions'
 import { Forbidden, Internal, Success, Unauthorized } from '@/lib/http'
 import { resTotTermin } from '@/lib/parsers'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfo } from '@/lib/stag'
 import { tTermin } from '@/lib/types'
 
 export async function GET(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()

@@ -1,10 +1,10 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfo } from '@/lib/stag'
 
 // Create
 export async function POST(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
@@ -31,9 +31,9 @@ export async function POST(req: Request) {
  return Success()
 }
 
-// Create
+// Delete
 export async function DELETE(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()

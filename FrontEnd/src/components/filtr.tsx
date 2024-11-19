@@ -16,7 +16,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useContext, useEffect, useState } from 'react'
-import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
 import { tPredmet } from '@/lib/types'
 import { Header } from './ui/header'
@@ -27,9 +26,11 @@ import { AccordionItem } from '@radix-ui/react-accordion'
 async function fetchPredmetyData() {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const ticket = (await Get('stagUserTicket'))?.value || ''
-  url.searchParams.set('ticket', ticket)
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) {
    throw new Error(`Failed to fetch: ${res.statusText}`)
   }

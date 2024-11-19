@@ -1,4 +1,3 @@
-import { Get } from '@/app/actions'
 import {
  Calendar,
  Clock,
@@ -71,11 +70,11 @@ export default function TerminInfo({
   try {
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
    url.searchParams.set('id', id)
-   const cookie = await Get('stagUserTicket')
-   if (cookie) {
-    url.searchParams.set('ticket', cookie.value)
-   }
-   const res = await fetch(url.toString(), { method: 'DELETE', headers: fastHeaders })
+   const res = await fetch(url.toString(), {
+    method: 'DELETE',
+    headers: fastHeaders,
+    credentials: 'include',
+   })
    if (!res.ok) {
     toast({
      title: 'Neprošlo',
@@ -99,13 +98,10 @@ export default function TerminInfo({
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/zapis`)
    url.searchParams.set('id_terminu', id)
    url.searchParams.set('id_stud', studId || '')
-   const cookie = await Get('stagUserTicket')
-   if (cookie) {
-    url.searchParams.set('ticket', cookie.value)
-   }
    const res = await fetch(url.toString(), {
     method: 'GET',
     headers: fastHeaders,
+    credentials: 'include',
     redirect: 'manual',
    })
    if (!res.ok) {
@@ -164,14 +160,16 @@ export default function TerminInfo({
       <button
        className="dark:text-stone-50 dark:hover:text-stone-300 text-stone-950 hover:text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-600 dark:focus:ring-stone-400 focus:ring-opacity-50 rounded-full p-1"
        aria-label="Mails"
-       onClick={PrintMails}>
+       onClick={PrintMails}
+      >
        <Mails className="w-6 h-6" aria-hidden="true" />
       </button>
       <AlertDialog>
        <AlertDialogTrigger asChild>
         <button
          className="text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full p-1"
-         aria-label="Delete">
+         aria-label="Delete"
+        >
          <UserPlus className="w-6 h-6" aria-hidden="true" />
         </button>
        </AlertDialogTrigger>
@@ -187,12 +185,14 @@ export default function TerminInfo({
          <AlertDialogFooter>
           <AlertDialogCancel
            type="button"
-           className="bg-gray-700 dark:bg-gray-200 dark:text-black dark:hover:text-black text-white hover:bg-gray-500 dark:hover:bg-gray-400 hover:text-white">
+           className="bg-gray-700 dark:bg-gray-200 dark:text-black dark:hover:text-black text-white hover:bg-gray-500 dark:hover:bg-gray-400 hover:text-white"
+          >
            Zrušit
           </AlertDialogCancel>
           <AlertDialogAction
            type="submit"
-           className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-600 dark:text-white dark:hover:bg-green-800">
+           className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-600 dark:text-white dark:hover:bg-green-800"
+          >
            Pokračovat
           </AlertDialogAction>
          </AlertDialogFooter>
@@ -208,7 +208,8 @@ export default function TerminInfo({
         setFormData(storage.form)
         setTerminID(storage.terminId)
         setType('edit')
-       }}>
+       }}
+      >
        <Pencil className="w-6 h-6" aria-hidden="true" />
       </button>
 
@@ -216,7 +217,8 @@ export default function TerminInfo({
        <AlertDialogTrigger asChild>
         <button
          className="text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-full p-1"
-         aria-label="Delete">
+         aria-label="Delete"
+        >
          <Trash className="w-6 h-6" aria-hidden="true" />
         </button>
        </AlertDialogTrigger>
@@ -233,7 +235,8 @@ export default function TerminInfo({
          </AlertDialogCancel>
          <AlertDialogAction
           onClick={() => fetchDelete()}
-          className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800">
+          className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800"
+         >
           Pokračovat
          </AlertDialogAction>
         </AlertDialogFooter>

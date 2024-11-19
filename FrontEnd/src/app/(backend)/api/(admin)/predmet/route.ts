@@ -1,12 +1,12 @@
 import { isAdmin } from '@/lib/functions'
 import { Forbidden, Internal, NotFound, Success, Unauthorized } from '@/lib/http'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfo } from '@/lib/stag'
 import { tPredmetBody } from '@/lib/types'
 
 /* ----------------------------------------------------------------------------------------------- */
 // Create
 export async function POST(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 /* ----------------------------------------------------------------------------------------------- */
 // Update
 export async function PATCH(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
@@ -67,7 +67,7 @@ export async function PATCH(req: Request) {
 /* ----------------------------------------------------------------------------------------------- */
 // Delete
 export async function DELETE(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()

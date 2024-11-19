@@ -1,6 +1,5 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Get } from '@/app/actions'
 import {
  Table,
  TableHeader,
@@ -31,11 +30,11 @@ import { useToast } from '@/hooks/use-toast'
 const fetchPredmetyData = async () => {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200 || res.status == 404) {
@@ -106,13 +105,13 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
  async function PrintStudnets() {
   setLoading(true)
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/studenti`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   url.searchParams.set('kod_predmetu', predmet._id)
 
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) throw new Error('fetch failed')
 
   const data = await res.json()
@@ -181,13 +180,13 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
 
  async function onDelete(kod: string) {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmet`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   kod ? url.searchParams.set('kod_predmetu', kod) : url.searchParams.set('kod_predmetu', '')
 
-  const res = await fetch(url.toString(), { method: 'DELETE', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'DELETE',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) {
    toast({
     title: 'Něco se nepovedlo',

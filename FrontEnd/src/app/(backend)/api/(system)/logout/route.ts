@@ -23,7 +23,7 @@ export async function GET(req: Request) {
    status: 200,
    statusText: 'OK',
    headers: {
-    'Set-Cookie': `stagUserTicket=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; HttpOnly; SameSite=Strict`,
+    'Set-Cookie': `x-svt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; HttpOnly; SameSite=Strict`,
    },
   })
  }

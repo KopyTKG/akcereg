@@ -1,6 +1,5 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Get } from '@/app/actions'
 import {
  Table,
  TableBody,
@@ -27,11 +26,11 @@ const fetchTerminData = async (id: string) => {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
   url.searchParams.set('id', id)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) {
    return null
   }
@@ -118,15 +117,12 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
  const sendStudent = async (osCislo: string, state: boolean) => {
   try {
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/splnil`)
-   const cookie = await Get('stagUserTicket')
-   if (cookie) {
-    url.searchParams.set('ticket', cookie.value)
-   }
    url.searchParams.set('id_stud', osCislo)
    url.searchParams.set('id_terminu', params.terminID)
    const res = await fetch(url.toString(), {
     method: state ? 'DELETE' : 'POST',
     headers: fastHeaders,
+    credentials: 'include'
    })
    if (!res.ok) {
     return null

@@ -1,15 +1,10 @@
-import { Get } from '@/app/actions'
 import { tPredmet, tUser } from '@/lib/types'
 import { fastHeaders } from '@/lib/stag'
 
 export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders, credentials: 'include' })
   if (!res.ok) {
    console.error(res.statusText)
    return undefined
