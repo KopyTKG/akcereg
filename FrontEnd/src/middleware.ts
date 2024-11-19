@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
-import { getUserInfo } from '@/lib/stag'
+import { getUserInfoV1 } from '@/lib/stag'
 import { isStudent } from './lib/functions'
+import { decrypt } from './lib/crypto'
 
 export async function middleware(request: NextRequest) {
  if (!BaseAuth(request)) {
-  if (!request.url.endsWith('/login')) {
-   request.nextUrl.pathname = '/login'
-   return NextResponse.redirect(request.nextUrl)
-  }
+  request.nextUrl.pathname = '/standby'
+  return NextResponse.redirect(request.nextUrl)
  }
 
  const { pathname } = request.nextUrl
- const ticket = request.cookies.get('stagUserTicket')?.value || ''
+ const eTicket = request.cookies.get('x-svt')?.value || ''
+ const ticket = decrypt(request, eTicket)
+
  if (!ticket) {
   return NextResponse.next()
  }
@@ -22,7 +23,7 @@ export async function middleware(request: NextRequest) {
  const ucitelPathMatch = pathname.match(/^\/ucitel\/([^/]+)(\/termin\/[^/]+|\/hledat\/[^/]+)?$/)
  const adminPathMatch = pathname.match(/^\/ucitel\/([^/]+)\/(predmety)?$/)
 
- const info = await getUserInfo(ticket)
+ const info = await getUserInfoV1(ticket)
  if (!info) {
   request.nextUrl.pathname = '/logout'
   return NextResponse.redirect(request.nextUrl)
@@ -65,7 +66,8 @@ export async function middleware(request: NextRequest) {
 export const config = {
  matcher: [
   {
-   source: '/((?!login|logout|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+   source:
+    '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   },
   '/student/:path*',
   '/ucitel/:path+',
@@ -73,7 +75,7 @@ export const config = {
 }
 
 function BaseAuth(request: NextRequest) {
- if (request.cookies.get('stagUserTicket') && request.cookies.get('stagUserTicket')?.value != '') {
+ if (request.cookies.get('x-svt') && request.cookies.get('x-svt')?.value != '') {
   return true
  } else {
   return false

@@ -1,13 +1,13 @@
 import { isAdmin, isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success } from '@/lib/http'
 import { resTotTermin } from '@/lib/parsers'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfoV1 } from '@/lib/stag'
 import { tTermin } from '@/lib/types'
 
 export async function GET(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
 
  let apipoint = '/ucitel'

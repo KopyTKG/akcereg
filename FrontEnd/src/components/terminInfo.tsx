@@ -1,4 +1,3 @@
-import { Get } from '@/app/actions'
 import {
  Calendar,
  Clock,
@@ -71,11 +70,11 @@ export default function TerminInfo({
   try {
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
    url.searchParams.set('id', id)
-   const cookie = await Get('stagUserTicket')
-   if (cookie) {
-    url.searchParams.set('ticket', cookie.value)
-   }
-   const res = await fetch(url.toString(), { method: 'DELETE', headers: fastHeaders })
+   const res = await fetch(url.toString(), {
+    method: 'DELETE',
+    headers: fastHeaders,
+    credentials: 'include',
+   })
    if (!res.ok) {
     toast({
      title: 'Neprošlo',
@@ -99,13 +98,10 @@ export default function TerminInfo({
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/zapis`)
    url.searchParams.set('id_terminu', id)
    url.searchParams.set('id_stud', studId || '')
-   const cookie = await Get('stagUserTicket')
-   if (cookie) {
-    url.searchParams.set('ticket', cookie.value)
-   }
    const res = await fetch(url.toString(), {
     method: 'GET',
     headers: fastHeaders,
+    credentials: 'include',
     redirect: 'manual',
    })
    if (!res.ok) {

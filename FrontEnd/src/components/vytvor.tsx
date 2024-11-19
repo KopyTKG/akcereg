@@ -44,8 +44,7 @@ export function Vytvor() {
     setOpen(true)
     setFormData(DefaultForm)
     setType('create')
-   }}
-  >
+   }}>
    <Plus className="h-6 w-6" />
   </Button>
  )

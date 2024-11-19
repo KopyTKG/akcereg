@@ -1,12 +1,12 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfoV1 } from '@/lib/stag'
 
 // Create
 export async function GET(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
  if (isStudent(info)) return Forbidden()
 

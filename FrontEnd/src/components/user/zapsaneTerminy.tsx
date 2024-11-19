@@ -3,7 +3,6 @@
 import Node from '@/components/node'
 import { useCallback, useContext, useLayoutEffect, useState } from 'react'
 import { tTermin } from '@/lib/types'
-import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ReloadCtx } from '@/contexts/ReloadProvider'
@@ -13,11 +12,7 @@ const fetchTerminyData = async () => {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/terminy`)
   url.searchParams.set('t', 'zapsane')
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url, { method: 'GET', headers: fastHeaders, credentials: 'include' })
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200) {

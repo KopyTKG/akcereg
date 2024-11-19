@@ -1,8 +1,6 @@
 import { tLink } from '@/lib/types'
 import { House, LayoutGrid, Menu, Users } from 'lucide-react'
 import NavbarComponent from './navbarComponent'
-import { getUserInfo } from '@/lib/stag'
-import { Get } from '@/app/actions'
 
 export function NavbarStudent({ id }: { id: string }) {
  const baseUrl = '/student/#id'
@@ -23,10 +21,6 @@ export function NavbarStudent({ id }: { id: string }) {
 }
 
 export async function NavbarTeacher({ id }: { id: string }) {
- const ticket = (await Get('stagUserTicket'))?.value || ''
- const info = await getUserInfo(ticket)
- if (!info) return null
-
  const baseUrl = '/ucitel/#id'
  const url = baseUrl.replace('#id', id)
  const links: tLink[] = [

@@ -1,5 +1,5 @@
 # Use Alpine as the base image
-FROM debian:stable-slim AS build
+FROM ubuntu:24.10 AS build
 
 # Install necessary packages: curl, bash, and unzip
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
@@ -47,7 +47,6 @@ RUN apt-get remove -y \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 USER bun
-
 
 # Expose the port for the application
 EXPOSE 3000

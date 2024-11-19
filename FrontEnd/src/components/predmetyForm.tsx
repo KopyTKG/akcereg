@@ -21,7 +21,6 @@ import {
  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
 import { ReloadCtx } from '@/contexts/ReloadProvider'
 import { AdminCtx } from '@/contexts/AdminProvider'
@@ -61,10 +60,6 @@ export default function PredmetForm() {
   }
 
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmet`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   if (values.kod) {
    url.searchParams.set('kod_predmetu', values.kod)
   }
@@ -72,6 +67,7 @@ export default function PredmetForm() {
    const res = await fetch(url.toString(), {
     method: values.kod ? 'PATCH' : 'POST',
     headers: fastHeaders,
+    credentials: 'include',
     body: JSON.stringify(body),
    })
 

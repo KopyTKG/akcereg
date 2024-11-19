@@ -4,21 +4,15 @@ import FilterProvider from '@/contexts/FilterProvider'
 import FormProvider from '@/contexts/FormProvider'
 import AdminProvider from './AdminProvider'
 import { Get } from '@/app/actions'
-import { getUserInfo } from '@/lib/stag'
-import { isAdmin } from '@/lib/functions'
-import { error } from 'console'
 
 export default async function ContextProviders({ children }: { children: React.ReactNode }) {
- const ticket = (await Get('stagUserTicket'))?.value || ''
- if (!ticket) console.error('missing ticket')
- const info = await getUserInfo(ticket)
- if (!info) throw error('missing ticket')
+ const ticket = (await Get('x-cvt'))?.value || ''
  return (
   <>
    <ReloadProvider>
     <FormProvider>
      <FilterProvider>
-      {isAdmin(info) ? <AdminProvider>{children}</AdminProvider> : <>{children}</>}
+      {ticket ? <AdminProvider>{children}</AdminProvider> : <>{children}</>}
      </FilterProvider>
     </FormProvider>
    </ReloadProvider>

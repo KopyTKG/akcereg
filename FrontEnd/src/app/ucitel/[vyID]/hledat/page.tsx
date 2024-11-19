@@ -15,7 +15,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Divider } from '@/components/ui/divider'
-import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
 import { useToast } from '@/hooks/use-toast'
 import { tPredmetSekce, tStudent } from '@/lib/types'
@@ -59,16 +58,13 @@ export default function Page() {
 
  async function fetchData(id_stud: string) {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/hledat`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   url.searchParams.set('id_stud', id_stud)
 
   try {
    const res = await fetch(url.toString(), {
     method: 'GET',
     headers: fastHeaders,
+    credentials: 'include',
     redirect: 'manual',
    })
    if (!res.ok) {
@@ -93,10 +89,6 @@ export default function Page() {
 
  async function onUznat(kod_predmetu: string) {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/uznat`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   url.searchParams.set('id_stud', student.osCislo)
   url.searchParams.set('kod_predmetu', kod_predmetu)
 
@@ -104,6 +96,7 @@ export default function Page() {
    const res = await fetch(url.toString(), {
     method: 'GET',
     headers: fastHeaders,
+    credentials: 'include',
    })
    if (!res.ok) {
     toast({

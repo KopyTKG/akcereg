@@ -1,5 +1,5 @@
 # Base image with Python 3
-FROM debian:stable-slim AS build
+FROM ubuntu:24.10 AS build
 
 # Install system dependencies including PostgreSQL dev headers
 RUN apt-get update && apt-get upgrade -y 

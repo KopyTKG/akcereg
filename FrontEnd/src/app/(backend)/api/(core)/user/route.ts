@@ -1,13 +1,11 @@
 import { isStudent } from '@/lib/functions'
 import { Internal, Success, Unauthorized } from '@/lib/http'
-import { fastHeaders, getTicket, getUserInfo } from '@/lib/stag'
-
-export const dynamic = 'force-dynamic'
+import { fastHeaders, getTicketV2, getUserInfoV1 } from '@/lib/stag'
 
 export async function GET(req: Request) {
- const rTicket = getTicket(req)
+ const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
 
  if (isStudent(info)) return Success()

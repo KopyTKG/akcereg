@@ -1,4 +1,3 @@
-import { Get } from '@/app/actions'
 import { fastHeaders } from '@/lib/stag'
 import { tPredmetSekce } from '@/lib/types'
 import { redirect } from 'next/navigation'
@@ -8,12 +7,12 @@ export default async function Profil() {
  let predmety: tPredmetSekce[] = []
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/profil`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
 
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (res.status != 200) {
    redirect('/logout')
   } else if (res.status == 200) {

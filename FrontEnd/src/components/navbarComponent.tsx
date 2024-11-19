@@ -29,7 +29,7 @@ export default function NavbarComponent({
  return (
   <nav className="w-dvw flex justify-center py-3 border border-transparent border-b-zinc-500/50 shadow-md dark:shadow-zinc-900 fixed top-0 backdrop-blur-md">
    <section className="w-full flex max-w-6xl px-3 md:px-6 ">
-    <main className="flex flex-row gap-4">
+    <main className="hidden md:flex flex-row gap-4">
      {links.map((item: tLink) => {
       return (
        <Button key={item.href} onClick={() => router.push(item.href)} variant="ghost">
@@ -38,7 +38,7 @@ export default function NavbarComponent({
       )
      })}
     </main>
-    <div className="flex w-full justify-end gap-5">
+    <div className="flex w-full md:justify-end gap-5">
      <DropdownMenu>
       <DropdownMenuTrigger>
        <div className="w-10 h-10 rounded-full bg-stone-400 dark:bg-stone-600 flex items-center justify-center">
@@ -46,7 +46,18 @@ export default function NavbarComponent({
        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+       <DropdownMenuLabel className="block md:hidden"> Navigace </DropdownMenuLabel>
+       <div className="block md:hidden">
+        {links.map((item: tLink) => {
+         return (
+          <DropdownMenuItem key={item.href} onClick={() => router.push(item.href)}>
+           {item.icon} &nbsp; {item.label}
+          </DropdownMenuItem>
+         )
+        })}
+       </div>
        <DropdownMenuLabel>Nastavení</DropdownMenuLabel>
+
        <DropdownMenuSeparator />
        {!st && (
         <>

@@ -1,10 +1,10 @@
 'use client'
-import { Get } from '@/app/actions'
 import React, { useContext } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { ReloadCtx } from '@/contexts/ReloadProvider'
+import { fastHeaders } from '@/lib/stag'
 
 export function Zobrazit({ id, demo }: { id: string; demo?: boolean }) {
  const router = useRouter()
@@ -47,17 +47,11 @@ export function Zapsat({
    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/zapsat`)
    url.searchParams.set('id', id)
    url.searchParams.set('type', !owned ? 'zapsat' : 'odhlasit')
-   const cookie = await Get('stagUserTicket')
-   if (cookie) {
-    url.searchParams.set('ticket', cookie.value)
-   }
-   const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    Connection: 'keep-alive',
-    'Accept-Origin': `${process.env.NEXT_PUBLIC_BASE}`,
-   }
-   const res = await fetch(url.toString(), { method: 'GET', headers })
+   const res = await fetch(url.toString(), {
+    method: 'GET',
+    headers: fastHeaders,
+    credentials: 'include',
+   })
    if (res.status != 200 && res.status != 409) {
     window.location.href = '/logout'
    } else {

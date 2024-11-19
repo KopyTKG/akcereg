@@ -1,6 +1,5 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Get } from '@/app/actions'
 import {
  Table,
  TableHeader,
@@ -31,11 +30,11 @@ import { useToast } from '@/hooks/use-toast'
 const fetchPredmetyData = async () => {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200 || res.status == 404) {
@@ -72,7 +71,6 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
   <Table>
    <TableHeader>
     <TableRow>
-     <TableHead>Kód předmětu</TableHead>
      <TableHead>Katedra</TableHead>
      <TableHead>Zkratka</TableHead>
      <TableHead>Počet cvičení</TableHead>
@@ -83,7 +81,6 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
     {Predmety
      ? Predmety.map((predmet: tPredmet) => (
         <TableRow key={predmet._id}>
-         <TableCell>{predmet.nazev}</TableCell>
          <TableCell>{predmet.nazev.split('/')[0]}</TableCell>
          <TableCell>{predmet.nazev.split('/')[1]}</TableCell>
          <TableCell align="center">{predmet.nCviceni}</TableCell>
@@ -106,13 +103,13 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
  async function PrintStudnets() {
   setLoading(true)
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/studenti`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   url.searchParams.set('kod_predmetu', predmet._id)
 
-  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'GET',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) throw new Error('fetch failed')
 
   const data = await res.json()
@@ -157,8 +154,7 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
    <button
     className="text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full p-1"
     aria-label="Edit"
-    onClick={PrintStudnets}
-   >
+    onClick={PrintStudnets}>
     {loading ? (
      <LoaderCircle className="animate-spin w-5 h-5" />
     ) : (
@@ -181,13 +177,13 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
 
  async function onDelete(kod: string) {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmet`)
-  const cookie = await Get('stagUserTicket')
-  if (cookie) {
-   url.searchParams.set('ticket', cookie.value)
-  }
   kod ? url.searchParams.set('kod_predmetu', kod) : url.searchParams.set('kod_predmetu', '')
 
-  const res = await fetch(url.toString(), { method: 'DELETE', headers: fastHeaders })
+  const res = await fetch(url.toString(), {
+   method: 'DELETE',
+   headers: fastHeaders,
+   credentials: 'include',
+  })
   if (!res.ok) {
    toast({
     title: 'Něco se nepovedlo',
@@ -216,16 +212,14 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
       katedra: predmet.nazev.split('/')[0],
       cviceni: predmet.nCviceni,
      } as tPredmetBody)
-    }}
-   >
+    }}>
     <Pencil className="w-5 h-5" aria-hidden="true" />
    </button>
    <AlertDialog>
     <AlertDialogTrigger asChild>
      <button
       className="text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-full p-1"
-      aria-label="Delete"
-     >
+      aria-label="Delete">
       <Trash className="w-5 h-5" aria-hidden="true" />
      </button>
     </AlertDialogTrigger>
@@ -242,8 +236,7 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
       </AlertDialogCancel>
       <AlertDialogAction
        onClick={() => onDelete(predmet._id)}
-       className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800"
-      >
+       className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800">
        Pokračovat
       </AlertDialogAction>
      </AlertDialogFooter>

@@ -15,8 +15,25 @@ const compat = new FlatCompat({
 
 const settings = [
  { files: ['**/*.{jsx,ts,tsx}'] },
- { files: ['**/*.{js,cjs}'], languageOptions: { sourceType: 'commonjs' } },
- { ignores: ['src/components/ui/*.{ts,tsx}', 'src/hooks/*.{ts,js}', '.next/', 'node_modules/'] },
+ {
+  files: ['**/*.{js,cjs}'],
+  languageOptions: {
+   sourceType: 'commonjs',
+   ecmaVersion: 12, // Enable ES2021
+  },
+ },
+ {
+  languageOptions: {
+   ecmaVersion: 12, // Enable ES2021 for other files
+   globals: globals.browser,
+  },
+  rules: {
+   'prettier/prettier': 'off',
+  },
+ },
+ {
+  ignores: ['src/components/ui/*.{ts,tsx}', 'src/hooks/*.{ts,js}', '.next/', 'node_modules/'],
+ },
  ...compat.extends(
   'next/core-web-vitals',
   'plugin:react/recommended',
@@ -27,12 +44,6 @@ const settings = [
   'plugin:@typescript-eslint/eslint-recommended',
  ),
  eslintPluginPrettierRecommended,
- {
-  languageOptions: { globals: globals.browser },
-  rules: {
-   'prettier/prettier': 'off',
-  },
- },
 ]
 
 export default settings

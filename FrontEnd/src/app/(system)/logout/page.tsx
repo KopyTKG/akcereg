@@ -1,21 +1,30 @@
-import LogoutClient from './LogoutClient'
-import { Get } from '@/app/actions'
+'use client'
+import { fastHeaders } from '@/lib/stag'
+import { useLayoutEffect } from 'react'
 
-export default async function LogoutPage() {
- let ticket: string = ''
+export default function LogoutPage() {
+ useLayoutEffect(() => {
+  async function logout() {
+   const apiUrl: string = process.env.NEXT_PUBLIC_BASE || ''
+   const url = new URL(`${apiUrl}/api/logout`)
 
- try {
-  const ticketData = await Get('stagUserTicket')
-  ticket = ticketData?.value ?? ''
- } catch (error) {
-  console.error('Error fetching ticket:', error)
- }
+   fetch(url, {
+    method: 'GET',
+    headers: {
+     ...fastHeaders,
+    },
+    credentials: 'include',
+   }).then((data) => {
+    if (!data.ok) {
+     window.location.href = '/'
+    } else {
+     window.location.href = '/standby'
+    }
+   })
+  }
 
- // Ensure ticket is a string
- const serializedTicket = ticket
+  logout()
+ }, [])
 
- // Ensure NEXT_PUBLIC_BASE is a string
- const apiUrl: string = process.env.NEXT_PUBLIC_BASE || ''
-
- return <LogoutClient ticket={serializedTicket} apiUrl={apiUrl} />
+ return <main>...</main>
 }
