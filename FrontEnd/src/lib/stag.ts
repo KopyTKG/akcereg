@@ -9,6 +9,7 @@ export const fastHeaders = new Headers({
 
 /* Header Based ticket in X-Stag-Ticket */
 export function getTicketX(req: Request): string | null {
+	console.log(req)
  const headers = req.headers
  const rTicket = headers.get('x-svt')
 

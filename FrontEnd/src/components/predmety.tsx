@@ -71,7 +71,6 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
   <Table>
    <TableHeader>
     <TableRow>
-     <TableHead>Kód předmětu</TableHead>
      <TableHead>Katedra</TableHead>
      <TableHead>Zkratka</TableHead>
      <TableHead>Počet cvičení</TableHead>
@@ -82,7 +81,6 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
     {Predmety
      ? Predmety.map((predmet: tPredmet) => (
         <TableRow key={predmet._id}>
-         <TableCell>{predmet.nazev}</TableCell>
          <TableCell>{predmet.nazev.split('/')[0]}</TableCell>
          <TableCell>{predmet.nazev.split('/')[1]}</TableCell>
          <TableCell align="center">{predmet.nCviceni}</TableCell>
