@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
-import { getUserInfo } from '@/lib/stag'
+import { getUserInfoV1 } from '@/lib/stag'
 import { isStudent } from './lib/functions'
+import { decrypt } from './lib/crypto'
 
 export async function middleware(request: NextRequest) {
  if (!BaseAuth(request)) {
@@ -10,7 +11,9 @@ export async function middleware(request: NextRequest) {
  }
 
  const { pathname } = request.nextUrl
- const ticket = request.cookies.get('x-svt')?.value || ''
+ const eTicket = request.cookies.get('x-svt')?.value || ''
+ const ticket = decrypt(request, eTicket)
+
  if (!ticket) {
   return NextResponse.next()
  }
@@ -20,7 +23,7 @@ export async function middleware(request: NextRequest) {
  const ucitelPathMatch = pathname.match(/^\/ucitel\/([^/]+)(\/termin\/[^/]+|\/hledat\/[^/]+)?$/)
  const adminPathMatch = pathname.match(/^\/ucitel\/([^/]+)\/(predmety)?$/)
 
- const info = await getUserInfo(ticket)
+ const info = await getUserInfoV1(ticket)
  if (!info) {
   request.nextUrl.pathname = '/logout'
   return NextResponse.redirect(request.nextUrl)
@@ -63,7 +66,8 @@ export async function middleware(request: NextRequest) {
 export const config = {
  matcher: [
   {
-   source: '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+   source:
+    '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   },
   '/student/:path*',
   '/ucitel/:path+',

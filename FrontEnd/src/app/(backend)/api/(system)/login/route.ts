@@ -1,19 +1,22 @@
+import { encrypt } from '@/lib/crypto'
 import { isStudent } from '@/lib/functions'
 import { Internal, Unauthorized } from '@/lib/http'
-import { fastHeaders, getTicketX, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketX, getUserInfoV1 } from '@/lib/stag'
 
 export async function GET(req: Request) {
  const rTicket = getTicketX(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
+
+ const ticket = encrypt(req, rTicket)
 
  if (isStudent(info))
   return new Response('', {
    status: 200,
    statusText: 'OK',
    headers: {
-    'Set-Cookie': `x-svt=${rTicket}; Path=/; HttpOnly; SameSite=Strict`,
+    'Set-Cookie': `x-svt=${ticket}; Path=/; HttpOnly; SameSite=Strict`,
    },
   })
  else {
@@ -27,7 +30,7 @@ export async function GET(req: Request) {
     status: 200,
     statusText: 'OK',
     headers: {
-     'Set-Cookie': `x-svt=${rTicket}; Path=/; HttpOnly; SameSite=Strict`,
+     'Set-Cookie': `x-svt=${ticket}; Path=/; HttpOnly; SameSite=Strict`,
     },
    })
   }

@@ -1,6 +1,6 @@
 import { isAdmin } from '@/lib/functions'
 import { Forbidden, Internal, NotFound, Success, Unauthorized } from '@/lib/http'
-import { fastHeaders, getTicketV2, getUserInfo } from '@/lib/stag'
+import { fastHeaders, getTicketV2, getUserInfoV1 } from '@/lib/stag'
 import { tPredmetBody } from '@/lib/types'
 
 /* ----------------------------------------------------------------------------------------------- */
@@ -8,7 +8,7 @@ import { tPredmetBody } from '@/lib/types'
 export async function POST(req: Request) {
  const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
  if (!isAdmin(info)) return Forbidden()
 
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
  const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
  if (!isAdmin(info)) return Forbidden()
 
@@ -69,7 +69,7 @@ export async function PATCH(req: Request) {
 export async function DELETE(req: Request) {
  const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
+ const info = await getUserInfoV1(rTicket)
  if (!info) return Unauthorized()
  if (!isAdmin(info)) return Forbidden()
 
