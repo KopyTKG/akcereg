@@ -5,7 +5,6 @@ import { Header } from '@/components/ui/header'
 
 export default async function Page() {
  const ticket = (await Get('x-cvt'))?.value || ''
- if (!ticket) console.error('missing')
  return (
   <div className="w-max mx-auto flex flex-col items-center gap-2">
    <Header underline="fade" className="w-max">
