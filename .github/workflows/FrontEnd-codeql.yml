@@ -1,0 +1,34 @@
+name: "CodeQL Advanced for Frontend"
+
+on:
+  push:
+    branches: [ "Live", "Dev" ]
+  pull_request:
+    branches: [ "Live", "Dev" ]
+  schedule:
+    - cron: '37 0 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript-typescript
+        queries: security-extended,security-and-quality
+        paths: FrontEnd
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:javascript-typescript"
