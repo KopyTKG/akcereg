@@ -57,7 +57,7 @@ export default function FiltrTerminy({ typ }: { typ?: string }) {
     ))}
    </div>
   )
- } else if (!fetching && Terminy?.length === 0) {
+ } else if (Terminy?.length === 0) {
   return (
    <span className="grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-3">
     <Header type="h2" thickness="bold" className="col-span-2 w-[25rem] lg:w-[50.75rem] text-center">
