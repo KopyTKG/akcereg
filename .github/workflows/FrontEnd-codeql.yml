@@ -26,7 +26,7 @@ jobs:
       with:
         languages: javascript-typescript
         queries: security-extended,security-and-quality
-        paths: FrontEnd
+        source-root: FrontEnd
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
