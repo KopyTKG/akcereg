@@ -9,6 +9,8 @@ jobs:
   docker-scout-scan:
     name: Scan Multiple Docker Images
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     strategy:
       matrix:
         image: 

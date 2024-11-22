@@ -1,3 +1,4 @@
+
 name: "CodeQL Advanced"
 
 on:
@@ -12,6 +13,10 @@ on:
 jobs:
   analyze:
     name: Analyze
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ "javascript-typescript", "python" ]
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -25,10 +30,11 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: [ "python", "javascript", "typescript" ]
+        languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
-        upload: true 
+        upload: true
+
