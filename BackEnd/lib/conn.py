@@ -7,16 +7,16 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from lib.HTTP_messages import ok, internal_server_error, not_found, bad_request, conflict, unauthorized
 
-
 # nacteni DB connection stringu z .env
 dotenv.load_dotenv()
 DATABASE_URL = os.getenv('DB_URL')
 
-interval_vypisu_terminu = int(os.getenv('INTERVAL_VYPISU_DNY')) # type: ignore
-interval_zobrazeni_terminu = int(os.getenv('INTERVAL_ZOBRAZENI_HODINY')) #type: ignore
+
+if not DATABASE_URL:
+    raise Exception("Missing envs")
 
 # navazani pripojeni k DB
-engine = create_engine(DATABASE_URL) # type: ignore
+engine = create_engine(DATABASE_URL)
 
 Base = declarative_base()
 
@@ -321,7 +321,7 @@ def smazat_predmet(session, kod_predmetu):
     except SQLAlchemyError as e:
         session.rollback()
         print(f"Error occurred: {e}")
-        return interval_vypisu_terminu
+        return internal_server_error
 
 def upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=None, newKatedra=None, newPocetCviceni=None):
     try:

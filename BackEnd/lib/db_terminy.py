@@ -1,10 +1,23 @@
-from lib.conn import interval_vypisu_terminu, interval_zobrazeni_terminu
 from lib.db_utils import Termin, HistorieTerminu, VyucujiciPredmety, Predmet
 from lib.HTTP_messages import internal_server_error
 from sqlalchemy import and_
 from datetime import datetime, timedelta
 from sqlalchemy.orm import aliased
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+
+str_interval_vypisu_terminu = os.getenv('INTERVAL_VYPISU_DNY')
+str_interval_zobrazeni_terminu = os.getenv('INTERVAL_ZOBRAZENI_HODINY')
+
+
+if not str_interval_vypisu_terminu or not str_interval_zobrazeni_terminu:
+    raise Exception("Missing envs")
+
+interval_vypisu_terminu = int(str_interval_vypisu_terminu)
+interval_zobrazeni_terminu = int(str_interval_zobrazeni_terminu)
 
 def list_terminy(session):
     """ Vrátí všechny vypsané termíny """
