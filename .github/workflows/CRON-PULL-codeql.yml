@@ -1,4 +1,5 @@
-name: "CodeQL Advanced for Frontend"
+
+name: "CodeQL Advanced"
 
 on:
   push:
@@ -6,11 +7,16 @@ on:
   pull_request:
     branches: [ "Live", "Dev" ]
   schedule:
-    - cron: '37 0 * * 1'
+    - cron: '0 0 * * */2'
+  workflow_dispatch:
 
 jobs:
   analyze:
     name: Analyze
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ "javascript-typescript", "python" ]
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -24,11 +30,11 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: javascript-typescript
+        languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality
-        source-root: FrontEnd
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
-        category: "/language:javascript-typescript"
+        upload: true
+

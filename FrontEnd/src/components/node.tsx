@@ -135,7 +135,8 @@ function Duplicate({ demo, props }: { demo?: boolean; props: tNode }) {
      setTerminID('')
      setType('create')
     }
-   }}>
+   }}
+  >
    {' '}
    <Files className="w-6 h-6" aria-hidden="true" />
   </button>

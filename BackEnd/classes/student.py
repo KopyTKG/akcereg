@@ -51,3 +51,5 @@ def get_predmet_student_k_dispozici(ticket, predmety_lab):
         return predmety
     except:
         return internal_server_error
+
+__all__ = [get_predmet_by_student, get_predmet_student_k_dispozici] 

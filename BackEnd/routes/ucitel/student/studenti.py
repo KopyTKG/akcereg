@@ -13,8 +13,6 @@ async def get_vypis_studentu(ticket: str, id_terminu: str):
     info = kontrola_ticketu(ticket, vyucujici=True)
     if info == unauthorized or info == internal_server_error:
         return info
-    userid, role = encode_id(info[0]), info[1]
-
     vsechny_terminy = get_vsechny_terminy(session)
     if vsechny_terminy == internal_server_error:
         return internal_server_error

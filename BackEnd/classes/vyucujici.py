@@ -123,7 +123,6 @@ def compare_encoded(hash_studentu_na_terminu, studenti_na_predmetu):
     try:
         hash_studenti_na_predmetu = []
         for student in studenti_na_predmetu:
-            student = student
             hash_studenti_na_predmetu.append(hashlib.sha1(student.encode()).hexdigest())
 
         matching = find_matching_hash_positions(hash_studenti_na_predmetu, hash_studentu_na_terminu)
@@ -213,3 +212,5 @@ def get_id_ucitele_by_jmeno_prijmeni(ticket, jmeno, prijmeni):
         return str(response["ucitIdno"])
     except:
         return not_found
+
+__all__ = [get_student_info, get_student_predmety, get_studenti_info, get_ucitel_predmety, get_studenti_na_predmetu, compare_encoded, find_matching_hash_positions, get_vyucujici_predmety, get_id_ucitele_by_jmeno_prijmeni, ]

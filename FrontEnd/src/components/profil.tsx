@@ -1,27 +1,35 @@
+'use client'
+import { useLayoutEffect, useState } from 'react'
 import { fastHeaders } from '@/lib/stag'
 import { tPredmetSekce } from '@/lib/types'
-import { redirect } from 'next/navigation'
 import Predmet from './tabulkaPredmet'
 
-export default async function Profil() {
- let predmety: tPredmetSekce[] = []
- try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/profil`)
+export default function Profil() {
+ const [predmety, setPredmety] = useState<tPredmetSekce[]>([])
+ useLayoutEffect(() => {
+  async function loader() {
+   try {
+    const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/profil`)
 
-  const res = await fetch(url.toString(), {
-   method: 'GET',
-   headers: fastHeaders,
-   credentials: 'include',
-  })
-  if (res.status != 200) {
-   redirect('/logout')
-  } else if (res.status == 200) {
-   const jsonParsed = await res.json()
-   predmety = jsonParsed.data as tPredmetSekce[]
+    const res = await fetch(url.toString(), {
+     method: 'GET',
+     headers: fastHeaders,
+     credentials: 'include',
+    })
+    if (res.status != 200) {
+     window.location.href = '/logout'
+    } else if (res.status == 200) {
+     const jsonParsed = await res.json()
+     const p = jsonParsed.data as tPredmetSekce[]
+     setPredmety(p)
+    }
+   } catch {
+    window.location.href = '/logout'
+   }
   }
- } catch {
-  redirect('/logout')
- }
+
+  loader()
+ }, [])
 
  return (
   <>

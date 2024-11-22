@@ -92,7 +92,6 @@ def terminy_dopredu(session):
 def list_terminy_vyucujici(session, id):
     try:
         vyucujici_predmety_alias = aliased(VyucujiciPredmety)
-        termin_alias = aliased(Termin)
 
         # Query all terms related to the subjects taught by the instructor
         terminy = (
@@ -168,3 +167,5 @@ def list_dostupnych_terminu(session, predmety, historie_predmetu, id_studenta, p
 
     except:
         return internal_server_error
+
+__all__ = [list_terminy, list_studenti_z_terminu, list_nadchazejici_terminy, list_probehle_terminy, list_planovane_terminy_predmet, list_probehle_terminy_predmet, terminy_dopredu_pro_vyucujiciho,list_terminy_vyucujici, list_dostupnych_terminu, terminy_dopredu] 
