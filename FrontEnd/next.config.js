@@ -24,7 +24,7 @@ const nextConfig = {
    {
     source: '/',
     headers: [
-	    {
+     {
       key: 'Access-Control-Allow-Origin',
       value: '*', // Set your origin
      },
