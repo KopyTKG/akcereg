@@ -1,18 +1,12 @@
-from sqlalchemy import create_engine, MetaData, Table, ForeignKey, Column, String, Integer, Text, UUID, DateTime, distinct, func, and_, or_
+from sqlalchemy import create_engine,ForeignKey, Column, String, Integer, Text, UUID, DateTime, and_ 
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
-import os, dotenv
+import os
+import dotenv
 import uuid
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from lib.HTTP_messages import ok, internal_server_error, not_found, bad_request, conflict, unauthorized
-from typing import Optional
 
-
-from classes.vyucujici import *
-
-
-from sqlalchemy import select # smazat mozna
-# from classes.vyucujici import *
 
 # nacteni DB connection stringu z .env
 dotenv.load_dotenv()
