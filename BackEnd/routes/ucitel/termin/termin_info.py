@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from lib.conn import session
 from lib.HTTP_messages import internal_server_error, unauthorized, not_found
-from classes.server_utils import kontrola_ticketu, get_list_studentu, pridej_datum_splneni_do_listu_studentu, get_katedra_predmet_by_idterminu, get_termin_info, get_vsechny_terminy
+from classes.server_utils import kontrola_ticketu, get_list_studentu, pridej_datum_splneni_do_listu_studentu 
+from lib.db_utils import get_katedra_predmet_by_idterminu, get_termin_info, get_vsechny_terminy
 from lib.db_terminy import *
 
 

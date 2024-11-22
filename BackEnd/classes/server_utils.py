@@ -1,7 +1,9 @@
 import hashlib
-from lib.HTTP_messages import *
-from classes.stag import *
-from lib.db_utils import *
+from lib.HTTP_messages import unauthorized, internal_server_error, ok
+from classes.stag import get_stag_user_info, get_userid_and_role, get_vyucujici_predmetu_stag 
+from classes.vyucujici import compare_encoded, get_studenti_na_predmetu, get_studenti_info
+from lib.db_utils import get_vsechny_predmety_kod_katedra, get_katedra_by_predmet, get_predmet_by_id, get_datum_splneni_terminu
+from lib.conn import session
 import os, json
 from pydantic import BaseModel # type: ignore
 from datetime import datetime

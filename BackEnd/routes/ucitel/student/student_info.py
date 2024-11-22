@@ -1,7 +1,8 @@
 from fastapi import APIRouter # type: ignore
 from lib.conn import session, get_predmety_by_vyucujici, vytvor_student, get_student_predmety, get_student_info, pocet_cviceni_pro_predmet, vyhodnoceni_studenta
 from lib.HTTP_messages import internal_server_error, unauthorized, not_found, ok
-from classes.server_utils import kontrola_ticketu, encode_id, get_vsechny_predmety_obj, get_student_by_id
+from classes.server_utils import kontrola_ticketu, encode_id
+from lib.db_utils import get_vsechny_predmety_obj, get_student_by_id
 from lib.db_terminy import *
 
 

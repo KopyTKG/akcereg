@@ -1,8 +1,6 @@
-import requests
-import hashlib
-from classes.stag import *
-import os
-
+import requests, hashlib, os
+from lib.HTTP_messages import internal_server_error, unauthorized, not_found
+from classes.stag import get, get_userid_and_role, get_stag_user_info
 
 def get_student_info(ticket, osobni_cislo):
     """ Vrátí informace o studentovi podle osobního čísla """

@@ -1,8 +1,9 @@
 from fastapi import APIRouter
+from classes.stag import bool_existuje_predmet
 from lib.conn import session, vytvor_predmet, vypsat_termin, vytvor_student
-from classes.server_utils import kontrola_ticketu, encode_id, bool_existuje_predmet, tPredmet, vyucujici_k_predmetum_to_txt
+from classes.server_utils import kontrola_ticketu, encode_id, tPredmet, vyucujici_k_predmetum_to_txt 
 from classes.vyucujici import get_studenti_na_predmetu
-from lib.db_utils import get_studenti_all
+from lib.db_utils import get_studenti_all 
 from lib.HTTP_messages import unauthorized, internal_server_error, bad_request, ok
 from datetime import datetime, timedelta
 

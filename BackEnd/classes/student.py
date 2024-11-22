@@ -1,7 +1,7 @@
 import requests
 import os
-from classes.stag import *
-import json
+from lib.HTTP_messages import not_found, internal_server_error
+from classes.stag import get
 
 def get_predmet_by_student(ticket, semestr, userid):
     """ Vrátí všechny zapsané předměty studentem v daném semestru (ZS / LS)"""
