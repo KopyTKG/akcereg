@@ -41,15 +41,14 @@ jobs:
         run: |
           IMAGE_NAME=$(echo "${{ matrix.image }}" | sed 's|.*/||' | sed 's/:/-/')
           docker scout cves ${{ matrix.image }} --format sarif --output "scout-results-${IMAGE_NAME}.sarif"
-          ls -la  # List files in the current directory
-          cat "scout-results-${IMAGE_NAME}.sarif"  # Display the content of the SARIF file
+          echo "SARIF_FILE=scout-results-${IMAGE_NAME}.sarif" >> $GITHUB_ENV
         env:
           DOCKER_SCOUT_PLATFORM_TOKEN: ${{ secrets.DCKR_PAT }}
 
       - name: Upload SARIF to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: scout-results-*.sarif
+          sarif_file: ${{ env.SARIF_FILE }}
           category: Docker Scout
 
       - name: Debug - List Files
@@ -57,4 +56,5 @@ jobs:
         run: |
           pwd
           ls -R
+
 
