@@ -146,7 +146,7 @@ def subtract_lists(list1, list2):
 def get_uznavaci_termin_by_zkratka(session, zkratka_predmetu, kod_predmetu=None):
     """ Vrátí id uznačovacího terminu podle zkratky předmětu """
     try:
-        if kod_predmetu == None:
+        if kod_predmetu is None:
             kod_predmetu = get_kod_predmetu_by_zkratka(session, zkratka_predmetu)
         termin = session.query(Termin).filter(and_(Termin.kod_predmet==kod_predmetu, Termin.cislo_cviceni==-1)).first()
         if termin is not None:
@@ -159,7 +159,7 @@ def get_uznavaci_termin_by_zkratka(session, zkratka_predmetu, kod_predmetu=None)
 def get_uznavaci_termin_by_kod(session, kod_predmetu:str):
     """ Vrátí id uznačovacího terminu podle zkratky předmětu """
     try:
-        if kod_predmetu == None:
+        if kod_predmetu is None:
             bad_request
         termin = session.query(Termin).filter(and_(Termin.kod_predmet==kod_predmetu, Termin.cislo_cviceni==-1)).first()
         if termin is not None:

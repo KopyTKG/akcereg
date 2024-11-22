@@ -103,10 +103,11 @@ def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
 
 
 def get_userid_and_role(json):
-    """ Vrací userId a roli uživatele
-    json: json, který vrací funkce "get_stag_user_info"""
-    role = json["stagUserInfo"][0]["role"]
+    """Vrací userId a roli uživatele
+    json: json, který vrací funkce "get_stag_user_info"
+    """
     try:
+        role = json["stagUserInfo"][0]["role"]
         if role == "":
             return internal_server_error, internal_server_error
         if "ST" not in role:
@@ -114,7 +115,13 @@ def get_userid_and_role(json):
         else:
             userid = str(json["stagUserInfo"][0]["osCislo"])
         return userid, role
-    except:
+    except KeyboardInterrupt:
+        print("Process interrupted by the user.")
+        raise  # Re-raise KeyboardInterrupt to exit the program
+    except SystemExit:
+        raise  # Re-raise SystemExit to exit the program
+    except Exception as e:
+        log(e)
         return internal_server_error, internal_server_error
 
 __all__ = [get, get_stag_user_info, bool_existuje_predmet, get_vyucujici_predmetu_stag, get_userid_and_role]

@@ -42,7 +42,7 @@ async def get_ucitel_studenta(ticket: str, id_stud: str):
     id_stud = encode_id(id_stud)
 
     student_db = get_student_by_id(session, id_stud)
-    if student_db == None or student_db == not_found:
+    if student_db is None or student_db == not_found:
         message = vytvor_student(session, id_stud)
         if message != ok:
             return message
