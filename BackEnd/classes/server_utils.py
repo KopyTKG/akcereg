@@ -104,6 +104,7 @@ def vyucujici_k_predmetum_to_txt(session):
         with open(temp_file, "w", encoding="utf-8") as outfile:
             json.dump(vyucujici, outfile, ensure_ascii=False, indent=4)
 
+        return ok
     except:
         return internal_server_error
 

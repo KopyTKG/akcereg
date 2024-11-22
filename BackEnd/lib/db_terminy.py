@@ -92,7 +92,6 @@ def terminy_dopredu(session):
 def list_terminy_vyucujici(session, id):
     try:
         vyucujici_predmety_alias = aliased(VyucujiciPredmety)
-        termin_alias = aliased(Termin)
 
         # Query all terms related to the subjects taught by the instructor
         terminy = (

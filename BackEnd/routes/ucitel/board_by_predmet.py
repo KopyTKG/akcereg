@@ -14,7 +14,6 @@ async def get_terminy_by_predmet(ticket: str , predmety: Optional[str] = None, p
     info = kontrola_ticketu(ticket, vyucujici=False)
     if info == unauthorized or info == internal_server_error:
         return info
-    userid, role = encode_id(info[0]), info[1]
     if predmety is not None:
         predmety = unquote(predmety)
 
