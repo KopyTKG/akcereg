@@ -29,9 +29,10 @@ jobs:
 
       - name: Pull and Scan Image
         run: |
-          echo "Scanning image: ${{ matrix.image }}"
-          docker pull ${{ matrix.image }}
           docker scout cves ${{ matrix.image }} --format sarif > scout-results-${{ matrix.image }}.sarif
+        env:
+          DOCKER_SCOUT_PLATFORM_TOKEN: ${{ secrets.DCKR_PAT }}
+
 
       - name: Upload SARIF to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
