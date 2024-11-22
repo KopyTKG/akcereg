@@ -12,7 +12,7 @@ jobs:
     permissions:
       security-events: write
     strategy:
-      fast-fail: false
+      fail-fast: false
       matrix:
         image: 
           - "ghcr.io/kopytkg/akcereg-be:latest"
