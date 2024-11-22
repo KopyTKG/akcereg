@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+      packages: read
     strategy:
       fail-fast: false
       matrix:
@@ -33,13 +34,15 @@ jobs:
       
       - name: Scan Image with Docker Scout
         run: |
-          docker scout cves ${{ matrix.image }} --format sarif --output scout-results-${{ matrix.image }}.sarif || true
+          # Extract the image name without the registry and replace / with -
+          IMAGE_NAME=$(echo "${{ matrix.image }}" | sed 's|.*/||' | sed 's/:/-/')
+          docker scout cves ${{ matrix.image }} --format sarif --output "scout-results-${IMAGE_NAME}.sarif" || true
         env:
           DOCKER_SCOUT_PLATFORM_TOKEN: ${{ secrets.DCKR_PAT }}
-
 
       - name: Upload SARIF to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: scout-results-${{ matrix.image }}.sarif
-          category: Docker scout
+          sarif_file: scout-results-*.sarif
+          category: Docker Scout
+
