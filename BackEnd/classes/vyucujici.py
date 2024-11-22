@@ -123,7 +123,6 @@ def compare_encoded(hash_studentu_na_terminu, studenti_na_predmetu):
     try:
         hash_studenti_na_predmetu = []
         for student in studenti_na_predmetu:
-            student = student
             hash_studenti_na_predmetu.append(hashlib.sha1(student.encode()).hexdigest())
 
         matching = find_matching_hash_positions(hash_studenti_na_predmetu, hash_studentu_na_terminu)

@@ -202,3 +202,5 @@ def pridat_vyucujici_k_terminu(terminy, vyucujici_list):
 
         terminy[i] = termin_dict
     return terminy
+
+__all__ = [tTermin, tPredmet, encode_id, kontrola_ticketu, read_file, vyucujici_k_predmetum_to_txt, get_jmena_predmetu_by_zkratka, get_predmet_id_jmeno_cisla, get_predmety_by_kody, get_list_studentu, pridej_datum_splneni_do_listu_studentu, pridat_vyucujici_k_terminu] 
