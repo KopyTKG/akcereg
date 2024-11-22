@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         image: 
-          - ghcr.io/kopytkg/akcereg-be:latest
-          - ghcr.io/kopytkg/akcereg-fe:latest
+          - "ghcr.io/kopytkg/akcereg-be:latest"
+          - "ghcr.io/kopytkg/akcereg-fe:latest"
 
     steps:
       - name: Set up Docker
