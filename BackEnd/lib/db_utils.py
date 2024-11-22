@@ -1,5 +1,9 @@
-from lib.conn import * 
+from lib.conn import VyucujiciPredmety, Predmet, Termin, HistorieTerminu, Student, get_uznani_predmetu_by_student, pridej_vyucujiciho_na_predmet
+from lib.HTTP_messages import internal_server_error, not_found, bad_request, ok
+from sqlalchemy import  and_, select
+from classes.vyucujici import compare_encoded, get_studenti_na_predmetu, get_student_info
 from typing import Optional
+import os
 
 def get_vyucujiciho_by_predmet(session, kod_predmetu):
     """ Vrátí zahashované id vyučujících, kteří vyučují daný předmět"""
@@ -238,11 +242,13 @@ def get_list_emailu_pro_cviceni(session,kod_predmetu:str, index_cviceni: int, ti
             return not_found # not here
         list_emailu = []
         for student in os_cisla:
-            jmeno, prijmeni, email = get_student_info(ticket, student)
+            _, _, email = get_student_info(ticket, student)
             list_emailu.append(email)
 
         return list_emailu
     except Exception as e:
+        if e == KeyboardInterrupt:
+            os.close(1)
         return internal_server_error
 
 

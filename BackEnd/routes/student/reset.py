@@ -1,6 +1,9 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from classes.student import *
+from classes.server_utils import kontrola_ticketu
+from classes.student import get_predmet_student_k_dispozici 
+from lib.db_utils import get_vsechny_predmety_obj
+from lib.conn import session
+from lib.HTTP_messages import internal_server_error, unauthorized
 
 router = APIRouter()
 

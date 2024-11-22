@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from lib.conn import session, smazat_predmet
+from classes.server_utils import kontrola_ticketu
+from lib.HTTP_messages import unauthorized, internal_server_error
 from urllib.parse import unquote
 
 router = APIRouter()
@@ -11,7 +13,6 @@ async def delete_predmet(ticket: str, kod_predmetu: str):
     info = kontrola_ticketu(ticket, vyucujici=True)
     if info == unauthorized or info == internal_server_error:
         return info
-    
     if "KA" not in info[1]:
         return unauthorized
 

@@ -52,8 +52,9 @@ def kontrola_ticketu(ticket, vyucujici = True):
         userid, role = get_userid_and_role(userinfo)
         if role == internal_server_error:
             return internal_server_error
-        if vyucujici and "ST" in role:
-            return unauthorized
+        if role:
+            if vyucujici and "ST" in role:
+                return unauthorized
 
         return [userid, role]
     except:

@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from classes.server_utils import encode_id, kontrola_ticketu 
+from lib.HTTP_messages import unauthorized, internal_server_error
+from lib.conn import session, neuznat_termin
 
 
 router = APIRouter()

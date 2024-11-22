@@ -1,0 +1,10 @@
+[tool.pyright]
+extraPaths = ["."]
+
+[tool.pylint.master]
+init-hook = "import sys; sys.path.insert(0, '.')"
+
+[tool.mypy]
+mypy_path = "."
+
+

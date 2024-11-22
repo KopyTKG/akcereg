@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from lib.db_terminy import *
-
+from classes.server_utils import kontrola_ticketu, encode_id, get_vsechny_predmety_obj, get_termin_info, get_student_by_id
+from lib.db_terminy import list_dostupnych_terminu
+from lib.conn import session, pocet_cviceni_pro_predmet, get_student_predmety, pridat_studenta, vyhodnoceni_studenta
+from lib.HTTP_messages import internal_server_error, unauthorized, not_found, conflict
 
 router = APIRouter()
 
@@ -35,3 +36,4 @@ async def post_ucitel_zapsat_studenta(ticket: str, id_stud: str, id_terminu: str
 
     message = pridat_studenta(session, id_stud, id_terminu)
     return message
+

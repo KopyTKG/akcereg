@@ -1,5 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from lib.conn import session, get_vyucujici_predmety
+from lib.db_utils import get_vsechny_predmety_obj
+from lib.HTTP_messages import internal_server_error, unauthorized, ok
+from classes.server_utils import kontrola_ticketu, encode_id, pridej_vyucujicimu_predmety_list, get_vsechny_predmety, get_vsechny_predmety_obj
 
 router = APIRouter()
 

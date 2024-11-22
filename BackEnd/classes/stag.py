@@ -1,6 +1,7 @@
 import requests
 import os
-from lib.HTTP_messages import *
+from lib.HTTP_messages import internal_server_error
+from logging import ERROR, log
 
 
 def get(ticket, url, params):
@@ -92,9 +93,10 @@ def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
         response = requests.get(url, headers=headers, params=params)
     except:
         return internal_server_error
+    
+
     if not response.ok:
         return "chyba"
-    
     try:
         response = response.json()
     except:
@@ -116,12 +118,12 @@ def get_userid_and_role(json):
             userid = str(json["stagUserInfo"][0]["osCislo"])
         return userid, role
     except KeyboardInterrupt:
-        print("Process interrupted by the user.")
-        raise  # Re-raise KeyboardInterrupt to exit the program
+        os.close(1)
     except SystemExit:
-        raise  # Re-raise SystemExit to exit the program
+        os.close(1)
     except Exception as e:
-        log(e)
+        log(ERROR, e)
         return internal_server_error, internal_server_error
+
 
 __all__ = ["get", "get_stag_user_info", "bool_existuje_predmet", "get_vyucujici_predmetu_stag", "get_userid_and_role"]

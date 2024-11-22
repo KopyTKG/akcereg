@@ -1,6 +1,9 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from lib.db_terminy import *
+from lib.conn import session
+from classes.server_utils import kontrola_ticketu, read_file, encode_id, pridat_vyucujici_k_terminu
+from lib.HTTP_messages import internal_server_error, unauthorized
+from lib.db_terminy import list_nadchazejici_terminy, list_probehle_terminy
+
 from typing import Optional
 
 router = APIRouter()
@@ -13,7 +16,7 @@ async def get_admin_board(ticket: str, probehle: Optional[bool] = False):
         info = kontrola_ticketu(ticket, vyucujici=True)
         if info == unauthorized or info == internal_server_error:
             return info
-        userid, role = encode_id(info[0]), info[1]
+        _, role = encode_id(info[0]), info[1]
 
         if "KA" not in role:
             return unauthorized

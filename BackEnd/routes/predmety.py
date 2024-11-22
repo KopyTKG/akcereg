@@ -1,6 +1,9 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from classes.student import *
+from lib.conn import session, get_predmety_by_vyucujici
+from lib.HTTP_messages import internal_server_error, unauthorized
+from classes.server_utils import encode_id, kontrola_ticketu, get_predmet_id_jmeno_cisla, get_predmety_by_kody 
+from lib.db_utils import get_vsechny_predmety_obj
+from classes.student import get_predmet_student_k_dispozici
 
 
 router = APIRouter()
@@ -46,5 +49,3 @@ async def get_predmety(ticket: str | None = None):
 
         jmena_predmetu_vyucujiciho = get_predmet_id_jmeno_cisla(predmety_vyucujiciho)
         return jmena_predmetu_vyucujiciho
-
-   

@@ -1,6 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-
+from classes.server_utils import kontrola_ticketu, encode_id, tTermin
+from lib.conn import session, vypsat_termin, get_id_ucitele_by_jmeno_prijmeni
+from lib.HTTP_messages import unauthorized, not_found, internal_server_error, ok
+from lib.db_utils import get_list_emailu_pro_cviceni
 
 router = APIRouter()
 

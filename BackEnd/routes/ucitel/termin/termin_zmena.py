@@ -1,6 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-
+from classes.server_utils import kontrola_ticketu, tTermin
+from lib.HTTP_messages import unauthorized, internal_server_error
+from lib.conn import session, upravit_termin
+from lib.db_utils import get_list_emailu_pro_cviceni
 
 router = APIRouter()
 
@@ -15,7 +17,6 @@ async def ucitel_zmena_terminu(
     info = kontrola_ticketu(ticket, vyucujici=True)
     if info == unauthorized or info == internal_server_error:
         return info
-    
     if termin.datum_start > termin.datum_konec:
         promenna_na_prohazeni = termin.datum_start
         termin.datum_start = termin.datum_konec
@@ -26,5 +27,4 @@ async def ucitel_zmena_terminu(
     if termin.upozornit:
         list_emailu = get_list_emailu_pro_cviceni(session, termin.kod_predmetu, termin.cislo_cviceni, ticket=ticket)
         return list_emailu
-    
     return message

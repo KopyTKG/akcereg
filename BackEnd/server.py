@@ -2,7 +2,7 @@ import uvicorn, os, dotenv
 from fastapi import FastAPI # type: ignore
 from classes.server_utils import *
 from lib.db_utils import *
-from lib.conn import *
+from lib.conn import session
 
 from routes.setup import router as kontrola_s_db
 from routes.ucitel import ucitel_routers
@@ -38,9 +38,9 @@ for router in admin_routers:
 if __name__ == "__main__":
     dotenv.load_dotenv()
 
-    if not app:
+    if not session:
         raise Exception("Session creation failed!")
-    vyucujici_k_predmetum_to_txt(app)
+    vyucujici_k_predmetum_to_txt(session)
 
     uvicorn.run(app, host=os.getenv('HOST'), port=int(os.getenv('PORT'))) # type: ignore
 
