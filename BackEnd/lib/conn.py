@@ -541,4 +541,4 @@ def get_predmety_by_vyucujici(session, id_vyucujiciho: str):
 
 # psaní toho __all__ není moc fun
 
-__all__ = [vytvor_student, vytvor_vyucujici, upravit_termin, odepsat_z_terminu, zapsat_se_na_termin, smazat_termin, uznat_termin, neuznat_termin, pridat_studenta, vytvor_predmet, smazat_predmet, upravit_predmet, pridej_vyucujiciho_na_predmet, vypsat_termin, historie_studenta, uspesne_zakonceni_studenta_terminy, uspesne_dokoncene_terminy, pocet_cviceni_pro_predmet, vyhodnoceni_studenta, vypis_uspesnych_studentu, get_uznani_predmetu_by_student, get_predmety_by_vyucujici]
+__all__ = ["vytvor_student", "vytvor_vyucujici", "upravit_termin", "odepsat_z_terminu", "zapsat_se_na_termin", "smazat_termin", "uznat_termin", "neuznat_termin", "pridat_studenta", "vytvor_predmet", "smazat_predmet", "upravit_predmet", "pridej_vyucujiciho_na_predmet", "vypsat_termin", "historie_studenta", "uspesne_zakonceni_studenta_terminy", "uspesne_dokoncene_terminy", "pocet_cviceni_pro_predmet", "vyhodnoceni_studenta", "vypis_uspesnych_studentu", "get_uznani_predmetu_by_student", "get_predmety_by_vyucujici"]

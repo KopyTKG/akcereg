@@ -213,4 +213,4 @@ def get_id_ucitele_by_jmeno_prijmeni(ticket, jmeno, prijmeni):
     except:
         return not_found
 
-__all__ = [get_student_info, get_student_predmety, get_studenti_info, get_ucitel_predmety, get_studenti_na_predmetu, compare_encoded, find_matching_hash_positions, get_vyucujici_predmety, get_id_ucitele_by_jmeno_prijmeni, ]
+__all__ = ["get_student_info", "get_student_predmety", "get_studenti_info", "get_ucitel_predmety", "get_studenti_na_predmetu", "compare_encoded", "find_matching_hash_positions", "get_vyucujici_predmety", "get_id_ucitele_by_jmeno_prijmeni"]

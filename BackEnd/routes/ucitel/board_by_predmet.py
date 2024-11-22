@@ -3,6 +3,7 @@ from classes.server_utils import *
 from lib.db_terminy import *
 from routes.predmety import get_predmety
 from urllib.parse import unquote
+from typing import Optional
 
 router = APIRouter()
 

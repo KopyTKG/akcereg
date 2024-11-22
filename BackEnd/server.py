@@ -1,4 +1,4 @@
-import uvicorn
+import uvicorn, os, dotenv
 from fastapi import FastAPI # type: ignore
 from classes.server_utils import *
 from lib.db_utils import *
@@ -9,7 +9,6 @@ from routes.ucitel import ucitel_routers
 from routes.student import student_routers
 from routes.admin import admin_routers
 from routes.predmety import router as predmety
-from routes.invalidate import router as invalidate
 
 dotenv.load_dotenv()
 
@@ -22,7 +21,6 @@ app = FastAPI(debug=True)
 # General Routers
 app.include_router(kontrola_s_db)
 app.include_router(predmety)
-app.include_router(invalidate)
 
 # Student Endpoints
 for router in student_routers:
@@ -40,9 +38,9 @@ for router in admin_routers:
 if __name__ == "__main__":
     dotenv.load_dotenv()
 
-    if not session:
+    if not app:
         raise Exception("Session creation failed!")
-    vyucujici_k_predmetum_to_txt(session)
+    vyucujici_k_predmetum_to_txt(app)
 
     uvicorn.run(app, host=os.getenv('HOST'), port=int(os.getenv('PORT'))) # type: ignore
 

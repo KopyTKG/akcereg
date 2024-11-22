@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from classes.server_utils import *
 from lib.db_terminy import *
-
+from typing import Optional
 
 router = APIRouter()
 
