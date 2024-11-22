@@ -23,24 +23,22 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Install Docker Scout CLI
         run: |
           curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s --
           docker scout version
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: thekrewkopy
+          password: ${{ secrets.DCKR_PAT }}
 
       - name: Pull Image
         run: docker pull ${{ matrix.image }}
       
       - name: Scan Image with Docker Scout
         run: |
-          # Extract the image name without the registry and replace / with -
           IMAGE_NAME=$(echo "${{ matrix.image }}" | sed 's|.*/||' | sed 's/:/-/')
           docker scout cves ${{ matrix.image }} --format sarif --output "scout-results-${IMAGE_NAME}.sarif" || true
         env:
