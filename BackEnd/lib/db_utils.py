@@ -302,3 +302,5 @@ def get_studenti_all(session):
         return os_cisla
     except:
         return not_found
+
+__all__ = [get_vyucujiciho_by_predmet, get_vsechny_predmety_obj, get_predmet_by_id, get_termin_info, get_termin_zapsane_by_studentid, get_katedra_predmet_by_idterminu, get_katedra_predmet_by_kod, get_katedra_by_predmet, get_kod_predmetu_by_zkratka, get_kod_predmetu_by_id, get_vsechny_terminy, get_vsechny_predmety, get_vsechny_predmety_kod_katedra, subtract_lists, get_uznavaci_termin_by_zkratka, get_uznavaci_termin_by_kod, get_datum_uznavaci_termin_student, get_list_emailu_pro_cviceni, get_datum_splneni_terminu, pridej_vyucujicimu_predmety_list, odeber_vyucujiciho_od_vsech_predmetu, get_studnet_by_id, get_studenti_all]

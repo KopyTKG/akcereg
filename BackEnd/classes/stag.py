@@ -116,3 +116,5 @@ def get_userid_and_role(json):
         return userid, role
     except:
         return internal_server_error, internal_server_error
+
+__all__ = [get, get_stag_user_info, bool_existuje_predmet, get_vyucujici_predmetu_stag, get_userid_and_role]
