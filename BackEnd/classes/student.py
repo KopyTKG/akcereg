@@ -2,6 +2,7 @@ import requests
 import os
 from lib.HTTP_messages import not_found, internal_server_error
 from classes.stag import get
+from logging import ERROR, log
 
 def get_predmet_by_student(ticket, semestr, userid):
     """ Vrátí všechny zapsané předměty studentem v daném semestru (ZS / LS)"""
@@ -22,13 +23,19 @@ def get_predmet_student_k_dispozici(ticket, predmety_lab):
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
-            "Connection": "keep-alive", 
+            "Connection": "keep-alive",
             "Accept-Origin": os.getenv("STAG_URL"),
         }
         response = requests.get(url, headers=headers, cookies={'WSCOOKIE': ticket})
         if not response.ok:
             return not_found
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
     splneno = set()
@@ -49,7 +56,13 @@ def get_predmet_student_k_dispozici(ticket, predmety_lab):
 
         predmety = list(aktivni_predmety - splneno)  # Set difference operation
         return predmety
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
-__all__ = ["get_predmet_by_student", "get_predmet_student_k_dispozici"] 
+__all__ = ["get_predmet_by_student", "get_predmet_student_k_dispozici"]

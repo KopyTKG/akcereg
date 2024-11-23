@@ -1,6 +1,7 @@
 import requests, hashlib, os
 from lib.HTTP_messages import internal_server_error, unauthorized, not_found
 from classes.stag import get, get_userid_and_role, get_stag_user_info
+from logging import ERROR, log
 
 def get_student_info(ticket, osobni_cislo):
     """ Vrátí informace o studentovi podle osobního čísla """
@@ -23,8 +24,13 @@ def get_student_info(ticket, osobni_cislo):
         email = response["email"]
 
         return jmeno, prijmeni, email
-    
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -55,7 +61,13 @@ def get_student_predmety(ticket, osobni_cislo, predmety_db):
                     predmety.append(kod)
 
         return predmety
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -69,7 +81,13 @@ def get_studenti_info(ticket, list_studentu):
             info.append(student_info)
 
         return info
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -84,7 +102,13 @@ def get_ucitel_predmety(ticket, ucitIdno):
             "ucitIdno": ucitIdno,
         }
         return get(ticket, url, params)
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -112,7 +136,12 @@ def get_studenti_na_predmetu(ticket, katedra, zkratka_predmetu):
 
         return osobni_cisla
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -135,7 +164,12 @@ def compare_encoded(hash_studentu_na_terminu, studenti_na_predmetu):
     # return osobni_cisla misto matching
         return osobni_cisla
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -149,7 +183,13 @@ def find_matching_hash_positions(big_list, small_list):
                 matching_positions.append(big_list_index)
 
         return matching_positions
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -169,9 +209,15 @@ def get_vyucujici_predmety(ticket, predmety_db):
     }
     try:
         response = (requests.get(url, params=params, headers=headers, cookies={'WSCOOKIE': ticket})).json() #type: ignore
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return unauthorized
-    
+
     try:
         predmety = response["rozvrhovaAkce"]
         predmety_db = [predmet.kod_predmetu for predmet in predmety_db]
@@ -185,9 +231,15 @@ def get_vyucujici_predmety(ticket, predmety_db):
                         predmety_ucitele.append(kod)
 
         return predmety_ucitele
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
-    
+
 
 def get_id_ucitele_by_jmeno_prijmeni(ticket, jmeno, prijmeni):
     """ Získá F čísla všech studentů, kteří jsou zapsáni na předmětu """
@@ -208,7 +260,13 @@ def get_id_ucitele_by_jmeno_prijmeni(ticket, jmeno, prijmeni):
         if len(response) == 0:
             return []
         return str(response["ucitIdno"])
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return not_found
 
 __all__ = ["get_student_info", "get_student_predmety", "get_studenti_info", "get_ucitel_predmety", "get_studenti_na_predmetu", "compare_encoded", "find_matching_hash_positions", "get_vyucujici_predmety", "get_id_ucitele_by_jmeno_prijmeni"]

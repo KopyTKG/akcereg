@@ -5,6 +5,8 @@ from lib.db_utils import get_vsechny_predmety_obj
 from lib.HTTP_messages import internal_server_error, unauthorized, ok
 from classes.server_utils import kontrola_ticketu, encode_id
 from lib.db_utils import get_vsechny_predmety, get_vsechny_predmety_obj, pridej_vyucujicimu_predmety_list
+import os
+from logging import ERROR, log
 
 router = APIRouter()
 
@@ -22,9 +24,14 @@ async def nastavit_uciteli_jeho_predmety(ticket: str | None = None):
             message = pridej_vyucujicimu_predmety_list(session, userid, predmety_vyucujiciho)
         else:
             message = pridej_vyucujicimu_predmety_list(session, userid, get_vsechny_predmety(session))
-    
+
         if message != ok:
             return message
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
     return ok

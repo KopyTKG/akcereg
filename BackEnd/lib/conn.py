@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine,ForeignKey, Column, String, Integer, Text, UUID, DateTime, and_ 
+from sqlalchemy import create_engine,ForeignKey, Column, String, Integer, Text, UUID, DateTime, and_
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 import os
 import dotenv
@@ -6,6 +6,7 @@ import uuid
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from lib.HTTP_messages import ok, internal_server_error, not_found, bad_request, conflict, unauthorized
+from logging import ERROR, log
 
 # nacteni DB connection stringu z .env
 dotenv.load_dotenv()
@@ -116,8 +117,15 @@ def vytvor_student(session, id):
             session.commit()
             return ok
         return ok
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -129,8 +137,15 @@ def vytvor_vyucujici(session, id):
             session.commit()
             return ok
         return ok
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -165,8 +180,15 @@ def upravit_termin(session, id_terminu, newStartDatum=None, newKonecDatum=None, 
 
         session.commit()
         return ok
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -191,8 +213,15 @@ def odepsat_z_terminu(session, student_id, termin_id):
         else:
             return bad_request
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -217,8 +246,15 @@ def zapsat_se_na_termin(session, student_id, termin_id):
 
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -232,8 +268,15 @@ def smazat_termin(session, id_terminu):
         session.commit()
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -249,8 +292,15 @@ def uznat_termin(session, id_terminu, id_studenta):
         session.commit()
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -266,8 +316,15 @@ def neuznat_termin(session, id_terminu, id_studenta):
         session.commit()
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -289,8 +346,15 @@ def pridat_studenta(session, student_id, termin_id, datum_splneni=None):
         session.commit()
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 ### PREDMETY
@@ -306,8 +370,15 @@ def vytvor_predmet(session, kod_predmetu, zkratka_predmetu, katedra, vyucuje_id,
         session.commit()
 
         return ok
+    except KeyboardInterrupt:
+        session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
     except Exception as e:
         session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 def smazat_predmet(session, kod_predmetu):
@@ -328,7 +399,7 @@ def upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=None, newKatedra=N
         predmet = session.query(Predmet).filter_by(kod_predmetu=kod_predmetu).first()
         if predmet is None:
             return not_found
-        
+
         predmet.zkratka_predmetu = newZkratkaPredmetu
         predmet.katedra = newKatedra
         predmet.pocet_cviceni = newPocetCviceni
@@ -337,8 +408,15 @@ def upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=None, newKatedra=N
         session.commit()
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 def pridej_vyucujiciho_na_predmet(session, kod_predmetu, vyucujici_id):
@@ -347,8 +425,15 @@ def pridej_vyucujiciho_na_predmet(session, kod_predmetu, vyucujici_id):
         session.add(vyucujici_na_predmetu)
         session.commit()
         return ok
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -366,8 +451,15 @@ def vypsat_termin(session, ucebna: Text, datum_start: datetime, datum_konec: dat
         session.commit()
         return ok
 
-    except:
+    except KeyboardInterrupt:
         session.rollback()
+        os.close(1)
+    except SystemExit:
+        session.rollback()
+        os.close(1)
+    except Exception as e:
+        session.rollback()
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -385,7 +477,12 @@ def historie_studenta(session, id):
 
         return termins
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -396,7 +493,12 @@ def uspesne_zakonceni_studenta_terminy(session, id_studenta, kod_predmetu):
         uspesne_terminy_list = [student for student in uspesne_terminy]
         return uspesne_terminy_list
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return False
 
 
@@ -419,7 +521,12 @@ def uspesne_dokoncene_terminy(session, id):
 
         return splnene_terminy
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -441,7 +548,12 @@ def pocet_cviceni_pro_predmet(session):
 
         return predmet_pocet_cviceni
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -462,7 +574,12 @@ def vyhodnoceni_studenta(session, id_studenta, pocet_pro_predmet):
                             cislo_cviceni = termin.cislo_cviceni - 1
                             pocet_pro_predmet[kod_predmetu][cislo_cviceni] = historie_terminu.datum_splneni
         return pocet_pro_predmet
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 def vypis_uspesnych_studentu(session, kod_predmetu):
@@ -491,7 +608,12 @@ def vypis_uspesnych_studentu(session, kod_predmetu):
 
         return vyhodnoceni_studentu
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -511,7 +633,12 @@ def get_uznani_predmetu_by_student(session, id_studenta, kod_predmetu):
     )
 
         return result is not None
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
@@ -528,7 +655,12 @@ def get_predmety_by_vyucujici(session, id_vyucujiciho: str):
             return vsechny_predmety
         else:
             return []
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 

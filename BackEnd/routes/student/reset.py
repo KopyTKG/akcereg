@@ -1,9 +1,11 @@
 from fastapi import APIRouter
 from classes.server_utils import kontrola_ticketu
-from classes.student import get_predmet_student_k_dispozici 
+from classes.student import get_predmet_student_k_dispozici
 from lib.db_utils import get_vsechny_predmety_obj
 from lib.conn import session
 from lib.HTTP_messages import internal_server_error, unauthorized
+import os
+from logging import ERROR, log
 
 router = APIRouter()
 
@@ -19,5 +21,10 @@ async def nastavit_studentovi_jeho_predmety(ticket:str | None = None):
         if predmety_studenta == internal_server_error:
             return internal_server_error
         return predmety_studenta
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
