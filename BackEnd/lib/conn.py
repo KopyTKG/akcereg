@@ -415,8 +415,6 @@ def smazat_predmet(session, kod_predmetu):
         print(f"Error occurred: {e}")
         return internal_server_error
 
-    return None
-
 def upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=None, newKatedra=None, newPocetCviceni=None):
     try:
         predmet = session.query(Predmet).filter_by(kod_predmetu=kod_predmetu).first()
@@ -560,6 +558,8 @@ def uspesne_dokoncene_terminy(session, id):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def pocet_cviceni_pro_predmet(session):
     try:
@@ -614,6 +614,8 @@ def vyhodnoceni_studenta(session, id_studenta, pocet_pro_predmet):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 def vypis_uspesnych_studentu(session, kod_predmetu):
     try:

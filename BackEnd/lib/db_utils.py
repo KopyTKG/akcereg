@@ -149,6 +149,8 @@ def get_katedra_by_predmet(session, zkratka_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
+
 
 def get_kod_predmetu_by_zkratka(session, zkratka_predmetu):
     """ Vrátí kód předmětu podle zkratky předmětu """

@@ -42,7 +42,7 @@ def get_stag_user_info(ticket):
         }
         response = requests.get(url, headers=headers)
         if not response.ok:
-            return None
+            return internal_server_error
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
