@@ -128,6 +128,9 @@ def vytvor_student(session, id):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
+
 
 def vytvor_vyucujici(session, id):
     try:
@@ -147,6 +150,8 @@ def vytvor_vyucujici(session, id):
         session.rollback()
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 ### USER ACTIONS
@@ -191,6 +196,8 @@ def upravit_termin(session, id_terminu, newStartDatum=None, newKonecDatum=None, 
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def odepsat_z_terminu(session, student_id, termin_id):
     try:
@@ -223,6 +230,8 @@ def odepsat_z_terminu(session, student_id, termin_id):
         session.rollback()
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def zapsat_se_na_termin(session, student_id, termin_id):
@@ -257,6 +266,8 @@ def zapsat_se_na_termin(session, student_id, termin_id):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def smazat_termin(session, id_terminu):
     try:
@@ -278,6 +289,8 @@ def smazat_termin(session, id_terminu):
         session.rollback()
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def uznat_termin(session, id_terminu, id_studenta):
@@ -303,6 +316,8 @@ def uznat_termin(session, id_terminu, id_studenta):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def neuznat_termin(session, id_terminu, id_studenta):
     try:
@@ -326,6 +341,8 @@ def neuznat_termin(session, id_terminu, id_studenta):
         session.rollback()
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def pridat_studenta(session, student_id, termin_id, datum_splneni=None):
@@ -357,6 +374,8 @@ def pridat_studenta(session, student_id, termin_id, datum_splneni=None):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 ### PREDMETY
 def vytvor_predmet(session, kod_predmetu, zkratka_predmetu, katedra, vyucuje_id, pocet_cviceni):
     try:
@@ -381,6 +400,8 @@ def vytvor_predmet(session, kod_predmetu, zkratka_predmetu, katedra, vyucuje_id,
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 def smazat_predmet(session, kod_predmetu):
     try:
         predmet = session.query(Predmet).filter_by(kod_predmetu=kod_predmetu).first()
@@ -393,6 +414,8 @@ def smazat_predmet(session, kod_predmetu):
         session.rollback()
         print(f"Error occurred: {e}")
         return internal_server_error
+
+    return None
 
 def upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=None, newKatedra=None, newPocetCviceni=None):
     try:
@@ -419,6 +442,8 @@ def upravit_predmet(session, kod_predmetu, newZkratkaPredmetu=None, newKatedra=N
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 def pridej_vyucujiciho_na_predmet(session, kod_predmetu, vyucujici_id):
     try:
         vyucujici_na_predmetu = VyucujiciPredmety(kod_predmetu=kod_predmetu, vyucujici_id=vyucujici_id)
@@ -435,6 +460,8 @@ def pridej_vyucujiciho_na_predmet(session, kod_predmetu, vyucujici_id):
         session.rollback()
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 ### TERMINY
@@ -462,6 +489,8 @@ def vypsat_termin(session, ucebna: Text, datum_start: datetime, datum_konec: dat
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def historie_studenta(session, id):
     try:
@@ -485,6 +514,7 @@ def historie_studenta(session, id):
         log(ERROR, e)
         return internal_server_error
 
+    return None
 
 def uspesne_zakonceni_studenta_terminy(session, id_studenta, kod_predmetu):
     """ Vrátí všechny úspěsné zakončené termíny (HistorieTerminu) v předmětu """
@@ -501,6 +531,7 @@ def uspesne_zakonceni_studenta_terminy(session, id_studenta, kod_predmetu):
         log(ERROR, e)
         return False
 
+    return None
 
 def uspesne_dokoncene_terminy(session, id):
     try:
@@ -555,6 +586,8 @@ def pocet_cviceni_pro_predmet(session):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 # zde nesmi prichazet parametr katedra - musi si to brat z "Uspesne zakonceni studenta"
@@ -616,6 +649,8 @@ def vypis_uspesnych_studentu(session, kod_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def get_uznani_predmetu_by_student(session, id_studenta, kod_predmetu):
     """ Vrátí, zda má student předmět celý uznán """
@@ -641,6 +676,8 @@ def get_uznani_predmetu_by_student(session, id_studenta, kod_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 
 
@@ -662,6 +699,8 @@ def get_predmety_by_vyucujici(session, id_vyucujiciho: str):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 

@@ -5,14 +5,14 @@ from logging import ERROR, log
 
 
 def get(ticket, url, params):
-    headers = {
-        "accept": "application/json",
-        "Content-Type": "application/json",
-        "Connection": "keep-alive",
-        "Accept-Origin": os.getenv("STAG_URL"),
-    }
-    url = os.getenv('STAG_URL') + url
     try:
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Connection": "keep-alive",
+            "Accept-Origin": os.getenv("STAG_URL"),
+        }
+        url = os.getenv('STAG_URL') + url
         response = requests.get(url, params=params, headers=headers, cookies={'WSCOOKIE': ticket})
         if not response.ok:
             raise Exception(response.text)
@@ -41,6 +41,8 @@ def get_stag_user_info(ticket):
             "Accept-Origin": os.getenv("STAG_URL"),
         }
         response = requests.get(url, headers=headers)
+        if not response.ok:
+            return None
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -48,8 +50,6 @@ def get_stag_user_info(ticket):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
-    if not response.ok:
-        return None
     try:
         response = response.json()
     except:
@@ -72,6 +72,8 @@ def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):
             "zkratka": zkratka_predmetu
         }
         response = requests.get(url, headers=headers, params=params)
+        if not response.ok:
+            return None
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -79,8 +81,6 @@ def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
-    if not response.ok:
-        return None
     try:
         response = response.json()
         if response:
@@ -106,6 +106,8 @@ def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
             "Accept-Origin": os.getenv("STAG_URL"),
         }
         response = requests.get(url, headers=headers, params=params)
+        if not response.ok:
+            return "chyba"
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -114,8 +116,6 @@ def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
         log(ERROR, e)
         return internal_server_error
 
-    if not response.ok:
-        return "chyba"
     try:
         response = response.json()
     except:
@@ -143,6 +143,8 @@ def get_userid_and_role(json):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error, internal_server_error
+
+    return None
 
 
 __all__ = ["get", "get_stag_user_info", "bool_existuje_predmet", "get_vyucujici_predmetu_stag", "get_userid_and_role"]

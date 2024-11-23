@@ -28,3 +28,5 @@ async def nastavit_studentovi_jeho_predmety(ticket:str | None = None):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None

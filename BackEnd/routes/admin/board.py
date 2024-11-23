@@ -40,3 +40,5 @@ async def get_admin_board(ticket: str, probehle: Optional[bool] = False):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None

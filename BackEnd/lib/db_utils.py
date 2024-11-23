@@ -25,6 +25,7 @@ def get_vyucujiciho_by_predmet(session, kod_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_vsechny_predmety_obj(session):
     """ Vrátí vsechny predmety """
@@ -40,6 +41,7 @@ def get_vsechny_predmety_obj(session):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 # tohle je obsolete imho
 def get_predmet_by_id(session, id_predmetu):
     """ Vrátí info o předmětu podle kódu předmětu """
@@ -57,6 +59,7 @@ def get_predmet_by_id(session, id_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_termin_info(session, id_terminu):
     """ Vrátí informace o terminu """
@@ -74,6 +77,7 @@ def get_termin_info(session, id_terminu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_termin_zapsane_by_studentid(session, student_id):
     """ Vrátí terminy studenta podle ID """
@@ -89,6 +93,7 @@ def get_termin_zapsane_by_studentid(session, student_id):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_katedra_predmet_by_idterminu(session, id_terminu):
     """ Vrátí zkratku předmětu a zkratku katedry podle id termínu """
@@ -108,6 +113,7 @@ def get_katedra_predmet_by_idterminu(session, id_terminu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_katedra_predmet_by_kod(session, kod_predmetu):
     """ vrátí zkratku katedry a zkratku predmetu podle kodu predmetu """
@@ -125,6 +131,7 @@ def get_katedra_predmet_by_kod(session, kod_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_katedra_by_predmet(session, zkratka_predmetu):
     """Vrátí Katedru pomocí zkratky předmětu"""
@@ -159,6 +166,8 @@ def get_kod_predmetu_by_zkratka(session, zkratka_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
+
 def get_kod_predmetu_by_id(session, id_predmetu):
     """ Vrátí kód předmětu podle id """
     try:
@@ -175,6 +184,7 @@ def get_kod_predmetu_by_id(session, id_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_vsechny_terminy(session):
     """ Vrátí všechny vypsané termíny """
@@ -190,6 +200,7 @@ def get_vsechny_terminy(session):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_vsechny_predmety(session):
     """ Vrátí zkratky předmětů všech různých předmětů """
@@ -205,6 +216,7 @@ def get_vsechny_predmety(session):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_vsechny_predmety_kod_katedra(session):
     """ Vrátí zkratky a katedry předmětů všech různých předmětů """
@@ -220,6 +232,7 @@ def get_vsechny_predmety_kod_katedra(session):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def subtract_lists(list1, list2):
     """ Odečítání listů (vrátí první list ochuzený o prvky z prvního listu)"""
@@ -245,6 +258,7 @@ def get_uznavaci_termin_by_zkratka(session, zkratka_predmetu, kod_predmetu=None)
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
 
 def get_uznavaci_termin_by_kod(session, kod_predmetu:str):
     """ Vrátí id uznačovacího terminu podle zkratky předmětu """
@@ -264,6 +278,8 @@ def get_uznavaci_termin_by_kod(session, kod_predmetu:str):
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
+
 
 def get_datum_uznavaci_termin_student(session, id_studenta, id_termin):
     """ Vrátí datum užnávaciho terminu studenta """
@@ -280,6 +296,8 @@ def get_datum_uznavaci_termin_student(session, id_studenta, id_termin):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return not_found
 
 
 def get_list_emailu_pro_cviceni(session,kod_predmetu:str, index_cviceni: int, ticket: str, novy_termin: Optional[bool] = False):
@@ -352,6 +370,8 @@ def get_list_emailu_pro_cviceni(session,kod_predmetu:str, index_cviceni: int, ti
         log(ERROR, e)
         return internal_server_error
 
+    return not_found
+
 
 def get_datum_splneni_terminu(session, student_id, termin_id):
     try:
@@ -373,6 +393,8 @@ def get_datum_splneni_terminu(session, student_id, termin_id):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def pridej_vyucujicimu_predmety_list(session, id_vyucujiciho, list_kodu_predmetu):
@@ -425,6 +447,8 @@ def get_student_by_id(session, id_studenta):
         log(ERROR, e)
         return not_found
 
+    return not_found
+
 
 def get_studenti_all(session):
     try:
@@ -443,4 +467,5 @@ def get_studenti_all(session):
         log(ERROR, e)
         return not_found
 
+    return not_found
 __all__ = ["get_vyucujiciho_by_predmet", "get_vsechny_predmety_obj", "get_predmet_by_id", "get_termin_info", "get_termin_zapsane_by_studentid", "get_katedra_predmet_by_idterminu", "get_katedra_predmet_by_kod", "get_katedra_by_predmet", "get_kod_predmetu_by_zkratka", "get_kod_predmetu_by_id", "get_vsechny_terminy", "get_vsechny_predmety", "get_vsechny_predmety_kod_katedra", "subtract_lists", "get_uznavaci_termin_by_zkratka", "get_uznavaci_termin_by_kod", "get_datum_uznavaci_termin_student", "get_list_emailu_pro_cviceni", "get_datum_splneni_terminu", "pridej_vyucujicimu_predmety_list", "odeber_vyucujiciho_od_vsech_predmetu", "get_student_by_id", "get_studenti_all"]

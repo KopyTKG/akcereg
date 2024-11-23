@@ -35,6 +35,8 @@ def list_terminy(session):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def list_studenti_z_terminu(session, termin_id):
     """ Vrátí všechny studenty, kteří jsou zapsáni na termínu podle id termínu"""
@@ -51,6 +53,8 @@ def list_studenti_z_terminu(session, termin_id):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_nadchazejici_terminy(session):
@@ -69,6 +73,8 @@ def list_nadchazejici_terminy(session):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def list_probehle_terminy(session):
     """ Vrátí všechny proběhle termíny """
@@ -85,6 +91,8 @@ def list_probehle_terminy(session):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_planovane_terminy_predmet(session, kod_predmetu):
@@ -103,6 +111,8 @@ def list_planovane_terminy_predmet(session, kod_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def list_probehle_terminy_predmet(session, kod_predmetu):
     """ Vrátí všechny proběhlé termíny dle předmětu """
@@ -119,6 +129,8 @@ def list_probehle_terminy_predmet(session, kod_predmetu):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def terminy_dopredu_pro_vyucujiciho(session, id):
@@ -138,6 +150,8 @@ def terminy_dopredu_pro_vyucujiciho(session, id):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def terminy_dopredu(session):
     try:
@@ -154,6 +168,8 @@ def terminy_dopredu(session):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_terminy_vyucujici(session, id):
@@ -182,6 +198,8 @@ def list_terminy_vyucujici(session, id):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_dostupnych_terminu(session, predmety, historie_predmetu, id_studenta, po_startu=False):
@@ -245,5 +263,8 @@ def list_dostupnych_terminu(session, predmety, historie_predmetu, id_studenta, p
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
+
 
 __all__ = ["list_terminy", "list_studenti_z_terminu", "list_nadchazejici_terminy", "list_probehle_terminy", "list_planovane_terminy_predmet", "list_probehle_terminy_predmet", "terminy_dopredu_pro_vyucujiciho", "list_terminy_vyucujici", "list_dostupnych_terminu", "terminy_dopredu"]

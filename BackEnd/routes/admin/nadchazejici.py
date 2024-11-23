@@ -35,3 +35,5 @@ async def get_admin_board_next_ones(ticket: str | None = None):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None

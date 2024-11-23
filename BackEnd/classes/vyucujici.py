@@ -33,6 +33,8 @@ def get_student_info(ticket, osobni_cislo):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def get_student_predmety(ticket, osobni_cislo, predmety_db):
     """ Vrátí informace o studentovi podle osobního čísla """
@@ -70,6 +72,8 @@ def get_student_predmety(ticket, osobni_cislo, predmety_db):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def get_studenti_info(ticket, list_studentu):
     """ Vrátí informace o studentech podle osobního čísla """
@@ -89,6 +93,8 @@ def get_studenti_info(ticket, list_studentu):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 # Asi není potřeba - pouze pro to, kdyby mohl učitel vypisovat pouze na svoje předměty
@@ -110,6 +116,8 @@ def get_ucitel_predmety(ticket, ucitIdno):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def get_studenti_na_predmetu(ticket, katedra, zkratka_predmetu):
@@ -144,6 +152,8 @@ def get_studenti_na_predmetu(ticket, katedra, zkratka_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def compare_encoded(hash_studentu_na_terminu, studenti_na_predmetu):
     """ Vrátí nekódované Fčísla studentů, bere argument hashovaných Fčísel studentů, které porovná se všemi zapsanými studenty na předmětu """
@@ -172,6 +182,8 @@ def compare_encoded(hash_studentu_na_terminu, studenti_na_predmetu):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def find_matching_hash_positions(big_list, small_list):
     try:
@@ -191,6 +203,8 @@ def find_matching_hash_positions(big_list, small_list):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def get_vyucujici_predmety(ticket, predmety_db):
@@ -240,6 +254,8 @@ def get_vyucujici_predmety(ticket, predmety_db):
         log(ERROR, e)
         return internal_server_error
 
+    return None
+
 
 def get_id_ucitele_by_jmeno_prijmeni(ticket, jmeno, prijmeni):
     """ Získá F čísla všech studentů, kteří jsou zapsáni na předmětu """
@@ -268,5 +284,7 @@ def get_id_ucitele_by_jmeno_prijmeni(ticket, jmeno, prijmeni):
     except Exception as e:
         log(ERROR, e)
         return not_found
+
+    return None
 
 __all__ = ["get_student_info", "get_student_predmety", "get_studenti_info", "get_ucitel_predmety", "get_studenti_na_predmetu", "compare_encoded", "find_matching_hash_positions", "get_vyucujici_predmety", "get_id_ucitele_by_jmeno_prijmeni"]
