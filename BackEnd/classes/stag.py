@@ -5,7 +5,7 @@ from logging import ERROR, log
 
 
 def get(ticket, url, params):
-    response = None
+    response = internal_server_error
     try:
         headers = {
             "accept": "application/json",
@@ -28,6 +28,7 @@ def get(ticket, url, params):
         raise Exception("missing response from stag")
     try:
         response = response.json()
+        return response
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -35,12 +36,12 @@ def get(ticket, url, params):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
-    return response
+    return internal_server_error
 
 
 def get_stag_user_info(ticket):
     """ Vrátí jméno, příjmení, email, titul a stagUserInfo (username, role, nazev, ucitIdno/osCilo, email)"""
-    response = None
+    response = internal_server_error
     try:
         envUrl = os.getenv('STAG_URL')
         if not envUrl:
@@ -52,7 +53,7 @@ def get_stag_user_info(ticket):
             "Connection": "keep-alive",
             "Accept-Origin": os.getenv("STAG_URL"),
         }
-        response = requests.get(url, headers=headers, cookies={'WSCOOKIE': ticket})
+        response = requests.get(url, headers=headers)
         if not response.ok:
             return internal_server_error
     except KeyboardInterrupt:
@@ -66,6 +67,7 @@ def get_stag_user_info(ticket):
         raise Exception("missing response from stag")
     try:
         response = response.json()
+        return response
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -73,12 +75,12 @@ def get_stag_user_info(ticket):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
-    return response
+    return internal_server_error
 
 
 def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):
     """ Vrátí informace o předmětu """
-    response = None
+    response = internal_server_error
     try:
         envUrl = os.getenv('STAG_URL')
         if not envUrl:
@@ -94,9 +96,9 @@ def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):
             "katedra": katedra,
             "zkratka": zkratka_predmetu
         }
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=params, cookies={'WSCOOKIE': ticket})
         if not response.ok:
-            return None
+            return internal_server_error
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -119,11 +121,12 @@ def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
+    return internal_server_error
 
 
 def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
     """ Vrátí informace o predmetu"""
-    response = None
+    response = internal_server_error
     try:
         envUrl = os.getenv('STAG_URL')
         if not envUrl:
@@ -161,7 +164,7 @@ def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
-
+    return internal_server_error
 
 def get_userid_and_role(json):
     """Vrací userId a roli uživatele
@@ -183,6 +186,6 @@ def get_userid_and_role(json):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error, internal_server_error
-
+    return internal_server_error
 
 __all__ = ["get", "get_stag_user_info", "bool_existuje_predmet", "get_vyucujici_predmetu_stag", "get_userid_and_role"]
