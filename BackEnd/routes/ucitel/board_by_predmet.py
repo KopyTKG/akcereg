@@ -1,8 +1,11 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from lib.db_terminy import *
+from classes.server_utils import kontrola_ticketu, read_file, pridat_vyucujici_k_terminu
+from lib.db_terminy import list_probehle_terminy_predmet, list_planovane_terminy_predmet
+from lib.conn import session
+from lib.HTTP_messages import unauthorized, internal_server_error
 from routes.predmety import get_predmety
 from urllib.parse import unquote
+from typing import Optional
 
 router = APIRouter()
 

@@ -1,6 +1,9 @@
 from fastapi import APIRouter # type: ignore
-from classes.server_utils import *
-from lib.db_terminy import *
+from lib.conn import session, get_predmety_by_vyucujici, vytvor_student,  pocet_cviceni_pro_predmet, vyhodnoceni_studenta
+from classes.vyucujici import get_student_predmety, get_student_info
+from lib.HTTP_messages import internal_server_error, unauthorized, not_found, ok
+from classes.server_utils import kontrola_ticketu, encode_id
+from lib.db_utils import get_vsechny_predmety_obj, get_student_by_id
 
 
 
@@ -17,7 +20,7 @@ async def get_ucitel_studenta(ticket: str, id_stud: str):
     if info == unauthorized or info == internal_server_error:
         return info
 
-    userid, role = info[0], info[1]
+    userid, _ = info[0], info[1]
     userid = encode_id(userid)
     predmety_ucitele = get_predmety_by_vyucujici(session, userid)
     if predmety_ucitele == internal_server_error:

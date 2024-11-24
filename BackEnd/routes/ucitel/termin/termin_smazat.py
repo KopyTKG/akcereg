@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from lib.conn import session, smazat_termin
+from lib.HTTP_messages import unauthorized, internal_server_error
+from classes.server_utils import kontrola_ticketu
 
 
 router = APIRouter()
@@ -11,6 +13,6 @@ async def ucitel_smazani_terminu(ticket: str, id_terminu: str):
     info = kontrola_ticketu(ticket, vyucujici=True)
     if info == unauthorized or info == internal_server_error:
         return info
-    
     res = smazat_termin(session, id_terminu)
     return res
+

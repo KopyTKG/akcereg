@@ -1,106 +1,170 @@
 import requests
 import os
-from lib.HTTP_messages import *
+from lib.HTTP_messages import internal_server_error
+from logging import ERROR, log
 
 
 def get(ticket, url, params):
-    headers = {
-        "accept": "application/json",
-        "Content-Type": "application/json",
-        "Connection": "keep-alive", 
-        "Accept-Origin": os.getenv("STAG_URL"),
-    }
-    url = os.getenv('STAG_URL') + url
+    response = internal_server_error
     try:
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Connection": "keep-alive",
+            "Accept-Origin": os.getenv("STAG_URL"),
+        }
+        url = os.getenv('STAG_URL') + url
         response = requests.get(url, params=params, headers=headers, cookies={'WSCOOKIE': ticket})
-        if not response.ok: 
+        if not response.ok:
             raise Exception(response.text)
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+    if not response:
+        raise Exception("missing response from stag")
     try:
         response = response.json()
-    except:
-        return None
-    return response
+        return response
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
+        return internal_server_error
+    return internal_server_error
 
 
 def get_stag_user_info(ticket):
     """ Vrátí jméno, příjmení, email, titul a stagUserInfo (username, role, nazev, ucitIdno/osCilo, email)"""
+    response = internal_server_error
     try:
-        url = os.getenv('STAG_URL') + "ws/services/rest2/help/getStagUserListForLoginTicketV2?ticket=" + ticket  # type: ignore
+        envUrl = os.getenv('STAG_URL')
+        if not envUrl:
+            raise Exception("missing env val")
+        url = envUrl + "ws/services/rest2/help/getStagUserListForLoginTicketV2?ticket=" + ticket
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
-            "Connection": "keep-alive", 
+            "Connection": "keep-alive",
             "Accept-Origin": os.getenv("STAG_URL"),
         }
         response = requests.get(url, headers=headers)
-    except:
+        if not response.ok:
+            return internal_server_error
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
-    if not response.ok:
-        return None
+    if not response:
+        raise Exception("missing response from stag")
     try:
         response = response.json()
-    except:
-        return None
-    return response
+        return response
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
+        return internal_server_error
+    return internal_server_error
 
 
 def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):
     """ Vrátí informace o předmětu """
+    response = internal_server_error
     try:
-        url = os.getenv('STAG_URL') + "ws/services/rest2/predmety/getPredmetInfo" # type: ignore
+        envUrl = os.getenv('STAG_URL')
+        if not envUrl:
+            raise Exception("missing env val")
+        url = envUrl + "ws/services/rest2/predmety/getPredmetInfo"
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
-            "Connection": "keep-alive", 
+            "Connection": "keep-alive",
             "Accept-Origin": os.getenv("STAG_URL"),
         }
         params = {
             "katedra": katedra,
             "zkratka": zkratka_predmetu
         }
-        response = requests.get(url, headers=headers, params=params)
-    except:
+        response = requests.get(url, headers=headers, params=params, cookies={'WSCOOKIE': ticket})
+        if not response.ok:
+            return internal_server_error
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
-    if not response.ok:
-        return None
+    if not response:
+        raise Exception("missing response from stag")
     try:
         response = response.json()
         if response:
             return True
         else:
             return False
-    except:
-        return None
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
+        return internal_server_error
+    return internal_server_error
 
 
 def get_vyucujici_predmetu_stag(zkratka_predmetu, katedra):
     """ Vrátí informace o predmetu"""
+    response = internal_server_error
     try:
+        envUrl = os.getenv('STAG_URL')
+        if not envUrl:
+            raise Exception("missing env val")
         params = {
             "katedra": katedra,
             "zkratka": zkratka_predmetu
         }
-        url= os.getenv('STAG_URL') + "ws/services/rest2/predmety/getPredmetInfo" # type: ignore
+        url = envUrl + "ws/services/rest2/predmety/getPredmetInfo"
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
-            "Connection": "keep-alive", 
+            "Connection": "keep-alive",
             "Accept-Origin": os.getenv("STAG_URL"),
         }
         response = requests.get(url, headers=headers, params=params)
-    except:
+        if not response.ok:
+            return "chyba"
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
-    if not response.ok:
-        return "chyba"
-    
+    if not response:
+        raise Exception("missing response from stag")
     try:
         response = response.json()
-    except:
-        return None
-    return response["cvicici"]
-
+        return response["cvicici"]
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
+        return internal_server_error
+    return internal_server_error
 
 def get_userid_and_role(json):
     """Vrací userId a roli uživatele
@@ -116,12 +180,12 @@ def get_userid_and_role(json):
             userid = str(json["stagUserInfo"][0]["osCislo"])
         return userid, role
     except KeyboardInterrupt:
-        print("Process interrupted by the user.")
-        raise  # Re-raise KeyboardInterrupt to exit the program
+        os.close(1)
     except SystemExit:
-        raise  # Re-raise SystemExit to exit the program
+        os.close(1)
     except Exception as e:
-        log(e)
+        log(ERROR, e)
         return internal_server_error, internal_server_error
+    return internal_server_error
 
-__all__ = [get, get_stag_user_info, bool_existuje_predmet, get_vyucujici_predmetu_stag, get_userid_and_role]
+__all__ = ["get", "get_stag_user_info", "bool_existuje_predmet", "get_vyucujici_predmetu_stag", "get_userid_and_role"]

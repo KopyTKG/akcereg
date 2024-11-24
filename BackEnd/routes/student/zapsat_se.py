@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from classes.server_utils import kontrola_ticketu, encode_id
+from lib.conn import session, odepsat_z_terminu, zapsat_se_na_termin
+from lib.HTTP_messages import unauthorized, internal_server_error, bad_request
 
 router = APIRouter()
 
@@ -17,7 +19,7 @@ async def zmena_statusu_zapsani(ticket: str, typ: str, id_terminu: str):
     info = kontrola_ticketu(ticket, vyucujici=False)
     if info == unauthorized or info == internal_server_error:
         return info
-    userid, role = encode_id(info[0]), info[1]
+    userid, _ = encode_id(info[0]), info[1]
 
     if typ == "zapsat":
         message = zapsat_se_na_termin(session, userid, id_terminu)

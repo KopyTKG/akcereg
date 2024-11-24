@@ -1,5 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from classes.server_utils import kontrola_ticketu, encode_id
+from lib.HTTP_messages import unauthorized, internal_server_error, ok, not_found
+from lib.conn import session, pridat_studenta, uznat_termin
+from lib.db_utils import get_uznavaci_termin_by_kod
 from urllib.parse import unquote
 
 router = APIRouter()

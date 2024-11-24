@@ -1,10 +1,10 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from classes.vyucujici import *
-from classes.student import *
-from lib.db_terminy import *
-from lib.db_utils import *
-
+from classes.server_utils import kontrola_ticketu, read_file, pridat_vyucujici_k_terminu, encode_id
+from classes.student import get_predmet_student_k_dispozici 
+from lib.db_terminy import list_dostupnych_terminu 
+from lib.db_utils import get_vsechny_predmety_obj, get_predmet_by_id 
+from lib.conn import session, vyhodnoceni_studenta, pocet_cviceni_pro_predmet
+from lib.HTTP_messages import internal_server_error, unauthorized
 
 router = APIRouter()
 
@@ -14,7 +14,7 @@ async def get_student_home(ticket: str | None = None):
     info = kontrola_ticketu(ticket, vyucujici=False)
     if info == unauthorized or info == internal_server_error:
         return info
-    userid, role = encode_id(info[0]), info[1]
+    userid, _ = encode_id(info[0]), info[1]
 
     predmety_k_dispozici = get_predmet_student_k_dispozici(ticket, get_vsechny_predmety_obj(session))
     if predmety_k_dispozici == internal_server_error:

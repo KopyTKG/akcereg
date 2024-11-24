@@ -1,15 +1,14 @@
-import uvicorn
+import uvicorn, os, dotenv
 from fastapi import FastAPI # type: ignore
 from classes.server_utils import *
 from lib.db_utils import *
-from lib.conn import *
+from lib.conn import session
 
 from routes.setup import router as kontrola_s_db
 from routes.ucitel import ucitel_routers
 from routes.student import student_routers
 from routes.admin import admin_routers
 from routes.predmety import router as predmety
-from routes.invalidate import router as invalidate
 
 dotenv.load_dotenv()
 
@@ -22,7 +21,6 @@ app = FastAPI(debug=True)
 # General Routers
 app.include_router(kontrola_s_db)
 app.include_router(predmety)
-app.include_router(invalidate)
 
 # Student Endpoints
 for router in student_routers:

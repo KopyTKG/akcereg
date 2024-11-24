@@ -1,10 +1,10 @@
 from fastapi import APIRouter
-from lib.db_utils import *
-from classes.vyucujici import *
-from classes.student import *
-from classes.server_utils import *
+from lib.conn import session, vytvor_student, vytvor_vyucujici
+from classes.server_utils import encode_id, kontrola_ticketu
+from lib.HTTP_messages import unauthorized, internal_server_error, ok
 
 router = APIRouter()
+
 
 @router.get("/setup")
 async def kontrola_s_db(ticket: str | None = None):
@@ -22,3 +22,4 @@ async def kontrola_s_db(ticket: str | None = None):
         if message == internal_server_error:
             return internal_server_error
     return info[0], role, userid
+

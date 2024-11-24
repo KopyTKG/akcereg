@@ -1,6 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from lib.db_terminy import *
+from classes.server_utils import kontrola_ticketu, encode_id, read_file, pridat_vyucujici_k_terminu
+from lib.db_terminy import terminy_dopredu_pro_vyucujiciho
+from lib.HTTP_messages import unauthorized, internal_server_error
+from lib.conn import session
 
 
 router = APIRouter()
@@ -13,7 +15,7 @@ async def get_ucitel_board_future_ones(ticket: str | None = None):
     info = kontrola_ticketu(ticket, vyucujici=True)
     if info == unauthorized or info == internal_server_error:
         return info
-    userid, role = encode_id(info[0]), info[1]
+    userid, _ = encode_id(info[0]), info[1]
 
     list_terminy_dopredu = terminy_dopredu_pro_vyucujiciho(session, userid)
     if list_terminy_dopredu == internal_server_error:

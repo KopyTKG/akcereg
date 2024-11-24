@@ -1,7 +1,9 @@
 import hashlib
-from lib.HTTP_messages import *
-from classes.stag import *
-from lib.db_utils import *
+from lib.HTTP_messages import unauthorized, internal_server_error, ok
+from classes.stag import get_stag_user_info, get_userid_and_role, get_vyucujici_predmetu_stag 
+from classes.vyucujici import compare_encoded, get_studenti_na_predmetu, get_studenti_info
+from lib.db_utils import get_vsechny_predmety_kod_katedra, get_katedra_by_predmet, get_predmet_by_id, get_datum_splneni_terminu
+from lib.conn import session
 import os, json
 from pydantic import BaseModel # type: ignore
 from datetime import datetime
@@ -52,8 +54,9 @@ def kontrola_ticketu(ticket, vyucujici = True):
         userid, role = get_userid_and_role(userinfo)
         if role == internal_server_error:
             return internal_server_error
-        if vyucujici and "ST" in role:
-            return unauthorized
+        if role:
+            if vyucujici and "ST" in role:
+                return unauthorized
 
         return [userid, role]
     except:
@@ -204,4 +207,4 @@ def pridat_vyucujici_k_terminu(terminy, vyucujici_list):
         terminy[i] = termin_dict
     return terminy
 
-__all__ = [tTermin, tPredmet, encode_id, kontrola_ticketu, read_file, vyucujici_k_predmetum_to_txt, get_jmena_predmetu_by_zkratka, get_predmet_id_jmeno_cisla, get_predmety_by_kody, get_list_studentu, pridej_datum_splneni_do_listu_studentu, pridat_vyucujici_k_terminu] 
+__all__ = ["tTermin", "tPredmet", "encode_id", "kontrola_ticketu", "read_file", "vyucujici_k_predmetum_to_txt", "get_jmena_predmetu_by_zkratka", "get_predmet_id_jmeno_cisla", "get_predmety_by_kody", "get_list_studentu", "pridej_datum_splneni_do_listu_studentu", "pridat_vyucujici_k_terminu"]

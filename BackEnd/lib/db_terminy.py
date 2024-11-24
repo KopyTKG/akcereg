@@ -1,5 +1,24 @@
-from lib.conn import *
+from lib.db_utils import Termin, HistorieTerminu, VyucujiciPredmety, Predmet
+from lib.HTTP_messages import internal_server_error
+from sqlalchemy import and_
+from datetime import datetime, timedelta
 from sqlalchemy.orm import aliased
+from dotenv import load_dotenv
+from logging import ERROR, log
+import os
+
+load_dotenv()
+
+
+str_interval_vypisu_terminu = os.getenv('INTERVAL_VYPISU_DNY')
+str_interval_zobrazeni_terminu = os.getenv('INTERVAL_ZOBRAZENI_HODINY')
+
+
+if not str_interval_vypisu_terminu or not str_interval_zobrazeni_terminu:
+    raise Exception("Missing envs")
+
+interval_vypisu_terminu = int(str_interval_vypisu_terminu)
+interval_zobrazeni_terminu = int(str_interval_zobrazeni_terminu)
 
 def list_terminy(session):
     """ Vrátí všechny vypsané termíny """
@@ -7,8 +26,16 @@ def list_terminy(session):
         terminy = session.query(Termin).order_by(Termin.datum_start.desc())
         termin_list = [termin for termin in terminy]
         return termin_list
-    except: 
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_studenti_z_terminu(session, termin_id):
@@ -18,8 +45,16 @@ def list_studenti_z_terminu(session, termin_id):
         student_list = session.query(HistorieTerminu).filter(HistorieTerminu.termin_id == termin_id).all()
         studenti_list = [student.student_id for student in student_list]
         return studenti_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_nadchazejici_terminy(session):
@@ -29,8 +64,16 @@ def list_nadchazejici_terminy(session):
         terminy = session.query(Termin).filter(Termin.datum_konec >= dnesni_datum).filter(Termin.cislo_cviceni != -1).order_by(Termin.datum_start.asc())
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_probehle_terminy(session):
@@ -40,8 +83,16 @@ def list_probehle_terminy(session):
         terminy = session.query(Termin).filter(and_(Termin.datum_konec <= dnesni_datum, Termin.cislo_cviceni != -1)).order_by(Termin.datum_start.desc())
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_planovane_terminy_predmet(session, kod_predmetu):
@@ -51,8 +102,16 @@ def list_planovane_terminy_predmet(session, kod_predmetu):
         terminy = session.query(Termin).filter(and_(Termin.kod_predmet == kod_predmetu, Termin.datum_konec >= dnesni_datum, Termin.cislo_cviceni != -1)).order_by(Termin.datum_start.asc())
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_probehle_terminy_predmet(session, kod_predmetu):
@@ -62,8 +121,16 @@ def list_probehle_terminy_predmet(session, kod_predmetu):
         terminy = session.query(Termin).filter(and_(Termin.kod_predmet == kod_predmetu, Termin.datum_konec <= dnesni_datum, Termin.cislo_cviceni != -1)).order_by(Termin.datum_start.desc())
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def terminy_dopredu_pro_vyucujiciho(session, id):
@@ -74,8 +141,16 @@ def terminy_dopredu_pro_vyucujiciho(session, id):
         terminy = session.query(Termin).filter(and_(Termin.datum_start >= start_date, Termin.datum_konec <= end_date, Termin.vyucuje_id == id, Termin.cislo_cviceni != -1)).order_by(Termin.datum_start.asc())
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def terminy_dopredu(session):
@@ -85,8 +160,16 @@ def terminy_dopredu(session):
         terminy = session.query(Termin).filter(and_(Termin.datum_start >= start_date, Termin.datum_konec <= end_date, Termin.cislo_cviceni != -1)).order_by(Termin.datum_start.asc())
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_terminy_vyucujici(session, id):
@@ -107,8 +190,16 @@ def list_terminy_vyucujici(session, id):
             return False
         terminy_list = [termin for termin in terminy]
         return terminy_list
-    except:
+
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
+
+    return None
 
 
 def list_dostupnych_terminu(session, predmety, historie_predmetu, id_studenta, po_startu=False):
@@ -118,17 +209,17 @@ def list_dostupnych_terminu(session, predmety, historie_predmetu, id_studenta, p
         if po_startu:
             terminy = session.query(Termin).filter(
                 and_(
-                    Termin.kod_predmet.in_(predmety),  
-                    Termin.cislo_cviceni != -1  
+                    Termin.kod_predmet.in_(predmety),
+                    Termin.cislo_cviceni != -1
                 )
             ).order_by(Termin.datum_start.desc()).all()
 
         else:
             terminy = session.query(Termin).filter(
                 and_(
-                    Termin.kod_predmet.in_(predmety),  
+                    Termin.kod_predmet.in_(predmety),
                     Termin.datum_start > current_date - timedelta(hours=1),
-                    Termin.cislo_cviceni != -1  
+                    Termin.cislo_cviceni != -1
                 )
             ).order_by(Termin.datum_start.desc()).all()
 
@@ -165,7 +256,15 @@ def list_dostupnych_terminu(session, predmety, historie_predmetu, id_studenta, p
 
         return terminy_list
 
-    except:
+    except KeyboardInterrupt:
+        os.close(1)
+    except SystemExit:
+        os.close(1)
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
-__all__ = [list_terminy, list_studenti_z_terminu, list_nadchazejici_terminy, list_probehle_terminy, list_planovane_terminy_predmet, list_probehle_terminy_predmet, terminy_dopredu_pro_vyucujiciho,list_terminy_vyucujici, list_dostupnych_terminu, terminy_dopredu] 
+    return None
+
+
+__all__ = ["list_terminy", "list_studenti_z_terminu", "list_nadchazejici_terminy", "list_probehle_terminy", "list_planovane_terminy_predmet", "list_probehle_terminy_predmet", "terminy_dopredu_pro_vyucujiciho", "list_terminy_vyucujici", "list_dostupnych_terminu", "terminy_dopredu"]

@@ -1,7 +1,9 @@
 from fastapi import APIRouter
-from classes.server_utils import *
-from lib.db_terminy import *
-
+from classes.server_utils import kontrola_ticketu, encode_id, read_file, pridat_vyucujici_k_terminu
+from lib.conn import session
+from lib.HTTP_messages import unauthorized, internal_server_error
+from lib.db_terminy import list_terminy_vyucujici, terminy_dopredu_pro_vyucujiciho
+from typing import Optional
 
 router = APIRouter()
 
@@ -13,7 +15,7 @@ async def get_ucitel_moje_vypsane(ticket: str, probehle: Optional[bool] = False)
     info = kontrola_ticketu(ticket, vyucujici=True)
     if info == unauthorized or info == internal_server_error:
         return info
-    userid, role = encode_id(info[0]), info[1]
+    userid, _ = encode_id(info[0]), info[1]
 
     if not probehle:
         list_terminu = terminy_dopredu_pro_vyucujiciho(session, userid)

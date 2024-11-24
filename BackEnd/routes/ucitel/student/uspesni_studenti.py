@@ -1,5 +1,8 @@
 from fastapi import APIRouter
-from classes.server_utils import *
+from lib.conn import session, vypis_uspesnych_studentu
+from classes.server_utils import kontrola_ticketu,  get_list_studentu
+from lib.db_utils import get_katedra_predmet_by_kod
+from lib.HTTP_messages import unauthorized, internal_server_error
 
 
 router = APIRouter()
