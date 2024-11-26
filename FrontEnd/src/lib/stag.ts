@@ -1,6 +1,6 @@
 import { setupParser } from '@/lib/parsers'
 import { tUser } from '@/lib/types'
-import { decrypt } from './crypto'
+import { decrypt } from '@/lib/crypto'
 
 export const fastHeaders = new Headers({
  accept: 'application/json',

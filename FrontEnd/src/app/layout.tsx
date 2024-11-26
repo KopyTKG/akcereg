@@ -7,7 +7,7 @@ import { Providers } from './providers'
 import Promo from '@/components/promo'
 
 export const metadata: Metadata = {
- title: 'AkceReg',
+ title: 'UJEP AkceReg - registrační systém na mimorozvrhové akce',
  description: 'akcereg.ujep.cz',
 }
 
