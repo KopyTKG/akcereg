@@ -18,13 +18,16 @@ export default function StandByScreen() {
         target="_blank"
         rel="noreferrer"
         className="dark:bg-stone-50 bg-stone-950 rounded-lg px-2 py-1 w-[22.6rem] h-[5rem] relative logo"
+        aria-label="UJEP website"
        />
       </CardTitle>
      </CardHeader>
      <CardContent>
       <p className="text-muted-foreground mb-4">Registrační systém na mimorozvrhové akce.</p>
       <Button asChild className="w-full sm:w-auto">
-       <Link href="/login">Přihlásit se</Link>
+       <Link href="/login" aria-label="Přihlásit se do systému">
+        Přihlásit se
+       </Link>
       </Button>
      </CardContent>
     </Card>

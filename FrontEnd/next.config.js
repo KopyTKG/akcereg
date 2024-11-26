@@ -3,12 +3,13 @@ const cspHeader = `
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
-    font-src 'self';
+    font-src 'self' data:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
+    connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL || ''};
 `
 
 const nextConfig = {
@@ -55,6 +56,14 @@ const nextConfig = {
      {
       key: 'Permissions-Policy',
       value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+     },
+     {
+      key: 'Cache-Control',
+      value: 'public, max-age=0, must-revalidate',
+     },
+     {
+      key: 'Strict-Transport-Security',
+      value: 'max-age=63072000; includeSubDomains; preload',
      },
     ],
    },
