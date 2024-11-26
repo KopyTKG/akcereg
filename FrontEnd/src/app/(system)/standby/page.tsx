@@ -2,8 +2,6 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import logoLight from '../../../../public/ujep-full-logo.webp'
-import Image from 'next/image'
 
 export default function StandByScreen() {
  return (
@@ -11,21 +9,16 @@ export default function StandByScreen() {
    <div className="max-w-6xl mx-auto space-y-8">
     <Card className="w-full">
      <CardHeader>
-      <CardTitle className="text-3xl flex flex-row justify-between">
+      <CardTitle className="text-3xl flex flex-row justify-between h-8">
        <div>
         Vítejte na <span className="font-bold dark:text-sky-200 text-sky-800">AkceReg</span>
        </div>
-       <div className='bg-stone-100/60 rounded-lg px-2 py-1'>
-       	<Image 
-	 src={logoLight}
-	 width={400}
-	 height={100}
-          style={{
-            objectFit: 'contain'
-          }}
-          priority
-	 alt="Logo UJEP"/>
-       </div>
+       <a
+        href="https://ujep.cz"
+        target="_blank"
+        rel="noreferrer"
+        className="dark:bg-stone-50 bg-stone-950 rounded-lg px-2 py-1 w-[22.6rem] h-[5rem] relative logo"
+       />
       </CardTitle>
      </CardHeader>
      <CardContent>
