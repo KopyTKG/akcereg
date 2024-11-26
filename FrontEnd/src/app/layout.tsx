@@ -15,10 +15,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
  return (
   <html lang="en">
    <body className={GeistSans.className}>
-    <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <Providers attribute="class" defaultTheme="light" disableTransitionOnChange>
      <main
       id="main"
-      className="min-h-[100vh] h-max pb-3 text-black bg-white dark:text-stone-50 dark:bg-black">
+      className="min-h-[100vh] h-max pb-3 text-black bg-white dark:text-stone-50 dark:bg-black"
+     >
       {children}
      </main>
     </Providers>
