@@ -1,6 +1,6 @@
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
@@ -11,7 +11,6 @@ const cspHeader = `
     upgrade-insecure-requests;
 `
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
  transpilePackages: ['lucide-react'],
  env: {
@@ -27,7 +26,7 @@ const nextConfig = {
     headers: [
      {
       key: 'Access-Control-Allow-Origin',
-      value: '*',
+      value: process.env.NEXT_PUBLIC_BASE || '*',
      },
      {
       key: 'Access-Control-Allow-Methods',
