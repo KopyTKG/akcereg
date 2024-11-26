@@ -1,7 +1,7 @@
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
-    style-src 'self';
+    style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
@@ -10,9 +10,9 @@ const cspHeader = `
     frame-ancestors 'none';
     upgrade-insecure-requests;
 `
-/** @type {import('next').NextConfig} */
+
 const nextConfig = {
- transpilePackages: ['lucide-react'], // add this
+ transpilePackages: ['lucide-react'],
  env: {
   NEXT_PUBLIC_BASE: process.env.NEXT_PUBLIC_BASE,
   NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
@@ -22,15 +22,15 @@ const nextConfig = {
  async headers() {
   return [
    {
-    source: '/',
+    source: '/:path*',
     headers: [
      {
       key: 'Access-Control-Allow-Origin',
-      value: '*', // Set your origin
+      value: process.env.NEXT_PUBLIC_BASE || '*',
      },
      {
       key: 'Access-Control-Allow-Methods',
-      value: 'GET',
+      value: 'GET, POST, PUT, DELETE, OPTIONS',
      },
      {
       key: 'Access-Control-Allow-Headers',
@@ -50,7 +50,7 @@ const nextConfig = {
      },
      {
       key: 'Referrer-Policy',
-      value: 'no-referrer',
+      value: 'strict-origin-when-cross-origin',
      },
      {
       key: 'Permissions-Policy',

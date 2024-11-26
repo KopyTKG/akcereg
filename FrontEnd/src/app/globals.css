@@ -26,3 +26,12 @@
 ::-webkit-scrollbar-thumb:window-inactive {
  background: #56a4ff;
 }
+
+.logo {
+  mask-image: url("/ujep_logo.webp");
+  mask-size: 22.6rem 5rem;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: url("/ujep_logo.webp");
+  -webkit-mask-size: 22.6rem 5rem;
+  -webkit-mask-repeat: no-repeat;
+}

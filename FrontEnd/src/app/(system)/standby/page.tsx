@@ -9,8 +9,16 @@ export default function StandByScreen() {
    <div className="max-w-6xl mx-auto space-y-8">
     <Card className="w-full">
      <CardHeader>
-      <CardTitle className="text-3xl">
-       Vítejte na <span className="font-bold dark:text-sky-200 text-sky-800">AkceReg</span>
+      <CardTitle className="text-3xl flex flex-row justify-between h-8">
+       <div>
+        Vítejte na <span className="font-bold dark:text-sky-200 text-sky-800">AkceReg</span>
+       </div>
+       <a
+        href="https://ujep.cz"
+        target="_blank"
+        rel="noreferrer"
+        className="dark:bg-stone-50 bg-stone-950 rounded-lg px-2 py-1 w-[22.6rem] h-[5rem] relative logo"
+       />
       </CardTitle>
      </CardHeader>
      <CardContent>

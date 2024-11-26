@@ -3,7 +3,6 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -12,6 +11,8 @@ const compat = new FlatCompat({
  recommendedConfig: js.configs.recommended,
  allConfig: js.configs.all,
 })
+
+const isProd = process.env.NODE_ENV === 'production'
 
 const settings = [
  { files: ['**/*.{jsx,ts,tsx}'] },
@@ -28,7 +29,9 @@ const settings = [
    globals: globals.browser,
   },
   rules: {
-   'prettier/prettier': 'off',
+   // Disable Prettier in production
+   'prettier/prettier': isProd ? 'off' : 'error',
+   // You can add more rules to disable in production if needed
   },
  },
  {
@@ -40,10 +43,8 @@ const settings = [
   'plugin:react/jsx-runtime',
   'plugin:react-hooks/recommended',
   'eslint:recommended',
-  'plugin:prettier/recommended',
   'plugin:@typescript-eslint/eslint-recommended',
  ),
- eslintPluginPrettierRecommended,
 ]
 
 export default settings

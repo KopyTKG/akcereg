@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useTheme } from 'next-themes'
+import { useLayoutEffect } from 'react'
 
 export default function NavbarComponent({
  id,
@@ -26,6 +27,12 @@ export default function NavbarComponent({
 }) {
  const router = useRouter()
  const { theme, setTheme } = useTheme()
+
+ useLayoutEffect(() => {
+  const themeItem = localStorage.getItem('theme')
+  if (!themeItem) localStorage.setItem('theme', theme || 'light')
+ }, [theme])
+
  return (
   <nav className="w-dvw flex justify-center py-3 border border-transparent border-b-zinc-500/50 shadow-md dark:shadow-zinc-900 fixed top-0 backdrop-blur-md">
    <section className="w-full flex max-w-6xl px-3 md:px-6 ">
@@ -64,7 +71,8 @@ export default function NavbarComponent({
          <DropdownMenuItem
           onClick={() => {
            router.push(`/student/${id}/profil`)
-          }}>
+          }}
+         >
           Profil
          </DropdownMenuItem>
         </>
@@ -73,13 +81,15 @@ export default function NavbarComponent({
         disabled={st}
         onClick={() => {
          router.push(`${url}/navod`)
-        }}>
+        }}
+       >
         Návod
        </DropdownMenuItem>
 
        <DropdownMenuItem
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className="flex gap-2">
+        className="flex gap-2"
+       >
         {theme === 'dark' ? (
          <Sun className="w-5 text-white fill-white" />
         ) : (
@@ -92,7 +102,8 @@ export default function NavbarComponent({
         onClick={() => {
          router.push(`/logout`)
         }}
-        className="text-red-600 dark:text-red-400">
+        className="text-red-600 dark:text-red-400"
+       >
         Odhlásit se
        </DropdownMenuItem>
       </DropdownMenuContent>
