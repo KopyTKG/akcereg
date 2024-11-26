@@ -28,10 +28,10 @@
 }
 
 .logo {
-  mask-image: url("@/assets/images/ujep_logo.webp");
+  mask-image: url("/ujep_logo.webp");
   mask-size: 22.6rem 5rem;
   mask-repeat: no-repeat;
-  -webkit-mask-image: url("@/assets/images/ujep_logo.webp");
+  -webkit-mask-image: url("/ujep_logo.webp");
   -webkit-mask-size: 22.6rem 5rem;
   -webkit-mask-repeat: no-repeat;
 }
