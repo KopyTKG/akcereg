@@ -90,7 +90,7 @@ export const config = {
  matcher: [
   {
    source:
-    '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*$).*)',
   },
   '/student/:path*',
   '/ucitel/:path+',

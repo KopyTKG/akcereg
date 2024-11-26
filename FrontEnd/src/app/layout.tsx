@@ -22,7 +22,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
  return (
-  <html lang="en">
+  <html lang="cs">
+   <head>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+   </head>
    <body className={GeistSans.className}>
     <Providers attribute="class" defaultTheme="light" disableTransitionOnChange>
      <main
