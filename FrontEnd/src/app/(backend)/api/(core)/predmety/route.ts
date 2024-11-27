@@ -11,7 +11,7 @@ export async function GET(req: Request) {
 
  if (isStudent(info)) return Forbidden()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/predmety`)
+ const url = new URL(`${process.env.API}/predmety`)
  url.searchParams.set('ticket', rTicket)
  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
  if (!res.ok && res.status == 401) {

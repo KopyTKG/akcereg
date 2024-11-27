@@ -27,7 +27,7 @@ export async function GET(req: Request) {
 
  if (!rId_stud) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/student`)
+ const url = new URL(`${process.env.API}/ucitel/student`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_stud', rId_stud)
 

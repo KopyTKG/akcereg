@@ -58,7 +58,7 @@ export async function getUserInfo(ticket: string): Promise<tUser | null> {
 }
 
 export async function getUserInfoV1(ticket: string): Promise<tUser | null> {
- const checkURL = new URL(`${process.env.NEXT_PUBLIC_API_URL}/setup`)
+ const checkURL = new URL(`${process.env.API}/setup`)
  checkURL.searchParams.set('ticket', ticket)
  const roleRes = await fetch(checkURL.toString(), { method: 'GET', headers: fastHeaders })
 

@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
  if (isStudent(info)) return Success()
  else {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/reset/ucitel`)
+  const url = new URL(`${process.env.API}/reset/ucitel`)
   url.searchParams.set('ticket', rTicket)
   const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
   if (!res.ok) {

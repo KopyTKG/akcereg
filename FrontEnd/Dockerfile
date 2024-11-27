@@ -30,9 +30,10 @@ RUN bun install
 
 # Build the project using Bun (this step will use placeholder values for env vars)
 RUN NEXT_PUBLIC_BASE="__NEXT_PUBLIC_BASE__" \
-    NEXT_PUBLIC_API_URL="__NEXT_PUBLIC_API_URL__" \
+    API="__API__" \
+    BASE="__BASE__"\
     NEXT_PUBLIC_TIME_GAP="__NEXT_PUBLIC_TIME_GAP__" \
-    NEXT_PUBLIC_STAG_SERVER="__NEXT_PUBLIC_STAG_SERVER__" \
+    STAG_SERVER="__STAG_SERVER__" \
     bun run build
 
 # Adjust ownership and permissions

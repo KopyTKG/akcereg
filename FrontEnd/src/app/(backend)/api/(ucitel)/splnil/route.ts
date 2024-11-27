@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
  if (!rId_stud || !rId_terminu) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/splnit`)
+ const url = new URL(`${process.env.API}/ucitel/splnit`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_stud', rId_stud)
  url.searchParams.set('id_terminu', rId_terminu)
@@ -45,7 +45,7 @@ export async function DELETE(req: Request) {
 
  if (!rId_stud || !rId_terminu) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/splnit`)
+ const url = new URL(`${process.env.API}/ucitel/splnit`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_stud', rId_stud)
  url.searchParams.set('id_terminu', rId_terminu)

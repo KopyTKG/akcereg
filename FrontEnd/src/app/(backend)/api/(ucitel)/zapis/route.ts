@@ -16,7 +16,7 @@ export async function GET(req: Request) {
 
  if (!rId_stud || !rId_terminu) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/zapis`)
+ const url = new URL(`${process.env.API}/ucitel/zapis`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_stud', rId_stud)
  url.searchParams.set('id_terminu', rId_terminu)

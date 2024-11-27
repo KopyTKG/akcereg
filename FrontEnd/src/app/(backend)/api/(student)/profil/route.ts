@@ -10,7 +10,7 @@ export async function GET(req: Request) {
  if (!info) return Unauthorized()
  if (!isStudent(info)) return Forbidden()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/profil`)
+ const url = new URL(`${process.env.API}/profil`)
  url.searchParams.set('ticket', rTicket)
 
  const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
