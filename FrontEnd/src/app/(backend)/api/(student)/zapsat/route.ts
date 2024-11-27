@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
  if (!rID || !rType) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/student`)
+ const url = new URL(`${process.env.API}/student`)
  url.searchParams.set('id_terminu', rID)
  url.searchParams.set('typ', rType)
  url.searchParams.set('ticket', rTicket)

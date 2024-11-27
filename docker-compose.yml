@@ -21,10 +21,11 @@ services:
   frontend:
     image: ghcr.io/kopytkg/akcereg-fe:latest
     environment:
-      NEXT_PUBLIC_BASE: "http://localhost:3000"
-      NEXT_PUBLIC_API_URL: "http://backend:9999"
+      NEXT_PUBLIC_BASE: "https://chat.local.thekrew.app"
       NEXT_PUBLIC_TIME_GAP: 8
-      NEXT_PUBLIC_STAG_SERVER: "https://stag-demo.zcu.cz/ws"
+      BASE: "https://chat.local.thekrew.app"
+      API: "http://backend:9999"
+      STAG_SERVER: "https://stag-demo.zcu.cz/ws"
     container_name: laborky_FE
     restart: unless-stopped
     ports:

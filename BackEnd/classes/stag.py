@@ -67,7 +67,6 @@ def get_stag_user_info(ticket):
         raise Exception("missing response from stag")
     try:
         response = response.json()
-        return response
     except KeyboardInterrupt:
         os.close(1)
     except SystemExit:
@@ -75,7 +74,7 @@ def get_stag_user_info(ticket):
     except Exception as e:
         log(ERROR, e)
         return internal_server_error
-    return internal_server_error
+    return response
 
 
 def bool_existuje_predmet(ticket, katedra, zkratka_predmetu):

@@ -1,31 +1,27 @@
-'use client'
-import { useLayoutEffect } from 'react'
-import { fastHeaders } from '@/lib/stag'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
- useLayoutEffect(() => {
-  const redirectUrl = `${process.env.NEXT_PUBLIC_STAG_SERVER}/login?originalURL=${process.env.NEXT_PUBLIC_BASE}/login`
-  const searchParams = new URLSearchParams(window.location.search)
-  const params = {
-   stagUserTicket: searchParams.get('stagUserTicket'),
-  }
-  if (params.stagUserTicket != null) {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/login`)
-   fetch(url, {
-    method: 'GET',
-    headers: { ...fastHeaders, 'x-svt': params.stagUserTicket },
-    credentials: 'include',
-   }).then((data) => {
-    if (!data.ok) {
-     window.location.href = '/logout'
-    } else {
-     window.location.href = '/'
-    }
-   })
-  } else if (!window.location.href.includes(redirectUrl)) {
-   window.location.href = redirectUrl
-  }
- }, [])
+export default async function LoginPage({
+ searchParams,
+}: {
+ searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+ const stagServer = process.env.STAG_SERVER
+ const baseUrl = process.env.BASE
 
- return <main>Login in ...</main>
+ if (!stagServer || !baseUrl) {
+  throw new Error('Missing environment variables')
+ }
+
+ // Correctly access searchParams
+ const { s } = await searchParams
+
+ // Check if 's' parameter is 'true'
+ if (s === 'true') {
+  // If 's' is 'true', redirect to home page
+  redirect('/?s=true')
+ }
+
+ // If 's' is not 'true' or doesn't exist, proceed with the original redirection
+ const redirectUrl = `${stagServer}/login?originalURL=${baseUrl}/login`
+ redirect(redirectUrl)
 }

@@ -1,26 +1,39 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import { getUserInfoV1 } from '@/lib/stag'
-import { isAdmin, isStudent } from './lib/functions'
-import { decrypt } from './lib/crypto'
+import { isAdmin, isStudent } from '@/lib/functions'
+import { decrypt, encrypt } from '@/lib/crypto'
 
 export async function middleware(request: NextRequest) {
- // Missing ticket = kick user
- if (!BaseAuth(request)) {
-  request.nextUrl.pathname = '/standby'
-  return NextResponse.redirect(request.nextUrl)
- }
-
  // Const for regex filtering
  const { pathname } = request.nextUrl
 
- // Get ticket from cookies and decrypt it
- const eTicket = request.cookies.get('x-svt')?.value || ''
- const ticket = decrypt(request, eTicket)
+ const searchParams = new URL(request.url).searchParams
 
- // Missing ticket reload
- if (!ticket) {
+ // login from STAG
+ if (pathname === '/login') {
+  if (searchParams.has('stagUserTicket')) {
+   const ticket = searchParams.get('stagUserTicket')
+   if (!ticket) return NextResponse.next()
+
+   const rTicket = encrypt(request, ticket)
+   const response = NextResponse.redirect(new URL('/', request.url))
+   response.cookies.set('x-svt', rTicket, {
+    path: '/',
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+   })
+   return response
+  }
   return NextResponse.next()
+ }
+
+ if (pathname === '/' && searchParams.has('s')) {
+  request.nextUrl.pathname = '/'
+  request.nextUrl.search = ''
+  return NextResponse.redirect(request.nextUrl)
  }
 
  // Handle student path matching
@@ -28,6 +41,21 @@ export async function middleware(request: NextRequest) {
  const ucitelPathMatch = pathname.match(
   /^\/ucitel\/([^/]+)(\/termin\/[^/]+|\/hledat+|\/predmety+|\/terminy+)?$/,
  )
+
+ // Get ticket from cookies and
+ const eTicket = request.cookies.get('x-svt')?.value
+
+ if (!eTicket) {
+  return NextResponse.redirect(new URL('/login', request.url))
+ }
+
+ // Decrypt ticket
+ const ticket = decrypt(request, eTicket)
+
+ // Missing ticket reload
+ if (!ticket) {
+  return NextResponse.redirect(request.url)
+ }
 
  // Get info from stag if not kick user
  const info = await getUserInfoV1(ticket)
@@ -57,7 +85,7 @@ export async function middleware(request: NextRequest) {
      path: '/',
      httpOnly: true,
     })
-   } else {
+   } else if (res.cookies.has('x-cvt')) {
     res.cookies.delete('x-cvt')
    }
   }
@@ -82,25 +110,9 @@ export async function middleware(request: NextRequest) {
    return NextResponse.redirect(request.nextUrl)
   }
  }
-
  return NextResponse.next()
 }
 
 export const config = {
- matcher: [
-  {
-   source:
-    '/((?!login|logout|standby|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*$).*)',
-  },
-  '/student/:path*',
-  '/ucitel/:path+',
- ],
-}
-
-function BaseAuth(request: NextRequest) {
- if (request.cookies.get('x-svt') && request.cookies.get('x-svt')?.value != '') {
-  return true
- } else {
-  return false
- }
+ matcher: ['/', '/login', '/student/:path*', '/ucitel/:path+', '/termin/:path*'],
 }

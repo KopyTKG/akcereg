@@ -5,7 +5,7 @@ export async function GET(req: Request) {
  const rTicket = getTicketV2(req)
  if (!rTicket) return Unauthorized()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_STAG_SERVER}/services/rest2/help/invalidateTicket`)
+ const url = new URL(`${process.env.STAG_SERVER}/services/rest2/help/invalidateTicket`)
  url.searchParams.set('ticket', rTicket)
 
  const res = await fetch(url.toString(), {

@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   vyucuje_jmeno: body.jmeno,
  }
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/termin`)
+ const url = new URL(`${process.env.API}/ucitel/termin`)
  url.searchParams.set('ticket', rTicket)
  const res = await fetch(url.toString(), {
   method: 'POST',
@@ -72,7 +72,7 @@ export async function GET(req: Request) {
  const rID = base.searchParams.get('id') || ''
  if (!rID) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/termin`)
+ const url = new URL(`${process.env.API}/ucitel/termin`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_terminu', rID)
 
@@ -117,7 +117,7 @@ export async function PATCH(req: Request) {
  const rID = base.searchParams.get('id') || ''
  if (!rID) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/termin`)
+ const url = new URL(`${process.env.API}/ucitel/termin`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_terminu', rID)
 
@@ -167,7 +167,7 @@ export async function DELETE(req: Request) {
  const rID = base.searchParams.get('id') || ''
  if (!rID) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/termin`)
+ const url = new URL(`${process.env.API}/ucitel/termin`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('id_terminu', rID)
 

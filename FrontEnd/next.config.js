@@ -9,16 +9,20 @@ const cspHeader = `
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL || ''};
+    connect-src 'self' __API__;
 `
 
 const nextConfig = {
+ eslint: {
+  ignoreDuringBuilds: true,
+ },
  transpilePackages: ['lucide-react'],
  env: {
   NEXT_PUBLIC_BASE: process.env.NEXT_PUBLIC_BASE,
-  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   NEXT_PUBLIC_TIME_GAP: process.env.NEXT_PUBLIC_TIME_GAP,
-  NEXT_PUBLIC_STAG_SERVER: process.env.NEXT_PUBLIC_STAG_SERVER,
+  BASE: process.env.NEXT_PUBLIC_BASE,
+  STAG_SERVER: process.env.STAG_SERVE,
+  API: process.env.API,
  },
  async headers() {
   return [

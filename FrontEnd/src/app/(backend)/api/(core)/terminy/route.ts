@@ -23,7 +23,7 @@ export async function GET(req: Request) {
  if (!rType || (rType != 'vypsane' && rType != 'zapsane')) {
   return NotFound()
  } else if (rType === 'vypsane') {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}${apipoint}`)
+  const url = new URL(`${process.env.API}${apipoint}`)
   url.searchParams.set('ticket', rTicket)
   const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
   if (!res.ok) {
@@ -34,7 +34,7 @@ export async function GET(req: Request) {
   const sorted = terminy.sort((a, b) => new Date(a.konec).getTime() - new Date(b.konec).getTime())
   return Success({ data: sorted })
  } else {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}${apipoint}/moje`)
+  const url = new URL(`${process.env.API}${apipoint}/moje`)
   url.searchParams.set('ticket', rTicket)
   const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
   if (!res.ok) {

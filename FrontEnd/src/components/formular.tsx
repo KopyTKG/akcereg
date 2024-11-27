@@ -99,7 +99,6 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
    jmeno: values.vJmeno || '',
    prijmeni: values.vPrijmeni || '',
   }
-  console.log(body)
   if (body.cviceni > 0) body.nazev = `${body._id} cvičení ${body.cviceni}`
 
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
@@ -203,7 +202,8 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
             field.onChange(value)
             setPredmet(predmety.find((p) => p._id === value) || DefaultPredmet)
            }}
-           defaultValue={field.value}>
+           defaultValue={field.value}
+          >
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte předmět" />
@@ -237,7 +237,8 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
           <Select
            onValueChange={field.onChange}
            defaultValue={field.value}
-           disabled={!predmet || predmet.nCviceni === 0}>
+           disabled={!predmet || predmet.nCviceni === 0}
+          >
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte cvičení" />
@@ -341,7 +342,8 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
                className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',
-               )}>
+               )}
+              >
                {field.value ? (
                 format(field.value, 'PPP', { locale: cs })
                ) : (
@@ -401,7 +403,8 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
                className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',
-               )}>
+               )}
+              >
                {field.value ? (
                 format(field.value, 'PPP', { locale: cs })
                ) : (

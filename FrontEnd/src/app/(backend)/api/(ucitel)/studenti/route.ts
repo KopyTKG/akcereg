@@ -14,7 +14,7 @@ export async function GET(req: Request) {
  const rKod = base.searchParams.get('kod_predmetu') || ''
  if (!rKod) return NotFound()
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/ucitel/uspesni_studenti`)
+ const url = new URL(`${process.env.API}/ucitel/uspesni_studenti`)
  url.searchParams.set('ticket', rTicket)
  url.searchParams.set('kod_predmetu', rKod)
 

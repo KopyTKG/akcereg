@@ -28,7 +28,7 @@ export async function GET(req: Request) {
  if (rVybrane) params = `/ucitel/board_by_predmet`
  else params = `${apipoint}/moje`
 
- const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}${params}`)
+ const url = new URL(`${process.env.API}${params}`)
  url.searchParams.set('ticket', rTicket)
  if (rVybrane) url.searchParams.set('predmety', rVybrane.split('-').join(';'))
  url.searchParams.set('probehle', all)

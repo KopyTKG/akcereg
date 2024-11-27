@@ -1,4 +1,5 @@
 import hashlib
+from logging import ERROR, log
 from lib.HTTP_messages import unauthorized, internal_server_error, ok
 from classes.stag import get_stag_user_info, get_userid_and_role, get_vyucujici_predmetu_stag 
 from classes.vyucujici import compare_encoded, get_studenti_na_predmetu, get_studenti_info
@@ -59,7 +60,8 @@ def kontrola_ticketu(ticket, vyucujici = True):
                 return unauthorized
 
         return [userid, role]
-    except:
+    except Exception as e:
+        log(ERROR, e)
         return internal_server_error
 
 
