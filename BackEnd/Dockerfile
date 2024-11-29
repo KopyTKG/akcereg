@@ -10,8 +10,7 @@ RUN wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
 RUN tar -xzvf Python-3.13.0.tgz && cd Python-3.13.0 && ./configure --enable-optimizations && make && make install
 
 
-RUN USERadd -ms /bin/bash py
-
+RUN useradd -ms /bin/bash py
 # Set working directory
 WORKDIR /home/py/laborky
 
