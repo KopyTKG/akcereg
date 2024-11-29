@@ -1,5 +1,5 @@
 # Use Alpine as the base image
-FROM ubuntu:24.10 AS build
+FROM ubuntu:24.04 AS build
 
 # Install necessary packages: curl, bash, and unzip
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
