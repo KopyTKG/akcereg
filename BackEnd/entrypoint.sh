@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "PORT=$PORT
 HOST=$HOST
