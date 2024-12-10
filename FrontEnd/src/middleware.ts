@@ -17,15 +17,24 @@ export async function middleware(request: NextRequest) {
    if (!ticket) return NextResponse.next()
 
    const rTicket = encrypt(request, ticket)
-   const response = NextResponse.redirect(new URL('/', request.url))
-   response.cookies.set('x-svt', rTicket, {
-    path: '/',
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 60 * 60 * 24 * 7, // 1 week
-   })
-   return response
+   if (rTicket) {
+    const response = NextResponse.redirect(new URL('/', request.url))
+    response.cookies.set('x-svt', rTicket, {
+     path: '/',
+     httpOnly: true,
+     sameSite: 'lax',
+     secure: process.env.NODE_ENV === 'production',
+     maxAge: 60 * 60 * 24 * 7, // 1 week
+    })
+    return response
+   } else {
+    const response = NextResponse.redirect(new URL('/standby', request.url))
+    const cookies = request.cookies.getAll()
+    cookies.forEach((cookie) => {
+     response.cookies.delete(cookie.name)
+    })
+    return response
+   }
   }
   return NextResponse.next()
  }
@@ -54,7 +63,12 @@ export async function middleware(request: NextRequest) {
 
  // Missing ticket reload
  if (!ticket) {
-  return NextResponse.redirect(request.url)
+  const response = NextResponse.redirect(new URL('/standby', request.url))
+  const cookies = request.cookies.getAll()
+  cookies.forEach((cookie) => {
+   response.cookies.delete(cookie.name)
+  })
+  return response
  }
 
  // Get info from stag if not kick user
@@ -83,7 +97,7 @@ export async function middleware(request: NextRequest) {
    if (isAdmin(info)) {
     res.cookies.set('x-cvt', 'true', {
      path: '/',
-     httpOnly: true,
+     secure: true,
     })
    } else if (res.cookies.has('x-cvt')) {
     res.cookies.delete('x-cvt')

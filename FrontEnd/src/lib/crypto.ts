@@ -1,6 +1,7 @@
+import { log } from 'console'
 import { SHA3 } from 'sha3'
 
-export function encrypt(req: Request, ticket: string): string {
+export function encrypt(req: Request, ticket: string): string | null {
  const hash = new SHA3(512)
 
  const headers = req.headers
@@ -14,25 +15,30 @@ export function encrypt(req: Request, ticket: string): string {
  const bIp = shaToArr(hashIp)
  const bUa = shaToArr(hashUa)
 
- const block: Uint32Array = ticketToArr(ticket)
- const rk: Uint32Array = keygen(bIp, bUa)
+ try {
+  const block: Uint32Array = ticketToArr(ticket)
 
- const left = block.slice(0, 4)
- const right = block.slice(4)
+  const rk: Uint32Array = keygen(bIp, bUa)
 
- for (let i = 0; i < 32; i++) {
-  encRound(left, rk, i)
+  const left = block.slice(0, 4)
+  const right = block.slice(4)
+
+  for (let i = 0; i < 32; i++) {
+   encRound(left, rk, i)
+  }
+
+  for (let i = 0; i < 32; i++) {
+   encRound(right, rk, i)
+  }
+
+  const encb: Uint32Array = new Uint32Array([...left, ...right])
+  return uint32ArrayToHex(encb)
+ } catch {
+  return null
  }
-
- for (let i = 0; i < 32; i++) {
-  encRound(right, rk, i)
- }
-
- const encb: Uint32Array = new Uint32Array([...left, ...right])
- return uint32ArrayToHex(encb)
 }
 
-export function decrypt(req: Request, ticket: string): string {
+export function decrypt(req: Request, ticket: string): string | null {
  const hash = new SHA3(512)
 
  const headers = req.headers
@@ -46,22 +52,26 @@ export function decrypt(req: Request, ticket: string): string {
  const bIp = shaToArr(hashIp)
  const bUa = shaToArr(hashUa)
 
- const block: Uint32Array = ticketToArr(ticket)
- const rk: Uint32Array = keygen(bIp, bUa)
+ try {
+  const block: Uint32Array = ticketToArr(ticket)
+  const rk: Uint32Array = keygen(bIp, bUa)
 
- const left = block.slice(0, 4)
- const right = block.slice(4)
+  const left = block.slice(0, 4)
+  const right = block.slice(4)
 
- for (let i = 31; i >= 0; i--) {
-  decRound(left, rk, i)
+  for (let i = 31; i >= 0; i--) {
+   decRound(left, rk, i)
+  }
+
+  for (let i = 31; i >= 0; i--) {
+   decRound(right, rk, i)
+  }
+
+  const decb: Uint32Array = new Uint32Array([...left, ...right])
+  return uint32ArrayToHex(decb)
+ } catch {
+  return null
  }
-
- for (let i = 31; i >= 0; i--) {
-  decRound(right, rk, i)
- }
-
- const decb: Uint32Array = new Uint32Array([...left, ...right])
- return uint32ArrayToHex(decb)
 }
 
 function uint32ArrayToHex(uint32Array: Uint32Array): string {
