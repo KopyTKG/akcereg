@@ -26,6 +26,7 @@ EXPOSE 9999
 # Switch back to root for final permission adjustments
 USER root
 RUN chmod -R 700 /home/py/laborky
+RUN chmod +x /home/py/laborky/entrypoint.sh
 
 # Revert to non-root user
 USER py
