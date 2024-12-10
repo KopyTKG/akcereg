@@ -1,4 +1,3 @@
-import { log } from 'console'
 import { SHA3 } from 'sha3'
 
 export function encrypt(req: Request, ticket: string): string | null {
