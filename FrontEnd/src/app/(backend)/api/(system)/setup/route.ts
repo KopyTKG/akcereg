@@ -7,6 +7,9 @@ export async function GET(req: Request) {
  if (!eTicket) return Unauthorized()
 
  const rTicket = decrypt(req, eTicket)
+ if (!rTicket) {
+  return Internal()
+ }
  const url = new URL(`${process.env.API}/setup`)
  url.searchParams.set('ticket', rTicket)
 

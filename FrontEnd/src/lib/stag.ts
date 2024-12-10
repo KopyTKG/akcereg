@@ -31,7 +31,7 @@ export function getTicketV2(req: Request): string | null {
 
  const ticket = cookies.filter((str) => str.includes('x-svt='))
  const eTicket = ticket[0].split('=')[1] || ''
- let rTicket = ''
+ let rTicket: string | null = ''
  try {
   rTicket = decrypt(req, eTicket)
  } catch (e) {
