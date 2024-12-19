@@ -1,3 +1,4 @@
+/* disable eslint */
 'use client'
 
 export function preventDevTools() {
@@ -50,13 +51,14 @@ export function preventDevTools() {
 
  // Detect debugging through Function.prototype.toString
  function detectFunctionBreakpoints() {
-  const oldToString = Function.prototype.toString
-  Function.prototype.toString = function () {
+  const oldToString = Function.prototype.toString as unknown as (...args: any[]) => string
+
+  Function.prototype.toString = function (this: Function, ...args: any[]) {
    const stack = new Error().stack || ''
    if (stack.includes('debug')) {
     document.body.innerHTML = 'Debugging is not allowed!'
    }
-   return oldToString.apply(this, arguments)
+   return oldToString.call(this, ...args)
   }
  }
 
