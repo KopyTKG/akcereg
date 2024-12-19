@@ -1,17 +1,3 @@
-const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
-    font-src 'self' data:;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    upgrade-insecure-requests;
-    connect-src 'self' __API__;
-`
-
 const nextConfig = {
  eslint: {
   ignoreDuringBuilds: true,
@@ -31,7 +17,7 @@ const nextConfig = {
     headers: [
      {
       key: 'Access-Control-Allow-Origin',
-      value: process.env.NEXT_PUBLIC_BASE || '*',
+      value: process.env.NEXT_PUBLIC_BASE || 'null',
      },
      {
       key: 'Access-Control-Allow-Methods',
@@ -42,12 +28,8 @@ const nextConfig = {
       value: 'Content-Type, Authorization',
      },
      {
-      key: 'Content-Security-Policy',
-      value: cspHeader.replace(/\n/g, ''),
-     },
-     {
       key: 'X-Frame-Options',
-      value: 'SAMEORIGIN',
+      value: 'DENY',
      },
      {
       key: 'X-Content-Type-Options',
@@ -68,6 +50,10 @@ const nextConfig = {
      {
       key: 'Strict-Transport-Security',
       value: 'max-age=63072000; includeSubDomains; preload',
+     },
+     {
+      key: 'X-XSS-Protection',
+      value: '1; mode=block',
      },
     ],
    },

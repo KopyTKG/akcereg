@@ -14,11 +14,12 @@ export async function middleware(request: NextRequest) {
  if (pathname === '/login') {
   if (searchParams.has('stagUserTicket')) {
    const ticket = searchParams.get('stagUserTicket')
-   if (!ticket) return NextResponse.next()
+   if (!ticket) return Pass(request)
 
    const rTicket = encrypt(request, ticket)
    if (rTicket) {
-    const response = NextResponse.redirect(new URL('/', request.url))
+    request.nextUrl.pathname = '/'
+    const response = Redirect(request)
     response.cookies.set('x-svt', rTicket, {
      path: '/',
      httpOnly: true,
@@ -28,7 +29,8 @@ export async function middleware(request: NextRequest) {
     })
     return response
    } else {
-    const response = NextResponse.redirect(new URL('/standby', request.url))
+    request.nextUrl.pathname = '/standby'
+    const response = Redirect(request)
     const cookies = request.cookies.getAll()
     cookies.forEach((cookie) => {
      response.cookies.delete(cookie.name)
@@ -36,13 +38,13 @@ export async function middleware(request: NextRequest) {
     return response
    }
   }
-  return NextResponse.next()
+  return Pass(request)
  }
 
  if (pathname === '/' && searchParams.has('s')) {
   request.nextUrl.pathname = '/'
   request.nextUrl.search = ''
-  return NextResponse.redirect(request.nextUrl)
+  return Redirect(request)
  }
 
  // Handle student path matching
@@ -55,7 +57,8 @@ export async function middleware(request: NextRequest) {
  const eTicket = request.cookies.get('x-svt')?.value
 
  if (!eTicket) {
-  return NextResponse.redirect(new URL('/login', request.url))
+  request.nextUrl.pathname = '/login'
+  return Redirect(request)
  }
 
  // Decrypt ticket
@@ -63,7 +66,8 @@ export async function middleware(request: NextRequest) {
 
  // Missing ticket reload
  if (!ticket) {
-  const response = NextResponse.redirect(new URL('/standby', request.url))
+  request.nextUrl.pathname = '/standby'
+  const response = Redirect(request)
   const cookies = request.cookies.getAll()
   cookies.forEach((cookie) => {
    response.cookies.delete(cookie.name)
@@ -75,24 +79,23 @@ export async function middleware(request: NextRequest) {
  const info = await getUserInfoV1(ticket)
  if (!info) {
   request.nextUrl.pathname = '/logout'
-  return NextResponse.redirect(request.nextUrl)
+  return Redirect(request)
  }
 
  // Route handeling for auth users
  if (isStudent(info) && ucitelPathMatch) {
   request.nextUrl.pathname = '/'
-  const res = NextResponse.redirect(request.nextUrl)
-  return res
+  return Redirect(request)
  }
 
  // Check student poth
  if (studentPathMatch && studentPathMatch[1] === info.id) {
-  return NextResponse.next()
+  return Pass(request)
  }
 
  // Check teacher path
  if (ucitelPathMatch && ucitelPathMatch[1] === info.id) {
-  const res = NextResponse.next()
+  const res = Pass(request)
   if (info) {
    if (isAdmin(info)) {
     res.cookies.set('x-cvt', 'true', {
@@ -113,7 +116,7 @@ export async function middleware(request: NextRequest) {
   } else {
    request.nextUrl.pathname = `/ucitel/${info.id}`
   }
-  return NextResponse.redirect(request.nextUrl)
+  return Redirect(request)
  }
 
  const terminPathMatch = pathname.match(/^\/termin\/([^/]+)$/)
@@ -121,10 +124,64 @@ export async function middleware(request: NextRequest) {
   const terminID = terminPathMatch[1]
   if (!info.role.includes('ST')) {
    request.nextUrl.pathname = `/ucitel/${info.id}/termin/${terminID}`
-   return NextResponse.redirect(request.nextUrl)
+   return Redirect(request)
   }
  }
- return NextResponse.next()
+ return Pass(request)
+}
+
+function GetCSP() {
+ const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+
+ const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data: https:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+    connect-src 'self' ${process.env.NEXT_PUBLIC_BASE} ;
+  `
+
+ const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/g, ' ').trim()
+ return { nonce, contentSecurityPolicyHeaderValue }
+}
+
+function Redirect(request: NextRequest): NextResponse {
+ const { nonce, contentSecurityPolicyHeaderValue } = GetCSP()
+ const requestHeaders = new Headers(request.headers)
+ requestHeaders.set('x-nonce', nonce)
+
+ requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+
+ const response = NextResponse.redirect(new URL(request.nextUrl), {
+  headers: requestHeaders,
+ })
+ response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+
+ return response
+}
+
+function Pass(request: NextRequest): NextResponse {
+ const { nonce, contentSecurityPolicyHeaderValue } = GetCSP()
+ const requestHeaders = new Headers(request.headers)
+ requestHeaders.set('x-nonce', nonce)
+
+ requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+
+ const response = NextResponse.next({
+  request: {
+   headers: requestHeaders,
+  },
+ })
+ response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+
+ return response
 }
 
 export const config = {

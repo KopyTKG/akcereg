@@ -1,6 +1,8 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
+import { headers } from 'next/headers'
+import Script from 'next/script'
 
 import './globals.css'
 import { Providers } from './providers'
@@ -20,7 +22,13 @@ export const metadata: Metadata = {
  },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+ const nonce = (await headers()).get('x-nonce')
+
+ if (!nonce) {
+  return <b>Loading ....</b>
+ }
+
  return (
   <html lang="cs">
    <head>
@@ -35,6 +43,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {children}
      </main>
     </Providers>
+    <Script
+     nonce={nonce}
+     id="my-script"
+     dangerouslySetInnerHTML={{
+      __html: `console.log('This inline script is allowed because it has the correct nonce')`,
+     }}
+    />
+    
    </body>
   </html>
  )
