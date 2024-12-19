@@ -32,7 +32,13 @@ const settings = [
   },
  },
  {
-  ignores: ['src/components/ui/*.{ts,tsx}', 'src/hooks/*.{ts,js}', '.next/', 'node_modules/'],
+  ignores: [
+   'src/components/ui/*.{ts,tsx}',
+   'src/hooks/*.{ts,js}',
+   '.next/',
+   'node_modules/',
+   'src/lib/prevent-devtools.ts',
+  ],
  },
  ...compat.extends(
   'next/core-web-vitals',
