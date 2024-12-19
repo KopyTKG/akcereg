@@ -10,6 +10,10 @@ export async function middleware(request: NextRequest) {
 
  const searchParams = new URL(request.url).searchParams
 
+ if (pathname === '/standby') {
+  return Pass(request)
+ }
+
  // login from STAG
  if (pathname === '/login') {
   if (searchParams.has('stagUserTicket')) {
@@ -19,6 +23,7 @@ export async function middleware(request: NextRequest) {
    const rTicket = encrypt(request, ticket)
    if (rTicket) {
     request.nextUrl.pathname = '/'
+    request.nextUrl.search = ''
     const response = Redirect(request)
     response.cookies.set('x-svt', rTicket, {
      path: '/',
@@ -27,6 +32,7 @@ export async function middleware(request: NextRequest) {
      secure: process.env.NODE_ENV === 'production',
      maxAge: 60 * 60 * 24 * 7, // 1 week
     })
+
     return response
    } else {
     request.nextUrl.pathname = '/standby'
@@ -135,7 +141,7 @@ function GetCSP() {
 
  const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval';
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https:;
     font-src 'self';
@@ -185,5 +191,5 @@ function Pass(request: NextRequest): NextResponse {
 }
 
 export const config = {
- matcher: ['/', '/login', '/student/:path*', '/ucitel/:path+', '/termin/:path*'],
+ matcher: ['/', '/standby', '/login', '/student/:path*', '/ucitel/:path+', '/termin/:path*'],
 }

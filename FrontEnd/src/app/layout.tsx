@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { headers } from 'next/headers'
 import Script from 'next/script'
+import { DevToolsProtection } from '@/components/devtools-protection'
 
 import './globals.css'
 import { Providers } from './providers'
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <link rel="icon" href="/favicon.ico" sizes="any" />
    </head>
    <body className={GeistSans.className}>
+    <DevToolsProtection />
     <Providers attribute="class" defaultTheme="light" disableTransitionOnChange>
      <main
       id="main"
