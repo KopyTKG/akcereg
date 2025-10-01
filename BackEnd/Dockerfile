@@ -1,16 +1,16 @@
 # Base image with Python 3
-FROM python:3.13.0-alpine3.20 AS build
+FROM python:3-alpine AS build
 
 
 # Create a non-root user
 RUN adduser -D -s /bin/bash py
 
 # Set working directory
-WORKDIR /home/py/laborky
+WORKDIR /home/py/akcereg
 
 # Copy application files
 COPY . .
-RUN chown -R py /home/py/laborky
+RUN chown -R py /home/py/akcereg
 
 # Switch to non-root user
 USER py
@@ -25,8 +25,8 @@ EXPOSE 9999
 
 # Switch back to root for final permission adjustments
 USER root
-RUN chmod -R 700 /home/py/laborky
-RUN chmod +x /home/py/laborky/entrypoint.sh
+RUN chmod -R 700 /home/py/akcereg
+RUN chmod +x /home/py/akcereg/entrypoint.sh
 
 # Revert to non-root user
 USER py

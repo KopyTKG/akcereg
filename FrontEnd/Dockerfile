@@ -1,5 +1,4 @@
-# Use Alpine as the base image
-FROM ubuntu:24.04 AS build
+FROM ubuntu:noble AS build
 
 # Install necessary packages: curl, bash, and unzip
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
@@ -17,13 +16,13 @@ RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/home/bun/.bun/bin:${PATH}"
 
 # Set working directory
-WORKDIR /home/bun/laborky
+WORKDIR /home/bun/akcereg
 
 
 # Copy package manifests to leverage Docker cache
 COPY . .
 USER root
-RUN chown -R bun /home/bun/laborky
+RUN chown -R bun /home/bun/akcereg
 USER bun
 # Install dependencies using Bun
 RUN bun install
@@ -37,7 +36,7 @@ RUN NEXT_PUBLIC_BASE="__NEXT_PUBLIC_BASE__" \
     bun run build
 
 # Adjust ownership and permissions
-RUN chmod -R 700 /home/bun/laborky
+RUN chmod -R 700 /home/bun/akcereg
 
 USER root
 
