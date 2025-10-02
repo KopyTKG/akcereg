@@ -17,6 +17,17 @@ export function getTicketX(req: Request): string | null {
  }
  return rTicket
 }
+/* Header Based ticket in X-Stag-Ticket */
+export function getTicketHash(req: Request): string | null {
+ const headers = req.headers
+ const hash = headers.get('x-svh') || ''
+
+ if (!hash) {
+  return null
+ }
+ return hash
+}
+
 /* Header Based ticket */
 export function getTicketV2(req: Request): string | null {
  const headers = req.headers
@@ -43,26 +54,12 @@ export function getTicketV2(req: Request): string | null {
  return rTicket
 }
 
-export async function getUserInfo(ticket: string): Promise<tUser | null> {
- const checkURL = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/setup`)
- const roleRes = await fetch(checkURL, {
-  method: 'GET',
-  headers: { ...fastHeaders, 'x-svt': ticket },
- })
-
- if (!roleRes.ok) return null
-
- const data = await roleRes.json()
- return setupParser(data)
-}
-
 export async function getUserInfoV1(ticket: string): Promise<tUser | null> {
- const checkURL = new URL(`${process.env.API}/setup`)
+ const checkURL = new URL(`${process.env.BASE}/api/setup`)
  checkURL.searchParams.set('ticket', ticket)
- const roleRes = await fetch(checkURL.toString(), { method: 'GET', headers: fastHeaders })
+ const res = await fetch(checkURL.toString(), { method: 'GET' })
 
- if (!roleRes.ok) return null
-
- const data = await roleRes.json()
- return setupParser(data)
+ if (!res.ok) return null
+ const data = await res.json()
+ return data.info
 }

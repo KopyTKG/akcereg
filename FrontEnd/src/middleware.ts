@@ -1,8 +1,7 @@
-import { NextResponse } from 'next/server'
-import { NextRequest } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { getUserInfoV1 } from '@/lib/stag'
 import { isAdmin, isStudent } from '@/lib/functions'
-import { decrypt, encrypt } from '@/lib/crypto'
+import { decrypt, encrypt, getHash } from '@/lib/crypto'
 
 export async function middleware(request: NextRequest) {
  // Const for regex filtering
@@ -17,8 +16,11 @@ export async function middleware(request: NextRequest) {
    if (!ticket) return NextResponse.next()
 
    const rTicket = encrypt(request, ticket)
+   const ticketHash = getHash(ticket)
+
    if (rTicket) {
     const response = NextResponse.redirect(new URL('/', request.url))
+    // Set x-svt (STAG verification ticket)
     response.cookies.set('x-svt', rTicket, {
      path: '/',
      httpOnly: true,
@@ -26,6 +28,15 @@ export async function middleware(request: NextRequest) {
      secure: process.env.NODE_ENV === 'production',
      maxAge: 60 * 60 * 24 * 7, // 1 week
     })
+    // Set x-svh (STAG verification hash)
+    response.cookies.set('x-svh', ticketHash, {
+     path: '/',
+     httpOnly: true,
+     sameSite: 'lax',
+     secure: process.env.NODE_ENV === 'production',
+     maxAge: 60 * 60 * 24 * 7, // 1 week
+    })
+
     return response
    } else {
     const response = NextResponse.redirect(new URL('/standby', request.url))

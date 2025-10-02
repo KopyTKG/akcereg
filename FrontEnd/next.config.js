@@ -9,7 +9,7 @@ const cspHeader = `
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    connect-src 'self' __API__;
+    connect-src 'self';
 `
 
 const nextConfig = {

@@ -1,5 +1,11 @@
 import { SHA3 } from 'sha3'
 
+export function getHash(input: string): string {
+ const hash = new SHA3(512)
+ hash.update(input)
+ return hash.digest('hex')
+}
+
 export function encrypt(req: Request, ticket: string): string | null {
  const hash = new SHA3(512)
 
