@@ -34,3 +34,5 @@ package-lock.json
 
 # leaks
 .env
+
+/src/generated/prisma

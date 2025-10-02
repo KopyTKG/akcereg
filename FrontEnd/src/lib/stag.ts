@@ -15,7 +15,6 @@ export function getTicketX(req: Request): string | null {
  if (!rTicket) {
   return null
  }
-
  return rTicket
 }
 /* Header Based ticket */
