@@ -41,7 +41,15 @@ export const DefaultPredmet: tPredmet = {
  nCviceni: 0,
 }
 
-export const FormCtx = createContext<FormContextType | undefined>(undefined)
+const FormCtx = createContext<FormContextType | undefined>(undefined)
+
+export const useFormContext = (): FormContextType => {
+ const context = React.useContext(FormCtx)
+ if (!context) {
+  throw new Error('useFormContext must be used within a FormProvider')
+ }
+ return context
+}
 
 export default function FormProvider({ children }: { children: React.ReactNode }) {
  const [open, setOpen] = useState<boolean>(false)

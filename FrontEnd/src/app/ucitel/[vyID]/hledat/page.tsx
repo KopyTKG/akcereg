@@ -15,7 +15,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Divider } from '@/components/ui/divider'
-import { fastHeaders } from '@/lib/stag'
 import { useToast } from '@/hooks/use-toast'
 import { tPredmetSekce, tStudent } from '@/lib/types'
 import {
@@ -63,7 +62,6 @@ export default function Page() {
   try {
    const res = await fetch(url.toString(), {
     method: 'GET',
-    headers: fastHeaders,
     credentials: 'include',
     redirect: 'manual',
    })

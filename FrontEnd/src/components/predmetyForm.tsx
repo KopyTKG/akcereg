@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -21,10 +21,9 @@ import {
  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { fastHeaders } from '@/lib/stag'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
-import { AdminCtx } from '@/contexts/AdminProvider'
 import { LoaderCircle } from 'lucide-react'
+import { useAdminContext } from '@/contexts/AdminProvider'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 
 const predmetSchema = z.object({
  zkratka: z.string().min(1, { message: 'Zkratka předmětu je povinná' }),
@@ -37,14 +36,8 @@ export default function PredmetForm() {
  const { toast } = useToast()
  const [loading, setLoading] = useState<boolean>(false)
 
- const AdminContext = useContext(AdminCtx)
- const ReloadContext = useContext(ReloadCtx)
- if (!AdminContext || !ReloadContext) {
-  throw new Error('Missing AdminProvider or ReloadProvider')
- }
-
- const { open, setOpen, storage } = AdminContext
- const [reload, setReload] = ReloadContext
+ const { open, setOpen, storage } = useAdminContext()
+ const [reload, setReload] = useReloadContext()
 
  const form = useForm<z.infer<typeof predmetSchema>>({
   resolver: zodResolver(predmetSchema),
@@ -66,7 +59,6 @@ export default function PredmetForm() {
   try {
    const res = await fetch(url.toString(), {
     method: values.kod ? 'PATCH' : 'POST',
-    headers: fastHeaders,
     credentials: 'include',
     body: JSON.stringify(body),
    })

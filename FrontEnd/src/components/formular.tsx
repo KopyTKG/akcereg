@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -38,11 +38,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { tCreate, tPredmet } from '@/lib/types'
-import { fastHeaders } from '@/lib/stag'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
 import { DateTime } from '@/lib/functions'
-import { DefaultForm, DefaultPredmet, FormCtx } from '@/contexts/FormProvider'
+import { DefaultForm, DefaultPredmet, useFormContext } from '@/contexts/FormProvider'
 import { Accordion, AccordionTrigger, AccordionContent, AccordionItem } from './ui/accordion'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 
 const formSchema = z.object({
  _id: z.string().min(1, { message: 'Předmět je povinný' }),
@@ -68,15 +67,8 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
  const { toast } = useToast()
  const [loading, setLoading] = useState<boolean>(false)
 
- const context = useContext(ReloadCtx)
- const FormContext = useContext(FormCtx)
-
- if (!context || !FormContext) {
-  throw new Error('Missing ReloadProvider or FormProvider')
- }
-
- const [reload, setReload] = context
- const { open, setOpen, predmety, formData, predmet, setPredmet, terminID, type } = FormContext
+ const [reload, setReload] = useReloadContext()
+ const { open, setOpen, predmety, formData, predmet, setPredmet, terminID, type } = useFormContext()
 
  const form = useForm<z.infer<typeof formSchema>>({
   resolver: zodResolver(formSchema),
@@ -108,7 +100,6 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
   try {
    const res = await fetch(url.toString(), {
     method: terminID ? 'PATCH' : 'POST',
-    headers: fastHeaders,
     credentials: 'include',
     body: JSON.stringify(body),
    })
@@ -202,8 +193,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
             field.onChange(value)
             setPredmet(predmety.find((p) => p._id === value) || DefaultPredmet)
            }}
-           defaultValue={field.value}
-          >
+           defaultValue={field.value}>
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte předmět" />
@@ -237,8 +227,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
           <Select
            onValueChange={field.onChange}
            defaultValue={field.value}
-           disabled={!predmet || predmet.nCviceni === 0}
-          >
+           disabled={!predmet || predmet.nCviceni === 0}>
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte cvičení" />
@@ -342,8 +331,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
                className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',
-               )}
-              >
+               )}>
                {field.value ? (
                 format(field.value, 'PPP', { locale: cs })
                ) : (
@@ -403,8 +391,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
                className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',
-               )}
-              >
+               )}>
                {field.value ? (
                 format(field.value, 'PPP', { locale: cs })
                ) : (

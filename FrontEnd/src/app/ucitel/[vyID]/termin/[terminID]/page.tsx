@@ -10,17 +10,16 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Check, X } from 'lucide-react'
-import { fastHeaders } from '@/lib/stag'
 import { tForm, tPredmet, tStudent, tTermin } from '@/lib/types'
 import React, { useState, useCallback, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import TerminInfo from '@/components/terminInfo'
 import { toast } from '@/hooks/use-toast'
-import { DefaultForm, DefaultPredmet, FormCtx } from '@/contexts/FormProvider'
+import { DefaultForm, DefaultPredmet, useFormContext } from '@/contexts/FormProvider'
 import { fetchPredmetyData } from '@/lib/functions'
 import { Time } from '@/lib/functions'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
 import { Chip } from '@/components/ui/chip'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 
 const fetchTerminData = async (id: string) => {
  try {
@@ -28,7 +27,6 @@ const fetchTerminData = async (id: string) => {
   url.searchParams.set('id', id)
   const res = await fetch(url.toString(), {
    method: 'GET',
-   headers: fastHeaders,
    credentials: 'include',
   })
   if (!res.ok) {
@@ -53,15 +51,8 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
  const [fetching, setFetching] = useState<boolean>(true)
  const router = useRouter()
 
- const context = React.useContext(FormCtx)
- const Rcontext = React.useContext(ReloadCtx)
-
- if (!context || !Rcontext) {
-  throw Error('Missing FormProvider or ReloadProvider')
- }
-
- const { setPredmety, setPredmet } = context
- const [reload, setReload] = Rcontext
+ const { setPredmety, setPredmet } = useFormContext()
+ const [reload, setReload] = useReloadContext()
 
  const fetchData = useCallback(async () => {
   const terminData = await fetchTerminData(params.terminID)
@@ -121,7 +112,6 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
    url.searchParams.set('id_terminu', params.terminID)
    const res = await fetch(url.toString(), {
     method: state ? 'DELETE' : 'POST',
-    headers: fastHeaders,
     credentials: 'include',
    })
    if (!res.ok) {

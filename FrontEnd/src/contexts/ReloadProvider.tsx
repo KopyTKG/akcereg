@@ -3,7 +3,15 @@ import React, { createContext, useState, Dispatch, SetStateAction } from 'react'
 
 type ReloadContextType = [boolean, Dispatch<SetStateAction<boolean>>]
 
-export const ReloadCtx = createContext<ReloadContextType | undefined>(undefined)
+const ReloadCtx = createContext<ReloadContextType | undefined>(undefined)
+
+export const useReloadContext = (): ReloadContextType => {
+ const context = React.useContext(ReloadCtx)
+ if (!context) {
+  throw new Error('useReloadContext must be used within a ReloadProvider')
+ }
+ return context
+}
 
 export default function ReloadProvider({ children }: { children: React.ReactNode }) {
  const [reload, setReload] = useState<boolean>(false)

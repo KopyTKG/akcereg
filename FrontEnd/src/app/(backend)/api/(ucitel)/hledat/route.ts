@@ -1,6 +1,7 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { fastHeaders, getTicketV2, getUserInfoV1 } from '@/lib/stag'
+import { getUserInfo } from '@/lib/stag'
+import { fastHeaders, validateTicket } from '@/lib/auth'
 import { tPredmetSekce, tStudent } from '@/lib/types'
 
 type tResponse = {
@@ -16,9 +17,9 @@ type tResponse = {
 }
 
 export async function GET(req: Request) {
- const rTicket = getTicketV2(req)
+ const rTicket = validateTicket(req)
  if (!rTicket) return Unauthorized()
- const info = await getUserInfoV1(rTicket)
+ const info = await getUserInfo(rTicket)
  if (!info) return Unauthorized()
  if (isStudent(info)) return Forbidden()
 

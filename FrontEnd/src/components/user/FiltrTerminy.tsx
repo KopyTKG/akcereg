@@ -1,18 +1,17 @@
 'use client'
 import Node from '@/components/node'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { tTermin } from '@/lib/types'
-import { fastHeaders } from '@/lib/stag'
 import { Skeleton } from '@/components/ui/skeleton'
-import { FilterCtx } from '@/contexts/FilterProvider'
 import { Header } from '@/components/ui/header'
+import { useFilterContext } from '@/contexts/FilterProvider'
 
 const fetchTerminyData = async (data: string[], all: boolean) => {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/filtr`)
   url.searchParams.set('vybrane', data.join('-'))
   url.searchParams.set('vse', all ? 'T' : 'F')
-  const res = await fetch(url, { method: 'GET', headers: fastHeaders, credentials: 'include' })
+  const res = await fetch(url, { method: 'GET', credentials: 'include' })
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200) {
@@ -26,24 +25,19 @@ const fetchTerminyData = async (data: string[], all: boolean) => {
 export default function FiltrTerminy({ typ }: { typ?: string }) {
  const [Terminy, setTerminy] = useState<tTermin[]>([])
 
- const Fcontext = useContext(FilterCtx)
- if (!Fcontext) {
-  throw new Error('Missing FilterProvider')
- }
-
- const { filter, all } = Fcontext
+ const { filter, showHidden } = useFilterContext()
 
  const [fetching, setFetching] = useState<boolean>(true)
 
  const fetchTerminy = useCallback(async () => {
   setFetching(true)
-  const data = await fetchTerminyData(filter, all)
+  const data = await fetchTerminyData(filter, showHidden)
   if (data) {
    setTerminy(data.data)
   }
 
   setFetching(false)
- }, [filter, all])
+ }, [filter, showHidden])
 
  useEffect(() => {
   fetchTerminy()

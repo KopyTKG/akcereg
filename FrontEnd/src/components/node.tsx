@@ -6,8 +6,8 @@ import { Clock, Clock12, MapPin, UsersRound, Clock2, Files } from 'lucide-react'
 import { Zapsat, Zobrazit } from '@/components/nodeButton'
 import { Chip } from '@/components/ui/chip'
 import { useContext, useMemo } from 'react'
-import { FormCtx } from '@/contexts/FormProvider'
 import { Time } from '@/lib/functions'
+import { useFormContext } from '@/contexts/FormProvider'
 
 function CheckDate(date: number): boolean {
  const timeGap: number = parseInt(process.env.NEXT_PUBLIC_TIME_GAP || '0')
@@ -105,11 +105,7 @@ export default function Node({ demo = false, props }: { demo?: boolean; props: t
 }
 
 function Duplicate({ demo, props }: { demo?: boolean; props: tNode }) {
- const Fcontext = useContext(FormCtx)
- if (!Fcontext) {
-  throw Error('Missing FormProvider')
- }
- const { setOpen, setFormData, setTerminID, setType } = Fcontext
+ const { setOpen, setFormData, setTerminID, setType } = useFormContext()
  return (
   <button
    className="dark:text-stone-50 dark:hover:text-stone-300 text-stone-950 hover:text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-600 dark:focus:ring-stone-400 focus:ring-opacity-50 rounded-full p-1"
@@ -135,8 +131,7 @@ function Duplicate({ demo, props }: { demo?: boolean; props: tNode }) {
      setTerminID('')
      setType('create')
     }
-   }}
-  >
+   }}>
    {' '}
    <Files className="w-6 h-6" aria-hidden="true" />
   </button>

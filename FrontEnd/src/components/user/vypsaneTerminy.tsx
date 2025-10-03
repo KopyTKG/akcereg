@@ -1,18 +1,17 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import Node from '@/components/node'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { tTermin } from '@/lib/types'
-import { fastHeaders } from '@/lib/stag'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
 import { Header } from '@/components/ui/header'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 
 const fetchTerminyData = async () => {
  try {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/terminy`)
   url.searchParams.set('t', 'vypsane')
-  const res = await fetch(url, { method: 'GET', headers: fastHeaders, credentials: 'include' })
+  const res = await fetch(url, { method: 'GET', credentials: 'include' })
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200 || res.status == 404) {
@@ -28,14 +27,8 @@ export default function VypsaneTerminy({ typ }: { typ: string | undefined }) {
 
  const [fetching, setFetching] = useState<boolean>(true)
 
- const context = useContext(ReloadCtx)
-
- if (!context) {
-  throw new Error('Missing ReloadProvider')
- }
-
  // Destructure the context values
- const [reload] = context
+ const [reload] = useReloadContext()
 
  const fetchTerminy = useCallback(async () => {
   const data = await fetchTerminyData()

@@ -1,10 +1,9 @@
 'use client'
-import React, { useContext } from 'react'
+import React from 'react'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
-import { fastHeaders } from '@/lib/stag'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 
 export function Zobrazit({ id, demo }: { id: string; demo?: boolean }) {
  const router = useRouter()
@@ -35,12 +34,7 @@ export function Zapsat({
  volno: boolean
  demo?: boolean
 }) {
- const context = useContext(ReloadCtx)
- if (!context) {
-  throw new Error('Missing ReloadProvider')
- }
-
- const [reload, setReload] = context
+ const [reload, setReload] = useReloadContext()
 
  async function APIcall(id: string, setReload: React.Dispatch<React.SetStateAction<boolean>>) {
   try {
@@ -49,7 +43,6 @@ export function Zapsat({
    url.searchParams.set('type', !owned ? 'zapsat' : 'odhlasit')
    const res = await fetch(url.toString(), {
     method: 'GET',
-    headers: fastHeaders,
     credentials: 'include',
    })
    if (res.status != 200 && res.status != 409) {

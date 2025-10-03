@@ -1,5 +1,4 @@
 'use client'
-import { fastHeaders } from '@/lib/stag'
 import { useLayoutEffect } from 'react'
 
 export default function LogoutPage() {
@@ -9,9 +8,6 @@ export default function LogoutPage() {
 
   fetch(url, {
    method: 'GET',
-   headers: {
-    ...fastHeaders,
-   },
    credentials: 'include',
   }).then((data) => {
    if (!data.ok) {

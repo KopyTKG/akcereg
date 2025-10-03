@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { getUserInfoV1 } from '@/lib/stag'
+import { getSetup } from '@/lib/stag_server'
 import { isAdmin, isStudent } from '@/lib/functions'
 import { decrypt, encrypt, getHash } from '@/lib/crypto'
 
@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
  const { pathname } = request.nextUrl
 
  const searchParams = new URL(request.url).searchParams
-
+ let info = null
  // login from STAG
  if (pathname === '/login') {
   if (searchParams.has('stagUserTicket')) {
@@ -36,7 +36,17 @@ export async function middleware(request: NextRequest) {
      secure: process.env.NODE_ENV === 'production',
      maxAge: 60 * 60 * 24 * 7, // 1 week
     })
-
+    // set x-cvt (is admin)
+    info = await getSetup(ticket)
+    if (info && isAdmin(info)) {
+     response.cookies.set('x-cvt', 'true', {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+     })
+    }
     return response
    } else {
     const response = NextResponse.redirect(new URL('/standby', request.url))
@@ -83,7 +93,7 @@ export async function middleware(request: NextRequest) {
  }
 
  // Get info from stag if not kick user
- const info = await getUserInfoV1(ticket)
+ info = await getSetup(ticket)
  if (!info) {
   request.nextUrl.pathname = '/logout'
   return NextResponse.redirect(request.nextUrl)

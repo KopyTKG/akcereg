@@ -8,11 +8,10 @@ import {
  TableBody,
  TableCell,
 } from '@/components/ui/table'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
-import { fastHeaders } from '@/lib/stag'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 import { tPredmet, tPredmetBody, tStudent } from '@/lib/types'
 import { FileInput, LoaderCircle, Pencil, Trash } from 'lucide-react'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
  AlertDialog,
  AlertDialogAction,
@@ -24,7 +23,7 @@ import {
  AlertDialogTitle,
  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { AdminCtx } from '@/contexts/AdminProvider'
+import { useAdminContext } from '@/contexts/AdminProvider'
 import { useToast } from '@/hooks/use-toast'
 
 const fetchPredmetyData = async () => {
@@ -32,7 +31,6 @@ const fetchPredmetyData = async () => {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
   const res = await fetch(url.toString(), {
    method: 'GET',
-   headers: fastHeaders,
    credentials: 'include',
   })
   if (res.status == 401) {
@@ -48,13 +46,7 @@ const fetchPredmetyData = async () => {
 export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
  const [Predmety, setPredmety] = useState<tPredmet[]>([])
 
- const ReloadContext = useContext(ReloadCtx)
-
- if (!ReloadContext) {
-  throw new Error('Missing ReloadProvider')
- }
-
- const [reload] = ReloadContext
+ const [reload] = useReloadContext()
 
  const fetchPredmety = useCallback(async () => {
   const data = await fetchPredmetyData()
@@ -107,7 +99,6 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
 
   const res = await fetch(url.toString(), {
    method: 'GET',
-   headers: fastHeaders,
    credentials: 'include',
   })
   if (!res.ok) throw new Error('fetch failed')
@@ -166,14 +157,9 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
 }
 
 function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
- const AdminContext = useContext(AdminCtx)
- const ReloadContext = useContext(ReloadCtx)
  const { toast } = useToast()
- if (!ReloadContext || !AdminContext) {
-  throw new Error('Missing ReloadProvider or AdminProvider')
- }
- const { open, setOpen, setStorage } = AdminContext
- const [reload, setReload] = ReloadContext
+ const { open, setOpen, setStorage } = useAdminContext()
+ const [reload, setReload] = useReloadContext()
 
  async function onDelete(kod: string) {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmet`)
@@ -181,7 +167,6 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
 
   const res = await fetch(url.toString(), {
    method: 'DELETE',
-   headers: fastHeaders,
    credentials: 'include',
   })
   if (!res.ok) {

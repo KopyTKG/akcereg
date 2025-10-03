@@ -1,8 +1,12 @@
 import { tPredmet, tUser } from '@/lib/types'
-import { fastHeaders } from '@/lib/stag'
 
 export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
  try {
+  const fastHeaders = new Headers({
+   accept: 'application/json',
+   'Content-Type': 'application/json',
+  })
+
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
   const res = await fetch(url.toString(), {
    method: 'GET',

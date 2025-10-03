@@ -91,9 +91,14 @@ export interface tStagUserInfo {
  jmeno: string
  prijmeni: string
  email: string
- role: string[]
+ role: string
 }
 
 export interface tUserRes {
  stagUserInfo: tStagUserInfo[]
+}
+
+export type tStudentInfo = {
+ encOsCislo: string
+ email: string
 }

@@ -15,11 +15,10 @@ import {
 } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useContext, useEffect, useState } from 'react'
-import { fastHeaders } from '@/lib/stag'
+import { useEffect, useState } from 'react'
 import { tPredmet } from '@/lib/types'
 import { Header } from './ui/header'
-import { FilterCtx } from '@/contexts/FilterProvider'
+import { useFilterContext } from '@/contexts/FilterProvider'
 import { Accordion, AccordionContent, AccordionTrigger } from './ui/accordion'
 import { AccordionItem } from '@radix-ui/react-accordion'
 
@@ -28,7 +27,6 @@ async function fetchPredmetyData() {
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
   const res = await fetch(url.toString(), {
    method: 'GET',
-   headers: fastHeaders,
    credentials: 'include',
   })
   if (!res.ok) {
@@ -43,19 +41,14 @@ async function fetchPredmetyData() {
 
 const FormSchema = z.object({
  items: z.array(z.string()).default([]),
- all: z.boolean().optional(),
+ showHidden: z.boolean().optional(),
 })
 
 export default function Filtr() {
  const [predmety, setPredmety] = useState<tPredmet[]>([])
  const [isLoading, setIsLoading] = useState(true)
 
- const Fcontext = useContext(FilterCtx)
- if (!Fcontext) {
-  throw new Error('Missing FilterProvider')
- }
-
- const { filter, setFilter, all, setAll } = Fcontext
+ const { filter, setFilter, showHidden, setShowHidden } = useFilterContext()
 
  useEffect(() => {
   async function loadPredmety() {
@@ -137,7 +130,7 @@ export default function Filtr() {
         </Button>
         <FormField
          control={form.control}
-         name="all"
+         name="showHidden"
          render={() => {
           return (
            <FormItem className="flex items-start space-x-3 space-y-0 w-full">
@@ -147,9 +140,9 @@ export default function Filtr() {
               <AccordionContent className="ml-5 flex gap-3">
                <FormControl>
                 <Checkbox
-                 checked={all}
+                 checked={showHidden}
                  onCheckedChange={() => {
-                  setAll(!all)
+                  setShowHidden(!showHidden)
                  }}
                 />
                </FormControl>

@@ -30,8 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <Providers attribute="class" defaultTheme="light" disableTransitionOnChange>
      <main
       id="main"
-      className="min-h-[100vh] h-max pb-3 text-black bg-white dark:text-stone-50 dark:bg-black"
-     >
+      className="min-h-[100vh] h-max pb-3 text-black bg-white dark:text-stone-50 dark:bg-black">
       {children}
      </main>
     </Providers>

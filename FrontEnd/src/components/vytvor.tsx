@@ -1,23 +1,17 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useContext, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { DefaultForm, FormCtx } from '@/contexts/FormProvider'
+import { DefaultForm, useFormContext } from '@/contexts/FormProvider'
 import { fetchPredmetyData } from '@/lib/functions'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
+import { useReloadContext } from '@/contexts/ReloadProvider'
 
 export function Vytvor() {
  const [loading, setLoading] = useState<boolean>(true)
 
- const Fcontext = useContext(FormCtx)
- const Rcontext = useContext(ReloadCtx)
- if (!Fcontext || !Rcontext) {
-  throw new Error('Missing FormProvider or ReloadProvider')
- }
-
- const { setOpen, setPredmety, setFormData, setType, predmety } = Fcontext
- const [reload] = Rcontext
+ const { setOpen, setPredmety, setFormData, setType, predmety } = useFormContext()
+ const [reload] = useReloadContext()
 
  const fetchPredmety = useCallback(async () => {
   try {

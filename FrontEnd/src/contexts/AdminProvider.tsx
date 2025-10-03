@@ -16,7 +16,15 @@ export const DefaultPredmet: tPredmetBody = {
  cviceni: 0,
 }
 
-export const AdminCtx = createContext<AdminContextType | undefined>(undefined)
+const AdminCtx = createContext<AdminContextType | undefined>(undefined)
+
+export const useAdminContext = (): AdminContextType => {
+ const context = React.useContext(AdminCtx)
+ if (!context) {
+  throw new Error('useAdminContext must be used within a AdminProvider')
+ }
+ return context
+}
 
 export default function AdminProvider({ children }: { children: React.ReactNode }) {
  const [open, setOpen] = useState<boolean>(false)

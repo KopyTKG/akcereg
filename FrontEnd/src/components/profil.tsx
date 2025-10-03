@@ -1,6 +1,5 @@
 'use client'
 import { useLayoutEffect, useState } from 'react'
-import { fastHeaders } from '@/lib/stag'
 import { tPredmetSekce } from '@/lib/types'
 import Predmet from './tabulkaPredmet'
 
@@ -13,7 +12,6 @@ export default function Profil() {
 
     const res = await fetch(url.toString(), {
      method: 'GET',
-     headers: fastHeaders,
      credentials: 'include',
     })
     if (res.status != 200) {

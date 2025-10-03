@@ -11,7 +11,6 @@ import {
  Mails,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { fastHeaders } from '@/lib/stag'
 import { tForm, tStudent, tTermin } from '@/lib/types'
 import * as React from 'react'
 import {
@@ -25,11 +24,11 @@ import {
  AlertDialogCancel,
  AlertDialogAction,
 } from '@/components/ui/alert-dialog'
-import { FormCtx } from '@/contexts/FormProvider'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
 import { useToast } from '@/hooks/use-toast'
+import { useReloadContext } from '@/contexts/ReloadProvider'
+import { useFormContext } from '@/contexts/FormProvider'
 
 export default function TerminInfo({
  Termin,
@@ -44,16 +43,10 @@ export default function TerminInfo({
  storage: { form: tForm; terminId: string }
  studenti?: tStudent[]
 }) {
- const context = React.useContext(FormCtx)
- const Rcontext = React.useContext(ReloadCtx)
-
  const { toast } = useToast()
 
- if (!context || !Rcontext) {
-  throw Error('Missing FormProvider or ReloadProvider')
- }
- const [reload, setReload] = Rcontext
- const { setOpen, setFormData, setTerminID, setType } = context
+ const [reload, setReload] = useReloadContext()
+ const { setOpen, setFormData, setTerminID, setType } = useFormContext()
 
  const formatDate = (dateString: number) => {
   const date = new Date(dateString)
@@ -72,7 +65,6 @@ export default function TerminInfo({
    url.searchParams.set('id', id)
    const res = await fetch(url.toString(), {
     method: 'DELETE',
-    headers: fastHeaders,
     credentials: 'include',
    })
    if (!res.ok) {
@@ -100,7 +92,6 @@ export default function TerminInfo({
    url.searchParams.set('id_stud', studId || '')
    const res = await fetch(url.toString(), {
     method: 'GET',
-    headers: fastHeaders,
     credentials: 'include',
     redirect: 'manual',
    })
