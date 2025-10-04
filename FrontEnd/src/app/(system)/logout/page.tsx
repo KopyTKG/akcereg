@@ -4,7 +4,7 @@ import { useLayoutEffect } from 'react'
 export default function LogoutPage() {
  useLayoutEffect(() => {
   const apiUrl: string = process.env.NEXT_PUBLIC_BASE || ''
-  const url = new URL(`${apiUrl}/api/logout`)
+  const url = new URL(`${apiUrl}/api/auth/logout`)
 
   fetch(url, {
    method: 'GET',

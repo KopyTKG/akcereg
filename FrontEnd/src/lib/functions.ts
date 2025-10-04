@@ -1,4 +1,5 @@
-import { tPredmet, tUser } from '@/lib/types'
+import { tPredmet } from '@/lib/types'
+import { tGetStagUserListForLoginTicketV2 } from '@/types/stag_response_types'
 
 export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
  try {
@@ -46,12 +47,16 @@ export function Time(timestamp: number): string {
  return `${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`
 }
 
-export function isStudent(info: tUser): boolean {
- return info.role.includes('ST')
+export function isStudent(info: tGetStagUserListForLoginTicketV2): boolean {
+ return info.stagUserInfo.find((user) => user.role === 'ST') !== undefined
 }
 
-export function isAdmin(info: tUser): boolean {
- return info.role.includes('KA')
+export function isAdmin(info: tGetStagUserListForLoginTicketV2): boolean {
+ return info.stagUserInfo.find((user) => user.role === 'KA') !== undefined
+}
+
+export function isVyucujici(info: tGetStagUserListForLoginTicketV2): boolean {
+ return info.stagUserInfo.find((user) => user.role === 'VY') !== undefined
 }
 
 export function addDays(date: Date, days: number) {

@@ -8,7 +8,7 @@ datasource db {
 }
 
 model historie_terminu {
-  id            String    @id @db.Uuid
+  id            String    @id @unique @default(uuid()) @db.Uuid
   student_id    String    @db.Char(40)
   termin_id     String    @db.Uuid
   datum_splneni DateTime? @db.Timestamp(6)
@@ -17,12 +17,21 @@ model historie_terminu {
 }
 
 model predmet {
-  kod_predmetu       String               @id
-  zkratka_predmetu   String?
-  katedra            String?
-  pocet_cviceni      Int?
-  termin             termin[]
-  vyucujici_predmety vyucujici_predmety[]
+  kod_predmetu     String         @id
+  zkratka_predmetu String?
+  katedra          String?
+  pocet_cviceni    Int?
+  termin           termin[]
+  predmet_role     predmet_role[]
+}
+
+model predmet_role {
+  kod_predmetu String
+  role_id      String  @db.Uuid
+  predmet      predmet @relation(fields: [kod_predmetu], references: [kod_predmetu], onDelete: Cascade, onUpdate: NoAction)
+  role         role    @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([kod_predmetu, role_id], name: "predmet_role_uk")
 }
 
 model student {
@@ -32,35 +41,42 @@ model student {
 }
 
 model termin {
-  id                                     String             @id @db.Uuid
-  ucebna                                 String?
-  datum_start                            DateTime?          @db.Timestamp(6)
-  aktualni_kapacita                      Int?
-  max_kapacita                           Int?
-  vypsal_id                              String             @db.Char(40)
-  vyucuje_id                             String             @db.Char(40)
-  kod_predmet                            String
-  jmeno                                  String?
-  cislo_cviceni                          Int?
-  datum_konec                            DateTime?          @db.Timestamp(6)
-  popis                                  String?
-  historie_terminu                       historie_terminu[]
-  predmet                                predmet            @relation(fields: [kod_predmet], references: [kod_predmetu], onDelete: Cascade)
-  vyucujici_termin_vypsal_idTovyucujici  vyucujici          @relation("termin_vypsal_idTovyucujici", fields: [vypsal_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  vyucujici_termin_vyucuje_idTovyucujici vyucujici          @relation("termin_vyucuje_idTovyucujici", fields: [vyucuje_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                String             @id @unique @default(uuid()) @db.Uuid
+  ucebna            String?
+  datum_start       DateTime?          @db.Timestamp(6)
+  aktualni_kapacita Int?
+  max_kapacita      Int?
+  kod_predmet       String
+  jmeno             String?
+  cislo_cviceni     Int?
+  datum_konec       DateTime?          @db.Timestamp(6)
+  popis             String?
+  historie_terminu  historie_terminu[]
+  predmet           predmet            @relation(fields: [kod_predmet], references: [kod_predmetu], onDelete: Cascade)
+  vypsal_id         String             @db.Uuid
+  vypsal            vyucujici          @relation(fields: [vypsal_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model vyucujici {
-  id                                  String               @id @db.Char(40)
-  termin_termin_vypsal_idTovyucujici  termin[]             @relation("termin_vypsal_idTovyucujici")
-  termin_termin_vyucuje_idTovyucujici termin[]             @relation("termin_vyucuje_idTovyucujici")
-  vyucujici_predmety                  vyucujici_predmety[]
+  id        String   @id @unique @default(uuid()) @db.Uuid
+  jmeno     String?  @db.VarChar(100)
+  prijmeni  String?  @db.VarChar(100)
+  titulPred String?  @db.VarChar(20)
+  titulZa   String?  @db.VarChar(20)
+  email     String?  @db.VarChar(100)
+  role      role[]
+  termin    termin[]
 }
 
-model vyucujici_predmety {
-  vyucujici_id String    @db.VarChar(40)
-  kod_predmetu String
-  id           BigInt    @id @default(autoincrement())
-  predmet      predmet   @relation(fields: [kod_predmetu], references: [kod_predmetu], onDelete: Cascade)
-  vyucujici    vyucujici @relation(fields: [vyucujici_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model role {
+  id           String         @id @unique @default(uuid()) @db.Uuid
+  ucitIdno     String         @db.Char(40)
+  role         String         @db.VarChar(20)
+  roleNazev    String         @db.VarChar(50)
+  fakulta      String         @db.VarChar(10)
+  katedra      String         @db.VarChar(10)
+  email        String         @db.VarChar(100)
+  vyucujici_id String         @db.Uuid
+  vyucujici    vyucujici      @relation(fields: [vyucujici_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  predmet_role predmet_role[]
 }

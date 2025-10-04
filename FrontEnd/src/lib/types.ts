@@ -83,22 +83,5 @@ export interface tPredmetBody {
  zkratka: string
  katedra: string
  cviceni: number
-}
-
-export interface tStagUserInfo {
  ucitIdno: string
- osCislo: string
- jmeno: string
- prijmeni: string
- email: string
- role: string
-}
-
-export interface tUserRes {
- stagUserInfo: tStagUserInfo[]
-}
-
-export type tStudentInfo = {
- encOsCislo: string
- email: string
 }

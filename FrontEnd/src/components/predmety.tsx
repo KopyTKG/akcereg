@@ -9,7 +9,7 @@ import {
  TableCell,
 } from '@/components/ui/table'
 import { useReloadContext } from '@/contexts/ReloadProvider'
-import { tPredmet, tPredmetBody, tStudent } from '@/lib/types'
+import { tPredmetBody, tStudent } from '@/lib/types'
 import { FileInput, LoaderCircle, Pencil, Trash } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import {
@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useAdminContext } from '@/contexts/AdminProvider'
 import { useToast } from '@/hooks/use-toast'
+import { tPredmetyResponse, tPredmet } from '@/types/next_response_types'
 
 const fetchPredmetyData = async () => {
  try {
@@ -36,7 +37,8 @@ const fetchPredmetyData = async () => {
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200 || res.status == 404) {
-   return await res.json()
+   const data = await res.json()
+   return data as tPredmetyResponse
   }
  } catch (e) {
   console.error(e)

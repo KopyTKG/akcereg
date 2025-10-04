@@ -1,8 +1,9 @@
-import { isStudent } from '@/lib/functions'
-import { Unauthorized, Internal, Success, Forbidden } from '@/lib/http'
+import { isAdmin, isStudent } from '@/lib/functions'
+import { Unauthorized, Success, Forbidden } from '@/lib/http'
 import { getUserInfo } from '@/lib/stag'
-import { fastHeaders, validateTicket } from '@/lib/auth'
-import { tPredmet } from '@/lib/types'
+import { validateTicket } from '@/lib/auth'
+import { tPredmetyResponse } from '@/types/next_response_types'
+import { prisma } from '@/prisma'
 
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
@@ -12,26 +13,39 @@ export async function GET(req: Request) {
 
  if (isStudent(info)) return Forbidden()
 
- const url = new URL(`${process.env.API}/predmety`)
- url.searchParams.set('ticket', rTicket)
- const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
- if (!res.ok && res.status == 401) {
-  return Unauthorized()
- } else if (!res.ok) {
-  return Internal()
+ const res = {} as tPredmetyResponse
+ res.predmety = []
+
+ let searchRole = ''
+ if (isAdmin(info)) {
+  searchRole = 'KA'
  } else {
-  const data = await res.json()
-  const predmety: tPredmet[] = []
-  if (data) {
-   data.map((item: any) => {
-    const predmet: tPredmet = {
-     _id: item.id,
-     nazev: item.id,
-     nCviceni: item.pocet_cviceni,
-    }
-    predmety.push(predmet)
+  searchRole = 'VY'
+ }
+
+ const someFilter = {
+  ...(info.dbId ? { vyucujici_id: info.dbId } : {}),
+  ...(searchRole ? { role: searchRole } : {}),
+ }
+
+ const dbPredmety = await prisma.predmet.findMany({
+  where: {
+   predmet_role: {
+    some: {
+     role: someFilter,
+    },
+   },
+  },
+ })
+ if (dbPredmety) {
+  for (const predmet of dbPredmety) {
+   res.predmety.push({
+    _id: predmet.kod_predmetu,
+    nazev: predmet.kod_predmetu,
+    nCviceni: predmet.pocet_cviceni || 0,
    })
   }
-  return Success({ predmety })
  }
+
+ return Success(res)
 }

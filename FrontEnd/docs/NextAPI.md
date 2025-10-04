@@ -8,12 +8,9 @@ Table of Contents
 ## System routes
 Routes used for authentication and user session management.
 
-### `$HOST/api/setup`
+### `$HOST/api/auth`
 
 Main login path used only in `middleware.ts`. Expects raw unecrypted session ticket in cookie given by STAG.
-
-> [!WARNING]
-> This route will be migrated to `host`/api/auth in future versions.
 
 #### Request
 - `GET` request
@@ -27,7 +24,7 @@ Main login path used only in `middleware.ts`. Expects raw unecrypted session tic
 - `500 Internal Server Error`: Unexpected error.
 
 ----------------------------------------------------------------------------------------------------------------------
-### `$HOST/api/logout`
+### `$HOST/api/auth/logout`
 
 Logs out the user by clearing session cookies and requesting STAG to invalidate the session.
 
@@ -138,6 +135,23 @@ Master route for all termin (class session) related operations.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
+-----
+
+### `$HOST/api/predmety`
+Fetches a list of all corses (predmety) the user is teaching.
+
+#### Request
+- `GET` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- > [!IMPORTANT]
+> in future `body` will be added with content of what role has user selected to view.
+
+#### Response
+- `200 OK`: Returns JSON array of type [`tPredmetyResponse`](#) with predmety data.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `500 Internal Server Error`: Unexpected error.
 
 ----------
 ----------

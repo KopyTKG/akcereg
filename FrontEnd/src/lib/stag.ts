@@ -1,5 +1,7 @@
-import { tStagUserInfo, tStudentInfo, tUser, tUserRes } from '@/lib/types'
-
+import {
+ tGetStagUserListForLoginTicketV2,
+ tGetStudentiByPredmet,
+} from '@/types/stag_response_types'
 import crypto from 'crypto'
 
 /* Header Based ticket in X-Stag-Ticket */
@@ -14,74 +16,82 @@ export function getTicketX(req: Request): string | null {
 }
 
 // Header Based ticket in Cookie
-function encodeId(id: string) {
+export function encodeId(id: string) {
  const hash = crypto.createHash('sha1')
  hash.update(id)
  return hash.digest('hex')
 }
 
-export async function getUserInfo(ticket: string): Promise<tUser | null> {
+function assembleHeaders(ticket: string): Headers {
  const headers = new Headers({
   accept: 'application/json',
   'Content-Type': 'application/json',
   Connection: 'keep-alive',
   'Accept-Origin': `${process.env.STAG_SERVER}`,
  })
+ headers.set('Cookie', `WSCOOKIE=${ticket}`)
+ return headers
+}
+
+export async function getUserInfo(
+ ticket: string,
+): Promise<tGetStagUserListForLoginTicketV2 | null> {
+ const headers = assembleHeaders(ticket)
 
  const res = await fetch(
   `${process.env.STAG_SERVER}/services/rest2/help/getStagUserListForLoginTicketV2?ticket=${ticket}`,
   { method: 'GET', headers },
  )
  if (!res.ok) return null
- const data = (await res.json()) as tUserRes
+ if (res.status === 204) return null
 
+ const data = (await res.json()) as tGetStagUserListForLoginTicketV2
  if (!data) return null
 
- const info: tUser = {
-  role: [],
-  id: '',
-  hash: '',
+ for (const user of data.stagUserInfo) {
+  if (user.osCislo) user.encId = encodeId(`${user.osCislo}`)
+  if (user.ucitIdno) user.encId = encodeId(`${user.ucitIdno}`)
  }
 
- for (const user of data.stagUserInfo) {
-  const d = user as tStagUserInfo
-  info.role.push(d.role)
-  if (d.role == 'ST') info.id = d.osCislo
-  else info.id = d.ucitIdno
- }
- info.hash = encodeId(`${info.id}`)
- return info
+ return data
 }
 
 export async function getStudentsForCourse(
  ticket: string,
  course: string,
  department: string,
-): Promise<tStudentInfo[] | null> {
- const headers = new Headers({
-  accept: 'application/json',
-  'Content-Type': 'application/json',
-  Connection: 'keep-alive',
-  'Accept-Origin': `${process.env.STAG_SERVER}`,
- })
-
+): Promise<tGetStudentiByPredmet | null> {
  const url = new URL(`${process.env.STAG_SERVER}/services/rest2/student/getStudentiByPredmet`)
  url.searchParams.set('zkratka', course)
  url.searchParams.set('katedra', department)
 
- // Set WSCOOKIE in cookies
- headers.set('Cookie', `WSCOOKIE=${ticket}`)
+ const headers = assembleHeaders(ticket)
 
  const res = await fetch(url.toString(), { method: 'GET', headers })
  if (!res.ok) return null
+ if (res.status === 204) return null
 
- const data = await res.json()
- const result: tStudentInfo[] = []
+ const data = (await res.json()) as tGetStudentiByPredmet
  for (const student of data.studentPredmetu) {
-  const s = student as tStudentInfo
-  s.encOsCislo = encodeId(student.osCislo)
-  s.email = student.email
-  result.push(s)
+  student.encOsCislo = encodeId(student.osCislo)
  }
- return result
+ return data
+}
+
+export async function getPredmetInfo(
+ ticket: string,
+ course: string,
+ department: string,
+): Promise<any | null> {
+ const url = new URL(`${process.env.STAG_SERVER}/services/rest2/predmety/getPredmetInfo`)
+ url.searchParams.set('zkratka', course)
+ url.searchParams.set('katedra', department)
+
+ const headers = assembleHeaders(ticket)
+
+ const res = await fetch(url.toString(), { method: 'GET', headers })
+ if (!res.ok) return null
+ if (res.status === 204) return null
+ const data = await res.json()
+ return data
 }

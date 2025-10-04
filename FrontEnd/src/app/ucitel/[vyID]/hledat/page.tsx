@@ -27,7 +27,6 @@ import {
 } from '@/components/ui/table'
 import { Chip } from '@/components/ui/chip'
 import { Check } from 'lucide-react'
-import { ReloadCtx } from '@/contexts/ReloadProvider'
 
 const formSchema = z.object({
  id_stud: z.string().min(6, { message: 'osČíslo je povinný' }),
@@ -41,12 +40,6 @@ export default function Page() {
   email: '',
  })
  const [predmety, setPredmety] = useState<tPredmetSekce[]>([])
-
- const context = useContext(ReloadCtx)
-
- if (!context) {
-  throw new Error('Missing ReloadProvider or FormProvider')
- }
 
  const { toast } = useToast()
 
@@ -93,7 +86,6 @@ export default function Page() {
   try {
    const res = await fetch(url.toString(), {
     method: 'GET',
-    headers: fastHeaders,
     credentials: 'include',
    })
    if (!res.ok) {
