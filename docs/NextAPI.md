@@ -145,7 +145,7 @@ Fetches a list of all corses (predmety) the user is teaching.
 - `Cookies`:
     - `x-svt` (REQUIRED): "HARD" / Encrypted session
     - `x-svh` (REQUIRED): "soft" ticket
-- > [!IMPORTANT]
+> [!IMPORTANT]
 > in future `body` will be added with content of what role has user selected to view.
 
 #### Response
