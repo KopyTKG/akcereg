@@ -1,4 +1,6 @@
 import {
+ tGetPredmetInfo,
+ tGetStudentInfo,
  tGetStagUserListForLoginTicketV2,
  tGetStudentiByPredmet,
 } from '@/types/stag_response_types'
@@ -82,7 +84,7 @@ export async function getPredmetInfo(
  ticket: string,
  course: string,
  department: string,
-): Promise<any | null> {
+): Promise<tGetPredmetInfo | null> {
  const url = new URL(`${process.env.STAG_SERVER}/services/rest2/predmety/getPredmetInfo`)
  url.searchParams.set('zkratka', course)
  url.searchParams.set('katedra', department)
@@ -93,5 +95,23 @@ export async function getPredmetInfo(
  if (!res.ok) return null
  if (res.status === 204) return null
  const data = await res.json()
+ return data
+}
+
+export async function getStudentInfo(
+ ticket: string,
+ studentId: string,
+): Promise<tGetStudentInfo | null> {
+ const url = new URL(`${process.env.STAG_SERVER}/services/rest2/student/getStudentInfo`)
+ url.searchParams.set('osCislo', studentId)
+
+ const headers = assembleHeaders(ticket)
+
+ const res = await fetch(url.toString(), { method: 'GET', headers })
+ if (!res.ok) return null
+ if (res.status === 204) return null
+
+ const data = (await res.json()) as tGetStudentInfo
+ if (!data) return null
  return data
 }

@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Divider } from '@/components/ui/divider'
 import { useToast } from '@/hooks/use-toast'
-import { tPredmetSekce, tStudent } from '@/lib/types'
+import { tPredmetSekce } from '@/lib/types'
 import {
  Table,
  TableBody,
@@ -27,18 +27,14 @@ import {
 } from '@/components/ui/table'
 import { Chip } from '@/components/ui/chip'
 import { Check } from 'lucide-react'
+import { tGetStudentInfo } from '@/types/stag_response_types'
 
 const formSchema = z.object({
  id_stud: z.string().min(6, { message: 'osČíslo je povinný' }),
 })
 
 export default function Page() {
- const [student, setStudent] = useState<tStudent>({
-  osCislo: '',
-  jmeno: '',
-  prijmeni: '',
-  email: '',
- })
+ const [student, setStudent] = useState<tGetStudentInfo>({} as tGetStudentInfo)
  const [predmety, setPredmety] = useState<tPredmetSekce[]>([])
 
  const { toast } = useToast()
@@ -65,7 +61,7 @@ export default function Page() {
      variant: 'destructive',
     })
    } else {
-    const data = (await res.json()) as { data: tPredmetSekce[]; info: tStudent }
+    const data = (await res.json()) as { data: tPredmetSekce[]; info: tGetStudentInfo }
     setPredmety(data.data)
     setStudent(data.info)
    }

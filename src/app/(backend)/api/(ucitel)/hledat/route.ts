@@ -1,20 +1,8 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { getUserInfo } from '@/lib/stag'
-import { fastHeaders, validateTicket } from '@/lib/auth'
-import { tPredmetSekce, tStudent } from '@/lib/types'
-
-type tResponse = {
- info: {
-  osCislo: string
-  jmeno: string
-  prijmeni: string
-  email: string
- }
- profil: {
-  [key: string]: number[]
- }
-}
+import { encodeId, getStudentInfo, getUserInfo } from '@/lib/stag'
+import { validateTicket } from '@/lib/auth'
+import { prisma } from '@/prisma'
 
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
@@ -28,28 +16,22 @@ export async function GET(req: Request) {
 
  if (!rId_stud) return NotFound()
 
- const url = new URL(`${process.env.API}/ucitel/student`)
- url.searchParams.set('ticket', rTicket)
- url.searchParams.set('id_stud', rId_stud)
+ const student = await getStudentInfo(rTicket, rId_stud)
 
- const res = await fetch(url.toString(), {
-  method: 'GET',
-  headers: fastHeaders,
+ if (!student) return NotFound()
+
+ const encId = encodeId(rId_stud)
+
+ const terminy = await prisma.historie_terminu.findMany({
+  select: {
+   datum_splneni: true,
+   termin: { select: { kod_predmet: true, cislo_cviceni: true } },
+  },
+  where: { student_id: encId, datum_splneni: { not: null } },
+  orderBy: { datum_splneni: 'desc' },
  })
 
- if (!res.ok) return Internal()
+ console.log(terminy)
 
- const studentInfo = (await res.json()) as tResponse
- const keys = Object.keys(studentInfo.profil)
- const student: tStudent = studentInfo.info
- const parsed: tPredmetSekce[] = []
- keys.forEach((item: string) => {
-  const tmp: tPredmetSekce = {
-   nazev: item,
-   cviceni: studentInfo.profil[item],
-  }
-  parsed.push(tmp)
- })
-
- return Success({ info: student, data: parsed })
+ return Success({ info: student, data: terminy })
 }

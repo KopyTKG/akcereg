@@ -1,8 +1,8 @@
+import { tGetStudentInfo } from './stag_response_types'
+
 /*
  * route -> $HOST/api/predmety
  */
-
-import { info } from 'console'
 
 export type tPredmet = {
  _id: string
@@ -23,4 +23,12 @@ export type tPredmetPostBody = {
  zkratka: string
  katedra: string
  cviceni: number
+}
+
+/*
+ * route -> $HOST/api/hledat
+ */
+
+export type tHledatStudenta = {
+ student: tGetStudentInfo
 }

@@ -56,12 +56,12 @@ Master route for almost all predmet (course) related operations.
     - `x-svt` (REQUIRED): "HARD" / Encrypted session ticket.
     - `x-svh` (REQUIRED): "soft" ticket SHA3 hash.
 - `Body` (JSON):
-    ```json
-     {
-      kod: ?string,
-      zkratka: ?string,
-      katedra: ?string,
-      pocet_cviceni: ?number,
+    ```typescript
+     type t = {
+      kod: string | null,
+      zkratka: string,
+      katedra: string,
+      pocet_cviceni: number,
      }
     ```
 #### Patch predmet
@@ -72,12 +72,12 @@ Master route for almost all predmet (course) related operations.
 - `Search Params`:
     - `kod_predmetu` (REQUIRED): Predmet ID to update.
 - `Body` (JSON):
-    ```json
-     {
-      kod: ?string,
-      zkratka: ?string,
-      katedra: ?string,
-      pocet_cviceni: ?number,
+    ```typescript
+     type t = {
+      kod: string,
+      zkratka: string | null,
+      katedra: string | null,
+      pocet_cviceni: number,
      }
     ```
 #### Delete predmet
@@ -115,8 +115,8 @@ Master route for all termin (class session) related operations.
     - `x-svt` (REQUIRED): "HARD" / Encrypted session
     - `x-svh` (REQUIRED): "soft" ticket
 - `Body` (JSON):
-    ```json
-    {
+    ```typescript
+    type t = {
      ucebna: string,
      datum_start: datetime,
      datum_konec: datetime,
@@ -150,6 +150,26 @@ Fetches a list of all corses (predmety) the user is teaching.
 
 #### Response
 - `200 OK`: Returns JSON array of type [`tPredmetyResponse`](#) with predmety data.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `500 Internal Server Error`: Unexpected error.
+
+----
+
+### `$HOST/api/hledat`
+Searches for users (students) by `osCislo`.
+
+#### Request
+- `GET` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `id_stud` (REQUIRED): User's osCislo to search for.
+
+#### Response
+> [!WARNING]
+> Not done yet, response structure will be added later.
+- `200 OK`: Returns JSON object with user data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 

@@ -105,7 +105,7 @@ export default function PredmetForm() {
          <FormItem>
           <FormLabel>Katedra</FormLabel>
           <FormControl>
-           <Input placeholder="KI" {...field} />
+           <Input placeholder="KI" {...field} disabled={storage.kod ? true : false} />
           </FormControl>
           <FormMessage />
          </FormItem>
@@ -118,7 +118,7 @@ export default function PredmetForm() {
          <FormItem>
           <FormLabel>Zkratka</FormLabel>
           <FormControl>
-           <Input placeholder="PCA" {...field} />
+           <Input placeholder="PCA" {...field} disabled={storage.kod ? true : false} />
           </FormControl>
           <FormMessage />
          </FormItem>

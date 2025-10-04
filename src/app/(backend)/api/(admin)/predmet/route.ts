@@ -100,9 +100,6 @@ export async function PATCH(req: Request) {
    kod_predmetu: rKod_predmetu,
   },
   data: {
-   kod_predmetu: rBody.kod || '',
-   zkratka_predmetu: rBody.zkratka,
-   katedra: rBody.katedra,
    pocet_cviceni: rBody.cviceni,
   },
  })
