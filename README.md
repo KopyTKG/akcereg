@@ -20,5 +20,8 @@ Popis: Vytvořete přihlašovací systém na laboratorní cvičení, kde vyučuj
 **Database** - [Adam](https://github.com/Midiros) 
 
 
-## Spuštění
+## Dokumentace
+
+- [NextAPI routes](docs/NextAPI.md)
+- [Types](docs/Types.md)
 
