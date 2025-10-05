@@ -1,17 +1,11 @@
-import { tPredmet } from '@/lib/types'
 import { tGetStagUserListForLoginTicketV2 } from '@/types/stag_response_types'
+import { tPredmet } from '@/types/next_response_types'
 
 export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
  try {
-  const fastHeaders = new Headers({
-   accept: 'application/json',
-   'Content-Type': 'application/json',
-  })
-
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
   const res = await fetch(url.toString(), {
    method: 'GET',
-   headers: fastHeaders,
    credentials: 'include',
   })
   if (!res.ok) {
@@ -42,7 +36,7 @@ export function DateTime(date: Date, time: string, timezone: string): number {
  return base.getTime() + timeOffset
 }
 
-export function Time(timestamp: number): string {
+export function Time(timestamp: Date): string {
  const datetime = new Date(timestamp)
  return `${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`
 }

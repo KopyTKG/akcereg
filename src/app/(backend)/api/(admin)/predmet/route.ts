@@ -1,6 +1,6 @@
 import { isAdmin } from '@/lib/functions'
 import { Forbidden, Internal, NotFound, Success, Unauthorized } from '@/lib/http'
-import { encodeId, getPredmetInfo, getStudentsForCourse, getUserInfo } from '@/lib/stag'
+import { getPredmetInfo, getUserInfo } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
 import { prisma } from '@/prisma'
 import { tPredmetPostBody } from '@/types/next_response_types'
@@ -59,23 +59,37 @@ export async function POST(req: Request) {
   })
  }
 
- const stagStudents = await getStudentsForCourse(rTicket, rBody.zkratka, rBody.katedra)
- if (stagStudents) {
-  for (const stagStudent of stagStudents.studentPredmetu) {
-   const encId = encodeId(stagStudent.osCislo)
-   let student = await prisma.student.findUnique({
-    where: { id: encId },
-   })
-   if (!student) {
-    student = await prisma.student.create({
-     data: {
-      id: encId,
-      datum_vytvoreni: new Date(),
-     },
-    })
-   }
-  }
- }
+ const currentUser = await prisma.role.findFirst({
+  where: { ucitIdno: `${info.stagUserInfo[0].ucitIdno}` },
+  select: {
+   id: true,
+   vyucujici: {
+    select: { id: true },
+   },
+  },
+ })
+ if (!currentUser || !currentUser.vyucujici) return Internal()
+
+ await prisma.termin.create({
+  data: {
+   id: crypto.randomUUID(),
+   ucebna: 'Nespecifikováno',
+   datum_start: new Date(),
+   datum_konec: new Date(),
+   max_kapacita: -1,
+   aktualni_kapacita: 0,
+   jmeno: 'Uznávací termín',
+   cislo_cviceni: -1,
+   popis: 'Automaticky vytvořený uznávací termín.',
+   predmet: {
+    connect: { kod_predmetu: data.kod_predmetu },
+   },
+   vypsal: {
+    connect: { id: currentUser.vyucujici.id },
+   },
+  },
+ })
+
  return Success()
 }
 

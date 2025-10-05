@@ -1,5 +1,6 @@
 'use client'
-import { tForm, tPredmet } from '@/lib/types'
+import { tForm } from '@/lib/types'
+import { tPredmet } from '@/types/next_response_types'
 import React, { createContext, useState, Dispatch, SetStateAction } from 'react'
 
 type FormContextType = {
@@ -36,9 +37,10 @@ export const DefaultForm: tForm = {
 }
 
 export const DefaultPredmet: tPredmet = {
- _id: '',
- nazev: '',
- nCviceni: 0,
+ kod_predmetu: '',
+ zkratka_predmetu: '',
+ katedra: '',
+ pocet_cviceni: 0,
 }
 
 const FormCtx = createContext<FormContextType | undefined>(undefined)

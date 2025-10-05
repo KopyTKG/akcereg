@@ -1,6 +1,6 @@
 'use client'
 import { Header } from '@/components/ui/header'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -175,8 +175,8 @@ export default function Page() {
              key={datum.toLocaleString() + key}
              className={`w-full h-full flex flex-row justify-between p-3 bg-gradient-to-l ${key === 0 ? `rounded-t-xl` : key === predmet.cviceni.length - 1 ? 'rounded-b-xl' : ''} ${!datum ? 'from-red-500/15 to-transparent' : 'from-lime-500/15 to-transparent'}`}>
              <span className="text-lg">{`Laboratorní cvičení ${key + 1}`}</span>
-             <Chip type={datum ? 'success' : 'danger'}>
-              {datum ? new Date(datum).toLocaleDateString() : 'nesplnil'}
+             <Chip type={datum === -1 ? 'success' : datum ? 'success' : 'danger'}>
+              {datum === -1 ? 'Uznáno' : datum ? new Date(datum).toLocaleDateString() : 'nesplnil'}
              </Chip>
             </div>
             {key < predmet.cviceni.length - 1 && <Divider margin="my0" />}

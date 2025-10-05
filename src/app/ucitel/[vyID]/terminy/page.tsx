@@ -6,7 +6,7 @@ export default function Page() {
   <div className="w-max mx-auto grid md:grid-cols-[33%_67%] lg:grid-cols-[19%_81%] justify-items-center gap-10 md:gap-2">
    <Filtr />
    <div>
-    <FiltrTerminy />
+    <FiltrTerminy typ="teacher" />
    </div>
   </div>
  )

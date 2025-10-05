@@ -1,8 +1,7 @@
 import { isAdmin, isStudent } from '@/lib/functions'
-import { Unauthorized, Success, Forbidden } from '@/lib/http'
+import { Unauthorized, Success, Forbidden, NotFound } from '@/lib/http'
 import { getUserInfo } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
-import { tPredmetyResponse } from '@/types/next_response_types'
 import { prisma } from '@/prisma'
 
 export async function GET(req: Request) {
@@ -12,9 +11,6 @@ export async function GET(req: Request) {
  if (!info) return Unauthorized()
 
  if (isStudent(info)) return Forbidden()
-
- const res = {} as tPredmetyResponse
- res.predmety = []
 
  let searchRole = ''
  if (isAdmin(info)) {
@@ -28,7 +24,7 @@ export async function GET(req: Request) {
   ...(searchRole ? { role: searchRole } : {}),
  }
 
- const dbPredmety = await prisma.predmet.findMany({
+ const predmety = await prisma.predmet.findMany({
   where: {
    predmet_role: {
     some: {
@@ -37,15 +33,6 @@ export async function GET(req: Request) {
    },
   },
  })
- if (dbPredmety) {
-  for (const predmet of dbPredmety) {
-   res.predmety.push({
-    _id: predmet.kod_predmetu,
-    nazev: predmet.kod_predmetu,
-    nCviceni: predmet.pocet_cviceni || 0,
-   })
-  }
- }
-
- return Success(res)
+ if (!predmety) return NotFound()
+ return Success({ predmety: predmety })
 }

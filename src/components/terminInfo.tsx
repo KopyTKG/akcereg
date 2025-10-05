@@ -11,7 +11,7 @@ import {
  Mails,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { tForm, tStudent, tTermin } from '@/lib/types'
+import { tForm } from '@/lib/types'
 import * as React from 'react'
 import {
  AlertDialog,
@@ -29,6 +29,7 @@ import { Input } from './ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import { useFormContext } from '@/contexts/FormProvider'
+import { tStudentPredmetuNaTeminu, tTermin } from '@/types/next_response_types'
 
 export default function TerminInfo({
  Termin,
@@ -41,14 +42,14 @@ export default function TerminInfo({
  id: string
  setNull: React.Dispatch<boolean>
  storage: { form: tForm; terminId: string }
- studenti?: tStudent[]
+ studenti?: tStudentPredmetuNaTeminu[]
 }) {
  const { toast } = useToast()
 
  const [reload, setReload] = useReloadContext()
  const { setOpen, setFormData, setTerminID, setType } = useFormContext()
 
- const formatDate = (dateString: number) => {
+ const formatDate = (dateString: Date) => {
   const date = new Date(dateString)
   return new Intl.DateTimeFormat('cs-CZ', {
    day: '2-digit',
@@ -112,7 +113,7 @@ export default function TerminInfo({
 
  function PrintMails() {
   const mails: string[] = [] as string[]
-  studenti?.forEach((student: tStudent) => {
+  studenti?.forEach((student: tStudentPredmetuNaTeminu) => {
    mails.push(student.email)
   })
 
@@ -134,7 +135,7 @@ export default function TerminInfo({
    .replace(/:/g, '-')
    .replace(/\//g, '-')
    .replace(' ', '_')
-  anchor.download = `Studenti-${Termin._id}-${Termin.cviceni}_${date}`
+  anchor.download = `Studenti-${Termin.kod_predmet}-${Termin.cislo_cviceni}_${date}`
   anchor.click()
   URL.revokeObjectURL(fileURL)
  }
@@ -145,7 +146,7 @@ export default function TerminInfo({
     <CardTitle className="text-2xl font-bold flex justify-between">
      <span className="flex gap-2 items-center">
       <Bookmark className="h-6 w-6 text-amber-400" aria-hidden="true" />
-      {Termin?.nazev || 'Název předmětu'}
+      {Termin?.jmeno || 'Název předmětu'}
      </span>
      <span className="flex gap-2 items-center">
       <button
@@ -189,7 +190,7 @@ export default function TerminInfo({
 
       <button
        className="text-amber-500 hover:text-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50 rounded-full p-1"
-       aria-label="Delete"
+       aria-label="Edit"
        onClick={() => {
         setOpen(true)
         setFormData(storage.form)
@@ -234,18 +235,18 @@ export default function TerminInfo({
      <div className="flex items-center gap-2">
       <Book className="h-5 w-5 text-emerald-400" aria-hidden="true" />
       <span className="text-sm font-medium">Předmět:</span>
-      <span className="font-bold">{Termin?._id || 'N/A'}</span>
+      <span className="font-bold">{Termin?.kod_predmet || 'N/A'}</span>
      </div>
      <div className="flex items-center gap-2">
       <FileText className="h-5 w-5 text-blue-400" aria-hidden="true" />
       <span className="text-sm font-medium">Cvičení:</span>
-      <span className="font-bold">{Termin?.cviceni || 'N/A'}</span>
+      <span className="font-bold">{Termin?.cislo_cviceni || 'N/A'}</span>
      </div>
     </div>
     <div className="flex items-center gap-2">
      <Users className="h-5 w-5 text-purple-400" aria-hidden="true" />
      <span className="text-sm font-medium">Kapacita:</span>
-     <span className="font-bold">{Termin?.kapacita || 'N/A'}</span>
+     <span className="font-bold">{Termin?.max_kapacita || 'N/A'}</span>
     </div>
     <div className="space-y-2">
      <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -256,12 +257,12 @@ export default function TerminInfo({
       <div className="flex items-center gap-2">
        <Clock className="h-4 w-4 text-green-400" aria-hidden="true" />
        <span className="text-sm">Začátek:</span>
-       <span className="font-medium">{formatDate(Termin?.start)}</span>
+       <span className="font-medium">{formatDate(Termin.datum_start)}</span>
       </div>
       <div className="flex items-center gap-2">
        <Clock className="h-4 w-4 text-orange-400" aria-hidden="true" />
        <span className="text-sm">Konec:</span>
-       <span className="font-medium">{formatDate(Termin?.konec)}</span>
+       <span className="font-medium">{formatDate(Termin?.datum_konec)}</span>
       </div>
      </div>
     </div>
@@ -271,7 +272,7 @@ export default function TerminInfo({
       Popis
      </h3>
      <p className="text-sm dark:text-stone-300 pl-7">
-      {Termin?.tema || 'Žádný popis není k dispozici.'}
+      {Termin?.popis || 'Žádný popis není k dispozici.'}
      </p>
     </div>
    </CardContent>

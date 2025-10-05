@@ -1,24 +1,12 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { getStudentsForCourse, getUserInfo } from '@/lib/stag'
-import { fastHeaders, validateTicket } from '@/lib/auth'
-import { tCreate, tStudent, tStudentInfo, tTermin } from '@/lib/types'
+import { encodeId, getStudentiByPredmet, getUserInfo } from '@/lib/stag'
+import { validateTicket } from '@/lib/auth'
+import { tCreate } from '@/lib/types'
+import { tGetStudentiByPredmet, tstudentPredmetu } from '@/types/stag_response_types'
+import { tStudentPredmetuNaTeminu } from '@/types/next_response_types'
 import { prisma } from '@/prisma'
 import crypto from 'crypto'
-
-type tBody = {
- ucebna: string
- datum_start: string
- datum_konec: string
- max_kapacita: number
- kod_predmetu: string
- jmeno: string
- cislo_cviceni: number
- popis: string
- upozornit: boolean
- vyucuje_prijmeni: string
- vyucuje_jmeno: string
-}
 
 /* ----------------------------------------------------------------------------------------------- */
 // Create
@@ -31,7 +19,6 @@ export async function POST(req: Request) {
 
  const body: tCreate = await req.json()
  if (!body) return NotFound()
- console.log(body)
 
  const kod = body._id
  if (!kod) return NotFound()
@@ -40,16 +27,27 @@ export async function POST(req: Request) {
  const zkratka = kod.split('/')[1] || ''
  if (!katedra || !zkratka) return NotFound()
 
- const data: tStudentInfo[] | null = await getStudentsForCourse(rTicket, zkratka, katedra)
+ const data: tGetStudentiByPredmet | null = await getStudentiByPredmet(rTicket, zkratka, katedra)
  if (!data) return NotFound()
 
  const mails: string[] = []
- for (const student of data) {
+ for (const student of data.studentPredmetu) {
   if (student.email && student.email.includes('@')) {
    mails.push(student.email)
   }
  }
  const id: string = crypto.randomUUID()
+
+ const teacher = await prisma.role.findFirst({
+  where: { ucitIdno: `${info.stagUserInfo[0].ucitIdno}` },
+  select: {
+   vyucujici: {
+    select: { id: true },
+   },
+  },
+ })
+
+ if (!teacher || !teacher.vyucujici) return Internal()
 
  await prisma.termin.create({
   data: {
@@ -59,12 +57,15 @@ export async function POST(req: Request) {
    datum_konec: new Date(body.konec),
    max_kapacita: body.kapacita,
    aktualni_kapacita: 0,
-   vypsal_id: info.hash || 'unknown',
-   vyucuje_id: info.hash || 'unknown',
    jmeno: body.nazev,
    cislo_cviceni: body.cviceni,
    popis: body.tema,
-   kod_predmet: kod,
+   predmet: {
+    connect: { kod_predmetu: kod },
+   },
+   vypsal: {
+    connect: { id: teacher.vyucujici.id },
+   },
   },
  })
 
@@ -77,6 +78,18 @@ export async function POST(req: Request) {
 
 /* ----------------------------------------------------------------------------------------------- */
 // Read
+
+type tHistorieWithStudent = {
+ id: string
+ student_id: string
+ termin_id: string
+ datum_splneni: Date | null
+ student: {
+  id: string
+  datum_vytvoreni: Date
+ }
+}
+
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
  if (!rTicket) return Unauthorized()
@@ -97,8 +110,29 @@ export async function GET(req: Request) {
   },
  })
  if (!data) return NotFound()
- console.log(data) // <-- needs to be fixed
- return Success({ termin: {}, studenti: [] })
+ const allStudents = await getStudentiByPredmet(
+  rTicket,
+  data.kod_predmet.split('/')[1],
+  data.kod_predmet.split('/')[0],
+ )
+ if (!allStudents) return NotFound()
+ const studenti: tStudentPredmetuNaTeminu[] = []
+ if (data.historie_terminu && data.historie_terminu.length > 0) {
+  for (let s of data.historie_terminu) {
+   s = s as tHistorieWithStudent
+   for (let st of allStudents.studentPredmetu) {
+    st = st as tstudentPredmetu
+    if (s.student_id === encodeId(st.osCislo)) {
+     studenti.push({ ...st, datum_splneni: s.datum_splneni })
+     break
+    }
+   }
+  }
+ }
+
+ if (data.cislo_cviceni === -1) return NotFound()
+
+ return Success({ termin: data, studenti: studenti })
 }
 
 /* ----------------------------------------------------------------------------------------------- */
@@ -114,38 +148,56 @@ export async function PATCH(req: Request) {
  const rID = base.searchParams.get('id') || ''
  if (!rID) return NotFound()
 
- const url = new URL(`${process.env.API}/ucitel/termin`)
- url.searchParams.set('ticket', rTicket)
- url.searchParams.set('id_terminu', rID)
-
  const body: tCreate = await req.json()
  if (!body) return NotFound()
 
- const fBody: tBody = {
-  ucebna: body.ucebna,
-  datum_start: new Date(body.start).toJSON(),
-  datum_konec: new Date(body.konec).toJSON(),
-  max_kapacita: body.kapacita,
-  cislo_cviceni: body.cviceni,
-  popis: body.tema,
-  jmeno: body.nazev,
-  kod_predmetu: body._id,
-  upozornit: body.upzornit,
-  vyucuje_prijmeni: body.prijmeni,
-  vyucuje_jmeno: body.jmeno,
- }
+ const termin = await prisma.termin.findUnique({
+  where: { id: rID },
+ })
+ if (!termin) return NotFound()
 
- const res = await fetch(url.toString(), {
-  method: 'PATCH',
-  headers: fastHeaders,
-  body: JSON.stringify(fBody),
+ await prisma.termin.update({
+  where: { id: rID },
+  data: {
+   ucebna: body.ucebna,
+   datum_start: new Date(body.start),
+   datum_konec: new Date(body.konec),
+   max_kapacita: body.kapacita,
+   jmeno: body.nazev,
+   cislo_cviceni: body.cviceni,
+   popis: body.tema,
+  },
  })
 
- if (!res.ok) return Internal()
+ if (!body.upzornit) return Success()
 
- const resData = await res.json()
- if (typeof resData === 'object' && typeof resData.message === 'string') {
-  return Success()
+ const studenti = await prisma.termin.findUnique({
+  where: { id: rID },
+  include: {
+   historie_terminu: {
+    include: { student: true },
+   },
+  },
+ })
+
+ if (!studenti) return Success()
+
+ const studentData = await getStudentiByPredmet(
+  rTicket,
+  termin.kod_predmet.split('/')[1],
+  termin.kod_predmet.split('/')[0],
+ )
+ if (!studentData) return Success()
+
+ const resData: string[] = []
+ for (let s of studenti.historie_terminu) {
+  s = s as tHistorieWithStudent
+  for (const sd of studentData.studentPredmetu) {
+   if (s.id === encodeId(sd.osCislo) && sd.email && sd.email.includes('@')) {
+    resData.push(sd.email)
+    break
+   }
+  }
  }
 
  return Success({ mails: resData })
@@ -164,16 +216,15 @@ export async function DELETE(req: Request) {
  const rID = base.searchParams.get('id') || ''
  if (!rID) return NotFound()
 
- const url = new URL(`${process.env.API}/ucitel/termin`)
- url.searchParams.set('ticket', rTicket)
- url.searchParams.set('id_terminu', rID)
-
- const res = await fetch(url.toString(), {
-  method: 'DELETE',
-  headers: fastHeaders,
+ await prisma.termin.delete({
+  where: { id: rID },
  })
 
- if (!res.ok) return Internal()
+ const termin = await prisma.termin.findUnique({
+  where: { id: rID },
+ })
+
+ if (termin) return Internal()
 
  return Success()
 }

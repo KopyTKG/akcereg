@@ -141,7 +141,6 @@ export async function middleware(request: NextRequest) {
    request.nextUrl.pathname = `/student/${id}`
   } else {
    request.nextUrl.pathname = `/ucitel/${id}`
-   console.log(request.nextUrl.pathname)
   }
   return NextResponse.redirect(request.nextUrl)
  }

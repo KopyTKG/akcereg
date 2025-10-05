@@ -74,10 +74,10 @@ export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
    <TableBody>
     {Predmety
      ? Predmety.map((predmet: tPredmet) => (
-        <TableRow key={predmet._id}>
-         <TableCell>{predmet.nazev.split('/')[0]}</TableCell>
-         <TableCell>{predmet.nazev.split('/')[1]}</TableCell>
-         <TableCell align="center">{predmet.nCviceni}</TableCell>
+        <TableRow key={predmet.kod_predmetu}>
+         <TableCell>{predmet.katedra}</TableCell>
+         <TableCell>{predmet.zkratka_predmetu}</TableCell>
+         <TableCell align="center">{predmet.pocet_cviceni}</TableCell>
          <TableCell align="center">
           <div className="flex gap-1 items-center">
            <ToolkitUcitel predmet={predmet} />
@@ -97,7 +97,7 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
  async function PrintStudnets() {
   setLoading(true)
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/studenti`)
-  url.searchParams.set('kod_predmetu', predmet._id)
+  url.searchParams.set('kod_predmetu', predmet.kod_predmetu)
 
   const res = await fetch(url.toString(), {
    method: 'GET',
@@ -194,10 +194,10 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
     onClick={() => {
      setOpen(!open)
      setStorage({
-      kod: predmet.nazev,
-      zkratka: predmet.nazev.split('/')[1],
-      katedra: predmet.nazev.split('/')[0],
-      cviceni: predmet.nCviceni,
+      kod: predmet.kod_predmetu,
+      zkratka: predmet.zkratka_predmetu,
+      katedra: predmet.katedra,
+      cviceni: predmet.pocet_cviceni,
      } as tPredmetBody)
     }}>
     <Pencil className="w-5 h-5" aria-hidden="true" />
@@ -222,7 +222,7 @@ function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
        Zrušit
       </AlertDialogCancel>
       <AlertDialogAction
-       onClick={() => onDelete(predmet._id)}
+       onClick={() => onDelete(predmet.kod_predmetu)}
        className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:text-white dark:hover:bg-red-800">
        Pokračovat
       </AlertDialogAction>

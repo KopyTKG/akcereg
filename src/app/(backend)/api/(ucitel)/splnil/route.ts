@@ -1,7 +1,8 @@
 import { isStudent } from '@/lib/functions'
 import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
 import { validateTicket, fastHeaders } from '@/lib/auth'
-import { getUserInfo } from '@/lib/stag'
+import { encodeId, getUserInfo } from '@/lib/stag'
+import { prisma } from '@/prisma'
 
 // Create
 export async function POST(req: Request) {
@@ -16,18 +17,31 @@ export async function POST(req: Request) {
  const rId_terminu = base.searchParams.get('id_terminu') || ''
 
  if (!rId_stud || !rId_terminu) return NotFound()
+ const encId = encodeId(rId_stud)
 
- const url = new URL(`${process.env.API}/ucitel/splnit`)
- url.searchParams.set('ticket', rTicket)
- url.searchParams.set('id_stud', rId_stud)
- url.searchParams.set('id_terminu', rId_terminu)
-
- const res = await fetch(url.toString(), {
-  method: 'POST',
-  headers: fastHeaders,
+ const student = await prisma.student.findUnique({
+  where: { id: encId },
  })
 
- if (!res.ok) return Internal()
+ if (!student) return NotFound()
+
+ const historie = await prisma.historie_terminu.findFirst({
+  where: {
+   student_id: encId,
+   termin_id: rId_terminu,
+  },
+ })
+
+ if (!historie) return NotFound()
+
+ await prisma.historie_terminu.update({
+  where: {
+   id: historie.id,
+  },
+  data: {
+   datum_splneni: new Date(),
+  },
+ })
 
  return Success()
 }
@@ -45,18 +59,31 @@ export async function DELETE(req: Request) {
  const rId_terminu = base.searchParams.get('id_terminu') || ''
 
  if (!rId_stud || !rId_terminu) return NotFound()
+ const encId = encodeId(rId_stud)
 
- const url = new URL(`${process.env.API}/ucitel/splnit`)
- url.searchParams.set('ticket', rTicket)
- url.searchParams.set('id_stud', rId_stud)
- url.searchParams.set('id_terminu', rId_terminu)
-
- const res = await fetch(url.toString(), {
-  method: 'DELETE',
-  headers: fastHeaders,
+ const student = await prisma.student.findUnique({
+  where: { id: encId },
  })
 
- if (!res.ok) return Internal()
+ if (!student) return NotFound()
+
+ const historie = await prisma.historie_terminu.findFirst({
+  where: {
+   student_id: encId,
+   termin_id: rId_terminu,
+  },
+ })
+
+ if (!historie) return NotFound()
+
+ await prisma.historie_terminu.update({
+  where: {
+   id: historie.id,
+  },
+  data: {
+   datum_splneni: null,
+  },
+ })
 
  return Success()
 }

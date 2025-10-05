@@ -1,7 +1,8 @@
 import { isStudent } from '@/lib/functions'
-import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { getUserInfo } from '@/lib/stag'
-import { fastHeaders, validateTicket } from '@/lib/auth'
+import { Unauthorized, NotFound, Success, Forbidden } from '@/lib/http'
+import { encodeId, getUserInfo } from '@/lib/stag'
+import { validateTicket } from '@/lib/auth'
+import { prisma } from '@/prisma'
 // Create
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
@@ -16,17 +17,48 @@ export async function GET(req: Request) {
 
  if (!rId_stud || !rId_terminu) return NotFound()
 
- const url = new URL(`${process.env.API}/ucitel/zapis`)
- url.searchParams.set('ticket', rTicket)
- url.searchParams.set('id_stud', rId_stud)
- url.searchParams.set('id_terminu', rId_terminu)
+ const encId = encodeId(rId_stud)
 
- const res = await fetch(url.toString(), {
-  method: 'POST',
-  headers: fastHeaders,
+ const student = await prisma.student.findUnique({
+  where: { id: encId },
+ })
+ if (!student) return NotFound()
+
+ const termin = await prisma.termin.findUnique({
+  where: { id: rId_terminu },
+ })
+ if (!termin) return NotFound()
+
+ let historie = await prisma.historie_terminu.findFirst({
+  where: {
+   student_id: encId,
+   termin_id: rId_terminu,
+  },
  })
 
- if (!res.ok) return Internal()
+ if (historie) return Forbidden()
+
+ historie = await prisma.historie_terminu.findFirst({
+  where: {
+   student_id: encId,
+   termin: { cislo_cviceni: -1 },
+  },
+ })
+ if (historie) return Forbidden()
+
+ await prisma.historie_terminu.create({
+  data: {
+   student: { connect: { id: encId } },
+   termin: { connect: { id: rId_terminu } },
+  },
+ })
+
+ await prisma.termin.update({
+  where: { id: rId_terminu },
+  data: {
+   aktualni_kapacita: { increment: 1 },
+  },
+ })
 
  return Success()
 }

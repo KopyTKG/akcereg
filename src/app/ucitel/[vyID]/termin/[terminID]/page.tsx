@@ -10,16 +10,21 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Check, X } from 'lucide-react'
-import { tForm, tPredmet, tStudent, tTermin } from '@/lib/types'
-import React, { useState, useCallback, useEffect, use } from 'react'
+import { tForm } from '@/lib/types'
+import { useState, useCallback, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import TerminInfo from '@/components/terminInfo'
 import { toast } from '@/hooks/use-toast'
 import { DefaultForm, DefaultPredmet, useFormContext } from '@/contexts/FormProvider'
-import { fetchPredmetyData } from '@/lib/functions'
-import { Time } from '@/lib/functions'
+import { fetchPredmetyData, Time } from '@/lib/functions'
 import { Chip } from '@/components/ui/chip'
 import { useReloadContext } from '@/contexts/ReloadProvider'
+import {
+ tStudentPredmetuNaTeminu,
+ tTermin,
+ tTerminGetBody,
+ tPredmet,
+} from '@/types/next_response_types'
 
 const fetchTerminData = async (id: string) => {
  try {
@@ -32,7 +37,7 @@ const fetchTerminData = async (id: string) => {
   if (!res.ok) {
    return null
   }
-  return await res.json()
+  return (await res.json()) as tTerminGetBody
  } catch (e) {
   console.error(e)
   return null
@@ -46,7 +51,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
   form: DefaultForm,
   terminId: '',
  })
- const [Studenti, setStudenti] = useState<tStudent[]>([])
+ const [Studenti, setStudenti] = useState<tStudentPredmetuNaTeminu[]>([])
  const [noData, setNull] = useState<boolean>(false)
  const [fetching, setFetching] = useState<boolean>(true)
  const router = useRouter()
@@ -58,23 +63,25 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
   const terminData = await fetchTerminData(params.terminID)
   const predmety = await fetchPredmetyData()
   if (terminData && predmety) {
-   const termin = terminData.termin as tTermin
+   const termin = terminData.termin
    setTermin(termin)
    setStudenti(terminData.studenti)
    setPredmety(predmety)
-   setPredmet(predmety.find((a: tPredmet) => a._id === termin._id) || DefaultPredmet)
+   setPredmet(
+    predmety.find((a: tPredmet) => a.kod_predmetu === termin.kod_predmet) || DefaultPredmet,
+   )
    setStorage({
     form: {
-     _id: termin._id,
-     cviceni: termin.cviceni.toString(),
-     nazev: termin.nazev,
-     tema: termin.tema,
+     _id: termin.kod_predmet,
+     cviceni: termin.cislo_cviceni.toString(),
+     nazev: termin.jmeno,
+     tema: termin.popis,
      ucebna: termin.ucebna,
-     kapacita: termin.kapacita,
-     startDatum: new Date(termin.start),
-     startCas: Time(termin.start),
-     konecDatum: new Date(termin.konec),
-     konecCas: Time(termin.konec),
+     kapacita: termin.max_kapacita,
+     startDatum: new Date(termin.datum_start),
+     startCas: Time(termin.datum_start),
+     konecDatum: new Date(termin.datum_konec),
+     konecCas: Time(termin.datum_konec),
      upozornit: true,
      vJmeno: '',
      vPrijmeni: '',
@@ -151,7 +158,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
      </TableRow>
     </TableHeader>
     <TableBody>
-     {Studenti.map((student: tStudent) => (
+     {Studenti.map((student: tStudentPredmetuNaTeminu) => (
       <TableRow key={student.osCislo}>
        <TableCell className="font-medium">{student.osCislo}</TableCell>
        <TableCell>{student.jmeno}</TableCell>

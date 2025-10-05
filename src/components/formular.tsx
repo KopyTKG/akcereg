@@ -37,11 +37,12 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { tCreate, tPredmet } from '@/lib/types'
+import { tCreate } from '@/lib/types'
 import { DateTime } from '@/lib/functions'
 import { DefaultForm, DefaultPredmet, useFormContext } from '@/contexts/FormProvider'
 import { Accordion, AccordionTrigger, AccordionContent, AccordionItem } from './ui/accordion'
 import { useReloadContext } from '@/contexts/ReloadProvider'
+import { tPredmet } from '@/types/next_response_types'
 
 const formSchema = z.object({
  _id: z.string().min(1, { message: 'Předmět je povinný' }),
@@ -191,9 +192,10 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
           <Select
            onValueChange={(value) => {
             field.onChange(value)
-            setPredmet(predmety.find((p) => p._id === value) || DefaultPredmet)
+            setPredmet(predmety.find((p) => p.kod_predmetu === value) || DefaultPredmet)
            }}
-           defaultValue={field.value}>
+           defaultValue={field.value}
+           disabled={predmety.length === 0 || type != 'create'}>
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte předmět" />
@@ -202,8 +204,8 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
            <SelectContent>
             {predmety.length > 0 ? (
              predmety.map((subject: tPredmet) => (
-              <SelectItem key={subject._id} value={subject._id}>
-               {subject.nazev}
+              <SelectItem key={subject.kod_predmetu} value={subject.kod_predmetu}>
+               {subject.kod_predmetu}
               </SelectItem>
              ))
             ) : (
@@ -227,15 +229,15 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
           <Select
            onValueChange={field.onChange}
            defaultValue={field.value}
-           disabled={!predmet || predmet.nCviceni === 0}>
+           disabled={!predmet || predmet.pocet_cviceni === 0}>
            <FormControl>
             <SelectTrigger>
              <SelectValue placeholder="Vyberte cvičení" />
             </SelectTrigger>
            </FormControl>
            <SelectContent>
-            {predmet && predmet.nCviceni > 0 ? (
-             Array.from({ length: predmet.nCviceni }, (_, i) => (
+            {predmet && predmet.pocet_cviceni > 0 ? (
+             Array.from({ length: predmet.pocet_cviceni }, (_, i) => (
               <SelectItem key={i + 1} value={(i + 1).toString()}>
                Cvičení {i + 1}
               </SelectItem>
@@ -260,7 +262,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
          <FormLabel>Název události</FormLabel>
          <FormControl>
           <Input
-           disabled={!predmet || predmet.nCviceni > 0 ? true : false}
+           disabled={!predmet || predmet.pocet_cviceni > 0 ? true : false}
            placeholder="Prezentace"
            {...field}
           />

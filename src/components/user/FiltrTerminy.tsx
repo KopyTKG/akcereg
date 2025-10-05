@@ -1,10 +1,11 @@
 'use client'
 import Node from '@/components/node'
 import { useCallback, useEffect, useState } from 'react'
-import { tTermin } from '@/lib/types'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/ui/header'
 import { useFilterContext } from '@/contexts/FilterProvider'
+import { tFiltrResponse, tTermin } from '@/types/next_response_types'
+import { tTypUzivatele } from '@/types/component_types'
 
 const fetchTerminyData = async (data: string[], all: boolean) => {
  try {
@@ -15,14 +16,14 @@ const fetchTerminyData = async (data: string[], all: boolean) => {
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200) {
-   return await res.json()
+   return (await res.json()) as tFiltrResponse
   }
  } catch (e) {
   console.error(e)
  }
 }
 
-export default function FiltrTerminy({ typ }: { typ?: string }) {
+export default function FiltrTerminy({ typ }: { typ: tTypUzivatele }) {
  const [Terminy, setTerminy] = useState<tTermin[]>([])
 
  const { filter, showHidden } = useFilterContext()
@@ -33,7 +34,7 @@ export default function FiltrTerminy({ typ }: { typ?: string }) {
   setFetching(true)
   const data = await fetchTerminyData(filter, showHidden)
   if (data) {
-   setTerminy(data.data)
+   setTerminy(data.terminy)
   }
 
   setFetching(false)
@@ -64,7 +65,12 @@ export default function FiltrTerminy({ typ }: { typ?: string }) {
    <>
     <div className="w-max grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-3">
      {Terminy?.map((termin: tTermin) => (
-      <Node key={termin._id} props={{ ...termin, typ: typ || '' }} />
+      <Node
+       key={termin.id + termin.kod_predmet}
+       props={{ ...termin }}
+       typUzivatele={typ}
+       demo={null}
+      />
      ))}
     </div>
    </>

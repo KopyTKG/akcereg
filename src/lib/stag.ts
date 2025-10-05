@@ -3,6 +3,7 @@ import {
  tGetStudentInfo,
  tGetStagUserListForLoginTicketV2,
  tGetStudentiByPredmet,
+ tGetRozvrhByStudent,
 } from '@/types/stag_response_types'
 import crypto from 'crypto'
 
@@ -35,6 +36,12 @@ function assembleHeaders(ticket: string): Headers {
  return headers
 }
 
+/*
+ * STAG API calls
+ *
+ * All functions return null if anything goes wrong (non-200 response, empty response, etc.)
+ */
+
 export async function getUserInfo(
  ticket: string,
 ): Promise<tGetStagUserListForLoginTicketV2 | null> {
@@ -58,7 +65,7 @@ export async function getUserInfo(
  return data
 }
 
-export async function getStudentsForCourse(
+export async function getStudentiByPredmet(
  ticket: string,
  course: string,
  department: string,
@@ -112,6 +119,24 @@ export async function getStudentInfo(
  if (res.status === 204) return null
 
  const data = (await res.json()) as tGetStudentInfo
+ if (!data) return null
+ return data
+}
+
+export async function getRovrhByStudent(
+ ticket: string,
+ studentId: string,
+): Promise<tGetRozvrhByStudent | null> {
+ const url = new URL(`${process.env.STAG_SERVER}/services/rest2/rozvrhy/getRozvrhByStudent`)
+ url.searchParams.set('osCislo', studentId)
+
+ const headers = assembleHeaders(ticket)
+
+ const res = await fetch(url.toString(), { method: 'GET', headers })
+ if (!res.ok) return null
+ if (res.status === 204) return null
+
+ const data = await res.json()
  if (!data) return null
  return data
 }

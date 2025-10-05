@@ -20,10 +20,6 @@ export interface tSelected {
  s: string | undefined
 }
 
-export interface tNode extends tTermin {
- typ: string
-}
-
 export interface tCreate extends tTermin {
  upzornit: boolean
  vyucuje?: string

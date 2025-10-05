@@ -1,9 +1,8 @@
-import { isAdmin, isStudent } from '@/lib/functions'
-import { Forbidden, Internal, Success, Unauthorized } from '@/lib/http'
-import { resTotTermin } from '@/lib/parsers'
+import { isStudent } from '@/lib/functions'
+import { Forbidden, Success, Unauthorized } from '@/lib/http'
 import { getUserInfo } from '@/lib/stag'
-import { fastHeaders, validateTicket } from '@/lib/auth'
-import { tTermin } from '@/lib/types'
+import { validateTicket } from '@/lib/auth'
+import { prisma } from '@/prisma'
 
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
@@ -13,35 +12,34 @@ export async function GET(req: Request) {
 
  if (isStudent(info)) return Forbidden()
 
- let apipoint = '/ucitel'
- if (isAdmin(info)) {
-  apipoint = '/admin'
- }
-
  const base = new URL(req.url)
- const rVybrane = base.searchParams.get('vybrane') || ''
- let rVse = base.searchParams.get('vse') || ''
- if (!rVse) rVse = 'F'
+ const predmety = base.searchParams.get('vybrane')
+  ? base.searchParams.get('vybrane')?.split('-')
+  : ''
+ const vse = base.searchParams.get('vse') ? true : false
 
- const all = rVse == 'T' ? 'true' : 'false'
- let params = ``
-
- if (rVybrane) params = `/ucitel/board_by_predmet`
- else params = `${apipoint}/moje`
-
- const url = new URL(`${process.env.API}${params}`)
- url.searchParams.set('ticket', rTicket)
- if (rVybrane) url.searchParams.set('predmety', rVybrane.split('-').join(';'))
- url.searchParams.set('probehle', all)
- const res = await fetch(url.toString(), { method: 'GET', headers: fastHeaders })
- if (!res.ok) {
-  return Internal()
- }
-
- const data = await res.json()
- const terminy = resTotTermin(data).sort((a: tTermin, b: tTermin) => {
-  return new Date(a.start).valueOf() - new Date(b.start).valueOf()
+ const vyucujici = await prisma.role.findFirst({
+  where: { ucitIdno: `${info.stagUserInfo[0].ucitIdno}` },
+  select: {
+   vyucujici: { select: { id: true } },
+  },
  })
 
- return Success({ data: terminy })
+ const timeFilter = { gte: new Date() }
+
+ const terminy = await prisma.termin.findMany({
+  where: {
+   vypsal_id: vyucujici?.vyucujici?.id,
+   datum_konec: vse ? {} : timeFilter,
+   kod_predmet: predmety && predmety.length > 0 ? { in: predmety } : undefined,
+   cislo_cviceni: { not: -1 },
+  },
+  include: {
+   vypsal: { select: { titulPred: true, jmeno: true, prijmeni: true, titulZa: true } },
+   predmet: { select: { pocet_cviceni: true } },
+  },
+  orderBy: { datum_start: 'asc' },
+ })
+
+ return Success({ terminy: terminy })
 }

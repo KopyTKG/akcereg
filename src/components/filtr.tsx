@@ -16,11 +16,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useEffect, useState } from 'react'
-import { tPredmet } from '@/lib/types'
 import { Header } from './ui/header'
 import { useFilterContext } from '@/contexts/FilterProvider'
 import { Accordion, AccordionContent, AccordionTrigger } from './ui/accordion'
 import { AccordionItem } from '@radix-ui/react-accordion'
+import { tPredmet } from '@/types/next_response_types'
 
 async function fetchPredmetyData() {
  try {
@@ -101,24 +101,26 @@ export default function Filtr() {
         {!isLoading &&
          predmety.map((item) => (
           <FormField
-           key={item._id}
+           key={item.kod_predmetu}
            control={form.control}
            name="items"
            render={({ field }) => {
             return (
-             <FormItem key={item._id} className="flex items-start space-x-3 space-y-0 ml-5">
+             <FormItem
+              key={item.kod_predmetu}
+              className="flex items-start space-x-3 space-y-0 ml-5">
               <FormControl>
                <Checkbox
-                checked={field.value?.includes(item._id)}
+                checked={field.value?.includes(item.kod_predmetu)}
                 onCheckedChange={(checked) => {
                  const updatedValue = checked
-                  ? [...field.value, item._id]
-                  : field.value?.filter((value) => value !== item._id)
+                  ? [...field.value, item.kod_predmetu]
+                  : field.value?.filter((value) => value !== item.kod_predmetu)
                  field.onChange(updatedValue)
                 }}
                />
               </FormControl>
-              <FormLabel className="font-normal">{item.nazev}</FormLabel>
+              <FormLabel className="font-normal">{item.kod_predmetu}</FormLabel>
              </FormItem>
             )
            }}
