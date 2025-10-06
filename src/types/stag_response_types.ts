@@ -4,10 +4,10 @@
  * stag response types
  */
 export type tGetStudentiByPredmet = {
- studentPredmetu: tstudentPredmetu[]
+ studentPredmetu: tStudentPredmetu[]
 }
 
-export type tstudentPredmetu = {
+export type tStudentPredmetu = {
  osCislo: string
  encOsCislo: string | null
  jmeno: string

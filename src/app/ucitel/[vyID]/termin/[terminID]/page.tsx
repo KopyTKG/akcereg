@@ -20,7 +20,7 @@ import { fetchPredmetyData, Time } from '@/lib/functions'
 import { Chip } from '@/components/ui/chip'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import {
- tStudentPredmetuNaTeminu,
+ tStudentPredemtyNaTerminu,
  tTermin,
  tTerminGetBody,
  tPredmet,
@@ -51,7 +51,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
   form: DefaultForm,
   terminId: '',
  })
- const [Studenti, setStudenti] = useState<tStudentPredmetuNaTeminu[]>([])
+ const [Studenti, setStudenti] = useState<tStudentPredemtyNaTerminu[]>([])
  const [noData, setNull] = useState<boolean>(false)
  const [fetching, setFetching] = useState<boolean>(true)
  const router = useRouter()
@@ -158,7 +158,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
      </TableRow>
     </TableHeader>
     <TableBody>
-     {Studenti.map((student: tStudentPredmetuNaTeminu) => (
+     {Studenti.map((student: tStudentPredemtyNaTerminu) => (
       <TableRow key={student.osCislo}>
        <TableCell className="font-medium">{student.osCislo}</TableCell>
        <TableCell>{student.jmeno}</TableCell>

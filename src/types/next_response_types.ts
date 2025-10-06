@@ -1,5 +1,4 @@
-import { string } from 'zod'
-import { tGetStudentInfo, tstudentPredmetu } from './stag_response_types'
+import { tGetStudentInfo, tStudentPredmetu } from './stag_response_types'
 
 /*
  * route -> $HOST/api/predmety
@@ -59,13 +58,13 @@ export type tTerminPatchBody = {
  vyucuje_jmeno: string
 }
 
-export interface tStudentPredmetuNaTeminu extends tstudentPredmetu {
+export interface tStudentPredmetuNaTerminu extends tStudentPredmetu {
  datum_splneni: Date | null
 }
 
 export type tTerminGetBody = {
  termin: tTermin
- studenti: tStudentPredmetuNaTeminu[]
+ studenti: tStudentPredmetuNaTerminu[]
 }
 
 /*

@@ -32,7 +32,7 @@ Main login path used only in `middleware.ts`. Expects raw unecrypted session tic
     - `e-svh` (REQUIRED): "soft" ticket SHA3 hash.
 
 #### Response
-- `200 OK`: Returns JSON object of type [`tUser`](#) with user data.
+- `200 OK`: Returns JSON object of type [`tGetStagUserListForLoginTicketV2`](#) with user data.
 - `401 Unauthorized`: Missing or invalid cookies.
 - `500 Internal Server Error`: Unexpected error.
 
@@ -162,7 +162,7 @@ Fetches a list of all corses (predmety) the user is teaching.
 > in future `body` will be added with content of what role has user selected to view.
 
 #### Response
-- `200 OK`: Returns JSON array of type [`tPredmetyBody`](#) with predmety data.
+- `200 OK`: Returns JSON array of type [`tPredmetBody`](Tyoes.md#tPredmetBody) with predmety data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 

@@ -3,8 +3,8 @@ import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http
 import { encodeId, getStudentiByPredmet, getUserInfo } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
 import { tCreate } from '@/lib/types'
-import { tGetStudentiByPredmet, tstudentPredmetu } from '@/types/stag_response_types'
-import { tStudentPredmetuNaTeminu } from '@/types/next_response_types'
+import { tGetStudentiByPredmet, tStudentPredmetu } from '@/types/stag_response_types'
+import { tStudentPredemtyNaTerminu } from '@/types/next_response_types'
 import { prisma } from '@/prisma'
 import crypto from 'crypto'
 
@@ -116,12 +116,12 @@ export async function GET(req: Request) {
   data.kod_predmet.split('/')[0],
  )
  if (!allStudents) return NotFound()
- const studenti: tStudentPredmetuNaTeminu[] = []
+ const studenti: tStudentPredemtyNaTerminu[] = []
  if (data.historie_terminu && data.historie_terminu.length > 0) {
   for (let s of data.historie_terminu) {
    s = s as tHistorieWithStudent
    for (let st of allStudents.studentPredmetu) {
-    st = st as tstudentPredmetu
+    st = st as tStudentPredmetu
     if (s.student_id === encodeId(st.osCislo)) {
      studenti.push({ ...st, datum_splneni: s.datum_splneni })
      break

@@ -29,7 +29,7 @@ import { Input } from './ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import { useFormContext } from '@/contexts/FormProvider'
-import { tStudentPredmetuNaTeminu, tTermin } from '@/types/next_response_types'
+import { tStudentPredemtyNaTerminu, tTermin } from '@/types/next_response_types'
 
 export default function TerminInfo({
  Termin,
@@ -42,7 +42,7 @@ export default function TerminInfo({
  id: string
  setNull: React.Dispatch<boolean>
  storage: { form: tForm; terminId: string }
- studenti?: tStudentPredmetuNaTeminu[]
+ studenti?: tStudentPredemtyNaTerminu[]
 }) {
  const { toast } = useToast()
 
@@ -113,7 +113,7 @@ export default function TerminInfo({
 
  function PrintMails() {
   const mails: string[] = [] as string[]
-  studenti?.forEach((student: tStudentPredmetuNaTeminu) => {
+  studenti?.forEach((student: tStudentPredemtyNaTerminu) => {
    mails.push(student.email)
   })
 
