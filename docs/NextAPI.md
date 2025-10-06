@@ -5,6 +5,19 @@ Table of Contents
 - [Ucitel routes](#ucitel-routes)
 - [Student routes](#student-routes)
 
+> [!CAUTION]
+> All routes will be migrated to NextJS API routes in future. As of now, only the routes below are implemented using NextJS API routes.
+> 
+
+#### Todo
+- [ ] migrate `$HOST/terminy` to NextJS API route
+- [ ] migrate all student routes to NextJS API routes
+- [ ] add response types for all routes
+- [ ] create types documentation
+
+----
+----
+
 ## System routes
 Routes used for authentication and user session management.
 
