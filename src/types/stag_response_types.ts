@@ -185,17 +185,17 @@ export type tGetStudentInfo = {
  */
 
 export type tGetRozvrhByStudent = {
- rozvrhovaAkce: trozvrhovaAkce[]
+ rozvrhovaAkce: tRozvrhovaAkce[]
 }
 
-export type trozvrhovaAkce = {
+export type tRozvrhovaAkce = {
  roakIdno: number
  nazev: string
  katedra: string
  predmet: string
  statut: string
  ucitIdno: number | null
- ucitel: tucitel | null
+ ucitel: tUcitel | null
  rok: string
  budova: string | null
  mistnost: string | null
@@ -239,7 +239,7 @@ export type trozvrhovaAkce = {
  zakazaneAkce: string | null
 }
 
-export type tucitel = {
+export type tUcitel = {
  ucitIdno: number
  jmeno: string
  prijmeni: string

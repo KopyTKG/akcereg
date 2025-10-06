@@ -32,7 +32,7 @@ Main login path used only in `middleware.ts`. Expects raw unecrypted session tic
     - `e-svh` (REQUIRED): "soft" ticket SHA3 hash.
 
 #### Response
-- `200 OK`: Returns JSON object of type [`tGetStagUserListForLoginTicketV2`](#) with user data.
+- `200 OK`: Returns JSON object of type [`tGetStagUserListForLoginTicketV2`](Types.md#tGetStagUserListForLoginTicketV2) with user data and sets session cookies on successful login.
 - `401 Unauthorized`: Missing or invalid cookies.
 - `500 Internal Server Error`: Unexpected error.
 
@@ -162,7 +162,7 @@ Fetches a list of all corses (predmety) the user is teaching.
 > in future `body` will be added with content of what role has user selected to view.
 
 #### Response
-- `200 OK`: Returns JSON array of type [`tPredmetBody`](Tyoes.md#tPredmetBody) with predmety data.
+- `200 OK`: Returns JSON array of type [`tPredmetBody`](Types.md#tPredmetBody) with predmety data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
@@ -180,7 +180,7 @@ Searches for users (students) by `osCislo`.
     - `id_stud` (REQUIRED): User's osCislo to search for.
 
 #### Response
-- `200 OK`: Returns JSON object of type [`tHledatBody`](#) with user data.
+- `200 OK`: Returns JSON object of type [`tHledatBody`](Types.md#tHledatBody) with user data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
@@ -200,7 +200,7 @@ Fetches a list of all events (terminy) based on provided filters. Default filter
 
 
 #### Response
-- `200 OK`: Returns JSON array of type [`tFiltrBody`](#) with event data.
+- `200 OK`: Returns JSON array of type [`tFiltrBody`](Types.md#tFiltrBody) with event data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
