@@ -3,8 +3,7 @@ import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http
 import { encodeId, getRovrhByStudent, getStudentInfo, getUserInfo } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
 import { prisma } from '@/prisma'
-import { tPredmetSekce } from '@/lib/types'
-import crypto from 'crypto'
+import { tHledatBody, tPredmetHledat } from '@/types/next_response_types'
 
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
@@ -35,11 +34,11 @@ export async function GET(req: Request) {
 
  if (predmety.length === 0) return Success({ info: student, data: [] })
 
- const response = [] as tPredmetSekce[]
+ const response = [] as tPredmetHledat[]
 
  predmety.forEach((p) => {
   response.push({
-   nazev: p.predmet.kod_predmetu,
+   kod_predmetu: p.predmet.kod_predmetu,
    cviceni: [...Array(p.predmet.pocet_cviceni)].map((_, i) => i + 1).map(() => 0),
   })
  })
@@ -55,7 +54,7 @@ export async function GET(req: Request) {
 
  if (terminy.length > 0) {
   for (const termin of terminy) {
-   const predmet = response.find((p) => p.nazev === termin.termin.kod_predmet)
+   const predmet = response.find((p) => p.kod_predmetu === termin.termin.kod_predmet)
    if (predmet) {
     for (let i = 0; i < predmet.cviceni.length; i++) {
      predmet.cviceni[i] = -1
@@ -65,13 +64,15 @@ export async function GET(req: Request) {
   return Success({ info: student, data: response })
  } else {
   terminy.forEach((t) => {
-   const predmet = response.find((p) => p.nazev === t.termin.kod_predmet)
+   const predmet = response.find((p) => p.kod_predmetu === t.termin.kod_predmet)
    if (predmet && t.termin.cislo_cviceni) {
     const index = t.termin.cislo_cviceni - 1
     if (t.datum_splneni) predmet.cviceni[index] = new Date(t.datum_splneni).getTime()
    }
   })
 
-  return Success({ info: student, data: response })
+  const res = { student: student, predmety: response } as tHledatBody
+
+  return Success(res)
  }
 }

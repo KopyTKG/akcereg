@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Divider } from '@/components/ui/divider'
 import { useToast } from '@/hooks/use-toast'
-import { tPredmetSekce } from '@/lib/types'
 import {
  Table,
  TableBody,
@@ -28,6 +27,7 @@ import {
 import { Chip } from '@/components/ui/chip'
 import { Check } from 'lucide-react'
 import { tGetStudentInfo } from '@/types/stag_response_types'
+import { tHledatBody, tPredmetHledat } from '@/types/next_response_types'
 
 const formSchema = z.object({
  id_stud: z.string().min(6, { message: 'osČíslo je povinný' }),
@@ -35,7 +35,7 @@ const formSchema = z.object({
 
 export default function Page() {
  const [student, setStudent] = useState<tGetStudentInfo>({} as tGetStudentInfo)
- const [predmety, setPredmety] = useState<tPredmetSekce[]>([])
+ const [predmety, setPredmety] = useState<tPredmetHledat[]>([])
 
  const { toast } = useToast()
 
@@ -61,9 +61,9 @@ export default function Page() {
      variant: 'destructive',
     })
    } else {
-    const data = (await res.json()) as { data: tPredmetSekce[]; info: tGetStudentInfo }
-    setPredmety(data.data)
-    setStudent(data.info)
+    const data = (await res.json()) as tHledatBody
+    setPredmety(data.predmety)
+    setStudent(data.student)
    }
   } catch (e) {
    console.error(e)
@@ -152,17 +152,17 @@ export default function Page() {
      </TableBody>
     </Table>
     {predmety &&
-     predmety.map((predmet: tPredmetSekce, key: number) => {
+     predmety.map((predmet: tPredmetHledat, key: number) => {
       return (
-       <div className="mb-3" key={predmet.nazev}>
+       <div className="mb-3" key={predmet.kod_predmetu}>
         <div className="w-full flex flex-row justify-between">
-         <h3 className="font-bold text-xl ">{predmet.nazev}</h3>
+         <h3 className="font-bold text-xl ">{predmet.kod_predmetu}</h3>
          {predmet.cviceni.includes(0) ? (
           <Button
            variant="ghost"
            size="sm"
            className="text-xl font-bold text-green-500"
-           onClick={() => onUznat(predmet.nazev)}>
+           onClick={() => onUznat(predmet.kod_predmetu)}>
            <Check className="w-8" />
           </Button>
          ) : null}

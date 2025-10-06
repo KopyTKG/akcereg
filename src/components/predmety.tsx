@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useAdminContext } from '@/contexts/AdminProvider'
 import { useToast } from '@/hooks/use-toast'
-import { tPredmetyResponse, tPredmet } from '@/types/next_response_types'
+import { tPredmetyBody, tPredmet } from '@/types/next_response_types'
 
 const fetchPredmetyData = async () => {
  try {
@@ -38,7 +38,7 @@ const fetchPredmetyData = async () => {
    window.location.href = '/logout'
   } else if (res.status == 200 || res.status == 404) {
    const data = await res.json()
-   return data as tPredmetyResponse
+   return data as tPredmetyBody
   }
  } catch (e) {
   console.error(e)

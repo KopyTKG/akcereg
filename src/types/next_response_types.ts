@@ -12,7 +12,7 @@ export type tPredmet = {
  pocet_cviceni: number
 }
 
-export type tPredmetyResponse = {
+export type tPredmetyBody = {
  predmety: tPredmet[]
 }
 
@@ -31,8 +31,14 @@ export type tPredmetPostBody = {
  * route -> $HOST/api/hledat
  */
 
-export type tHledatStudenta = {
+export type tPredmetHledat = {
+ kod_predmetu: string
+ cviceni: number[]
+}
+
+export type tHledatBody = {
  student: tGetStudentInfo
+ predmety: tPredmetHledat[]
 }
 
 /*
@@ -66,7 +72,7 @@ export type tTerminGetBody = {
  * route -> $HOST/api/filtr
  */
 
-export type tFiltrResponse = {
+export type tFiltrBody = {
  terminy: tTermin[]
 }
 

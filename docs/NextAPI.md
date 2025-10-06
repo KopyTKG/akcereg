@@ -162,7 +162,7 @@ Fetches a list of all corses (predmety) the user is teaching.
 > in future `body` will be added with content of what role has user selected to view.
 
 #### Response
-- `200 OK`: Returns JSON array of type [`tPredmetyResponse`](#) with predmety data.
+- `200 OK`: Returns JSON array of type [`tPredmetyBody`](#) with predmety data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
@@ -180,9 +180,27 @@ Searches for users (students) by `osCislo`.
     - `id_stud` (REQUIRED): User's osCislo to search for.
 
 #### Response
-> [!WARNING]
-> Not done yet, response structure will be added later.
-- `200 OK`: Returns JSON object with user data.
+- `200 OK`: Returns JSON object of type [`tHledatBody`](#) with user data.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `500 Internal Server Error`: Unexpected error.
+
+----
+ 
+### `$HOST/api/filtr`
+Fetches a list of all events (terminy) based on provided filters. Default filter is show all upcomming events.
+
+#### Request
+- `GET` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `vybrane`: Filter by predmet ID. Looks like `vybrane=ABC123-ABC112`.
+    - `vse`: Show all events, including past ones. Looks like `vse=true`.
+
+
+#### Response
+- `200 OK`: Returns JSON array of type [`tFiltrBody`](#) with event data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 

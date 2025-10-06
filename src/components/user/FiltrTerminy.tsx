@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/ui/header'
 import { useFilterContext } from '@/contexts/FilterProvider'
-import { tFiltrResponse, tTermin } from '@/types/next_response_types'
+import { tFiltrBody, tTermin } from '@/types/next_response_types'
 import { tTypUzivatele } from '@/types/component_types'
 
 const fetchTerminyData = async (data: string[], all: boolean) => {
@@ -16,7 +16,7 @@ const fetchTerminyData = async (data: string[], all: boolean) => {
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200) {
-   return (await res.json()) as tFiltrResponse
+   return (await res.json()) as tFiltrBody
   }
  } catch (e) {
   console.error(e)
