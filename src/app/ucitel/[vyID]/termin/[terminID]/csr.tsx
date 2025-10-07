@@ -153,7 +153,7 @@ export function DeleteTerminu({ id }: { id: string }) {
    if (!res.ok) {
     return null
    }
-   router.push('/ucitel')
+   router.push('/')
    toast({
     title: 'Úspěch',
     description: 'Termín smazán',
