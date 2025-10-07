@@ -6,25 +6,24 @@ export function getHash(input: string): string {
  return hash.digest('hex')
 }
 
-export function encrypt(req: Request, ticket: string): string | null {
+export function encrypt(ticket: string): string | null {
  const hash = new SHA3(512)
 
- const headers = req.headers
- console.log(headers)
- const ip = headers.get('x-forwarded-for') || ''
- const ua = headers.get('host') || ''
+ const key = process.env.LEA_KEY || ''
+ const seed = process.env.LEA_SEED || ''
+ if (!key || !seed) return null
 
- const hashIp = hash.update(ip).digest('hex')
+ const hashKey = hash.update(key).digest('hex')
  hash.reset()
- const hashUa = hash.update(ua).digest('hex')
+ const hashSeed = hash.update(seed).digest('hex')
 
- const bIp = shaToArr(hashIp)
- const bUa = shaToArr(hashUa)
+ const bKey = shaToArr(hashKey)
+ const bSeed = shaToArr(hashSeed)
 
  try {
   const block: Uint32Array = ticketToArr(ticket)
 
-  const rk: Uint32Array = keygen(bIp, bUa)
+  const rk: Uint32Array = keygen(bKey, bSeed)
 
   const left = block.slice(0, 4)
   const right = block.slice(4)
@@ -44,23 +43,24 @@ export function encrypt(req: Request, ticket: string): string | null {
  }
 }
 
-export function decrypt(req: Request, ticket: string): string | null {
+export function decrypt(ticket: string): string | null {
  const hash = new SHA3(512)
 
- const headers = req.headers
- const ip = headers.get('x-forwarded-for') || ''
- const ua = headers.get('host') || ''
+ const key = process.env.LEA_KEY || ''
+ const seed = process.env.LEA_SEED || ''
+ if (!key || !seed) return null
 
- const hashIp = hash.update(ip).digest('hex')
+ const hashKey = hash.update(key).digest('hex')
  hash.reset()
- const hashUa = hash.update(ua).digest('hex')
+ const hashSeed = hash.update(seed).digest('hex')
 
- const bIp = shaToArr(hashIp)
- const bUa = shaToArr(hashUa)
+ const bKey = shaToArr(hashKey)
+ const bSeed = shaToArr(hashSeed)
 
  try {
   const block: Uint32Array = ticketToArr(ticket)
-  const rk: Uint32Array = keygen(bIp, bUa)
+
+  const rk: Uint32Array = keygen(bKey, bSeed)
 
   const left = block.slice(0, 4)
   const right = block.slice(4)

@@ -24,7 +24,7 @@ export function validateTicket(req: Request): string | null {
  }
 
  try {
-  const t = decrypt(req, rTicket)
+  const t = decrypt(rTicket)
   if (!t) return null
   rTicket = t
  } catch {

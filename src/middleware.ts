@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
    const ticket = searchParams.get('stagUserTicket')
    if (!ticket) return NextResponse.next()
 
-   const rTicket = encrypt(request, ticket)
+   const rTicket = encrypt(ticket)
    const ticketHash = getHash(ticket)
 
    if (rTicket) {
@@ -80,7 +80,7 @@ export async function middleware(request: NextRequest) {
  }
 
  // Decrypt ticket
- const ticket = decrypt(request, eTicket)
+ const ticket = decrypt(eTicket)
 
  // Missing ticket reload
  if (!ticket) {

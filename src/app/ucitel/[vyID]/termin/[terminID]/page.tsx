@@ -1,5 +1,3 @@
-'use client'
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
  Table,
  TableBody,
@@ -8,191 +6,254 @@ import {
  TableHeader,
  TableRow,
 } from '@/components/ui/table'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Check, X } from 'lucide-react'
-import { tForm } from '@/lib/types'
-import { useState, useCallback, useEffect, use } from 'react'
-import { useRouter } from 'next/navigation'
-import TerminInfo from '@/components/terminInfo'
-import { toast } from '@/hooks/use-toast'
-import { DefaultForm, DefaultPredmet, useFormContext } from '@/contexts/FormProvider'
-import { fetchPredmetyData, Time } from '@/lib/functions'
+import { Calendar, Clock, Users, Book, FileText, Bookmark, Trash, UserPlus } from 'lucide-react'
+import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chip } from '@/components/ui/chip'
-import { useReloadContext } from '@/contexts/ReloadProvider'
-import {
- tStudentPredmetuNaTerminu,
- tTermin,
- tTerminGetBody,
- tPredmet,
-} from '@/types/next_response_types'
+import { Get } from '@/app/actions'
+import { decrypt } from '@/lib/crypto'
+import { encodeId, getStudentiByPredmet } from '@/lib/stag'
+import { prisma } from '@/prisma'
+import { tStudentPredmetuNaTerminu } from '@/types/next_response_types'
+import { tStudentPredmetu } from '@/types/stag_response_types'
+import { AddStudenta, DeleteTerminu, EditTerminu, Odebrat, Splnit, TiskEmailu } from './csr'
+import { tForm } from '@/lib/types'
+import { Time } from '@/lib/functions'
 
-const fetchTerminData = async (id: string) => {
- try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin`)
-  url.searchParams.set('id', id)
-  const res = await fetch(url.toString(), {
-   method: 'GET',
-   credentials: 'include',
-  })
-  if (!res.ok) {
-   return null
-  }
-  return (await res.json()) as tTerminGetBody
- } catch (e) {
-  console.error(e)
-  return null
+type tTerminWithHistorie = {
+ id: string
+ ucebna: string | null
+ datum_start: Date | null
+ aktualni_kapacita: number | null
+ max_kapacita: number | null
+ kod_predmet: string | null
+ jmeno: string | null
+ cislo_cviceni: number | null
+ datum_konec: Date | null
+ popis: string | null
+ vypsal_id: string | null
+ historie_terminu: tHistorieWithStudent[]
+}
+
+type tHistorieWithStudent = {
+ id: string
+ student_id: string
+ termin_id: string
+ datum_splneni: Date | null
+ student: {
+  id: string
+  datum_vytvoreni: Date
  }
 }
 
-export default function TerminPage(props: { params: Promise<{ terminID: string }> }) {
- const params = use(props.params)
- const [Termin, setTermin] = useState<tTermin>()
- const [storage, setStorage] = useState<{ form: tForm; terminId: string }>({
-  form: DefaultForm,
-  terminId: '',
+export default async function TerminPage({ params }: { params: { terminID: string } }) {
+ const { terminID } = await params
+
+ const ticket = await Get('x-svt')
+ if (!ticket) return
+ const rawTicket = decrypt(ticket.value)
+ if (!rawTicket) return
+
+ const termin = await prisma.termin.findUnique({
+  where: { id: terminID },
+  include: {
+   historie_terminu: {
+    include: { student: true },
+   },
+  },
  })
- const [Studenti, setStudenti] = useState<tStudentPredmetuNaTerminu[]>([])
- const [noData, setNull] = useState<boolean>(false)
- const [fetching, setFetching] = useState<boolean>(true)
- const router = useRouter()
 
- const { setPredmety, setPredmet } = useFormContext()
- const { reload, setReload } = useReloadContext()
-
- const fetchData = useCallback(async () => {
-  const terminData = await fetchTerminData(params.terminID)
-  const predmety = await fetchPredmetyData()
-  if (terminData && predmety) {
-   const termin = terminData.termin
-   setTermin(termin)
-   setStudenti(terminData.studenti)
-   setPredmety(predmety.predmety)
-   setPredmet(
-    predmety.predmety.find((a: tPredmet) => a.kod_predmetu === termin.kod_predmet) ||
-     DefaultPredmet,
-   )
-   setStorage({
-    form: {
-     _id: termin.kod_predmet,
-     cviceni: termin.cislo_cviceni.toString(),
-     nazev: termin.jmeno,
-     tema: termin.popis,
-     ucebna: termin.ucebna,
-     kapacita: termin.max_kapacita,
-     startDatum: new Date(termin.datum_start),
-     startCas: Time(termin.datum_start),
-     konecDatum: new Date(termin.datum_konec),
-     konecCas: Time(termin.datum_konec),
-     upozornit: true,
-     vJmeno: '',
-     vPrijmeni: '',
-    },
-    terminId: params.terminID,
-   })
-  } else {
-   setNull(true)
-  }
-  setFetching(false)
- }, [params.terminID, setPredmety, setPredmet, reload])
-
- useEffect(() => {
-  fetchData()
- }, [fetchData])
-
- useEffect(() => {
-  if (noData) {
-   router.push('/')
-  }
- }, [noData, router])
-
- if (fetching) {
-  return <Skeleton className="w-full h-[18rem] rounded-xl" />
- }
-
- if (noData) {
-  return null
- }
-
- const sendStudent = async (osCislo: string, state: boolean) => {
-  try {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin/splnil`)
-   url.searchParams.set('id_stud', osCislo)
-   url.searchParams.set('id_terminu', params.terminID)
-   const res = await fetch(url.toString(), {
-    method: state ? 'DELETE' : 'POST',
-    credentials: 'include',
-   })
-   if (!res.ok) {
-    return null
-   }
-   setReload(!reload)
-   toast({
-    title: 'Úspěch',
-    description: 'Splnění termínu zapsáno',
-   })
-  } catch (e) {
-   console.error(e)
-   return null
-  }
- }
-
- return (
-  <>
-   <TerminInfo
-    Termin={Termin || ({} as tTermin)}
-    id={params.terminID}
-    setNull={setNull}
-    storage={storage}
-    studenti={Studenti}
-   />
-   <Table>
-    <TableHeader>
-     <TableRow>
-      <TableHead>Osobní číslo</TableHead>
-      <TableHead>Jméno</TableHead>
-      <TableHead>Příjmení</TableHead>
-      <TableHead>Email</TableHead>
-      <TableHead>
-       <div className="w-full flex justify-center items-center">Stav </div>
-      </TableHead>
-      <TableHead className="w-full flex justify-center items-center">Označit splnění</TableHead>
-     </TableRow>
-    </TableHeader>
-    <TableBody>
-     {Studenti.map((student: tStudentPredmetuNaTerminu) => (
-      <TableRow key={student.osCislo}>
-       <TableCell className="font-medium">{student.osCislo}</TableCell>
-       <TableCell>{student.jmeno}</TableCell>
-       <TableCell>{student.prijmeni}</TableCell>
-       <TableCell>{student.email}</TableCell>
-       <TableCell>
-        <div className="inline-flex justify-center w-full">
-         {student.datum_splneni ? (
-          <Chip type="success">Splněno</Chip>
-         ) : (
-          <Chip type="danger">Nesplněno</Chip>
-         )}
-        </div>
-       </TableCell>
-       <TableCell className="w-full justify-center inline-grid">
-        {!student.datum_splneni ? (
-         <span
-          className="text-green-500 cursor-pointer active:opacity-50"
-          onClick={() => sendStudent(student.osCislo, false)}>
-          <Check className="w-6" />
-         </span>
-        ) : (
-         <span
-          className="text-red-500 cursor-pointer active:opacity-50"
-          onClick={() => sendStudent(student.osCislo, true)}>
-          <X className="w-6" />
-         </span>
-        )}
-       </TableCell>
-      </TableRow>
-     ))}
-    </TableBody>
-   </Table>
-  </>
+ const studenti = await getStudentiByPredmet(
+  rawTicket,
+  termin?.kod_predmet.split('/')[1] || '',
+  termin?.kod_predmet.split('/')[0] || '',
  )
+
+ if (!termin) return <div>Termin not found</div>
+
+ const renderData: {
+  termin: tTerminWithHistorie
+  studenti: tStudentPredmetuNaTerminu[]
+ } = { termin: termin, studenti: [] }
+
+ if (studenti && studenti.studentPredmetu.length > 0) {
+  for (let s of termin.historie_terminu) {
+   s = s as tHistorieWithStudent
+   for (let st of studenti.studentPredmetu) {
+    st = st as tStudentPredmetu
+    if (s.student_id === encodeId(st.osCislo)) {
+     renderData.studenti.push({ ...st, datum_splneni: s.datum_splneni })
+     break
+    }
+   }
+  }
+ }
+
+ const formatDate = (dateString: Date) => {
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('cs-CZ', {
+   day: '2-digit',
+   month: 'long',
+   year: 'numeric',
+   hour: '2-digit',
+   minute: '2-digit',
+  }).format(date)
+ }
+
+ if (
+  !renderData.termin ||
+  renderData.termin.datum_start === null ||
+  renderData.termin.datum_konec === null
+ )
+  return <div>Termin not found</div>
+ else
+  return (
+   <>
+    <Card className="w-full mb-5 dark:bg-zinc-950 dark:text-stone-50 border-1 border-stone-300  shadow-md dark:border-zinc-700 dark:shadow-neutral-950">
+     <CardHeader className="pb-2">
+      <CardTitle className="text-2xl font-bold flex justify-between">
+       <span className="flex gap-2 items-center">
+        <Bookmark className="h-6 w-6 text-amber-400" aria-hidden="true" />
+        {renderData.termin.jmeno || 'Název předmětu'}
+       </span>
+       <span className="flex gap-2 items-center">
+        <TiskEmailu
+         studenti={renderData.studenti}
+         kod={renderData.termin.kod_predmet || ''}
+         cviceni={renderData.termin.cislo_cviceni || 0}
+        />
+        <AlertDialog>
+         <AlertDialogTrigger asChild>
+          <button
+           className="text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full p-1"
+           aria-label="Delete">
+           <UserPlus className="w-6 h-6" aria-hidden="true" />
+          </button>
+         </AlertDialogTrigger>
+         <AddStudenta terminId={renderData.termin.id} />
+        </AlertDialog>
+
+        <EditTerminu
+         storage={{
+          form: {
+           _id: renderData.termin.kod_predmet,
+           cviceni: `${renderData.termin.cislo_cviceni}`,
+           nazev: renderData.termin.jmeno,
+           tema: renderData.termin.popis,
+           ucebna: renderData.termin.ucebna,
+           kapacita: renderData.termin.max_kapacita,
+           startDatum: new Date(`${renderData.termin.datum_start}`),
+           startCas: Time(renderData.termin.datum_start),
+           konecDatum: new Date(`${renderData.termin.datum_konec}`),
+           konecCas: Time(renderData.termin.datum_konec),
+           upozornit: true,
+           vJmeno: '',
+           vPrijmeni: '',
+          } as tForm,
+          terminId: terminID,
+         }}
+        />
+
+        <AlertDialog>
+         <AlertDialogTrigger asChild>
+          <button
+           className="text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-full p-1"
+           aria-label="Delete">
+           <Trash className="w-6 h-6" aria-hidden="true" />
+          </button>
+         </AlertDialogTrigger>
+         <DeleteTerminu id={terminID} />
+        </AlertDialog>
+       </span>
+      </CardTitle>
+     </CardHeader>
+     <CardContent className="grid gap-4">
+      <div className="grid grid-cols-2 gap-4">
+       <div className="flex items-center gap-2">
+        <Book className="h-5 w-5 text-emerald-400" aria-hidden="true" />
+        <span className="text-sm font-medium">Předmět:</span>
+        <span className="font-bold">{renderData.termin.kod_predmet || 'N/A'}</span>
+       </div>
+       <div className="flex items-center gap-2">
+        <FileText className="h-5 w-5 text-blue-400" aria-hidden="true" />
+        <span className="text-sm font-medium">Cvičení:</span>
+        <span className="font-bold">{renderData.termin.cislo_cviceni || 'N/A'}</span>
+       </div>
+      </div>
+      <div className="flex items-center gap-2">
+       <Users className="h-5 w-5 text-purple-400" aria-hidden="true" />
+       <span className="text-sm font-medium">Kapacita:</span>
+       <span className="font-bold">{renderData.termin.max_kapacita || 'N/A'}</span>
+      </div>
+      <div className="space-y-2">
+       <h3 className="text-lg font-semibold flex items-center gap-2">
+        <Calendar className="h-5 w-5 text-red-400" aria-hidden="true" />
+        Termín
+       </h3>
+       <div className="grid grid-cols-2 gap-2 pl-7">
+        <div className="flex items-center gap-2">
+         <Clock className="h-4 w-4 text-green-400" aria-hidden="true" />
+         <span className="text-sm">Začátek:</span>
+         <span className="font-medium">{formatDate(renderData.termin.datum_start)}</span>
+        </div>
+        <div className="flex items-center gap-2">
+         <Clock className="h-4 w-4 text-orange-400" aria-hidden="true" />
+         <span className="text-sm">Konec:</span>
+         <span className="font-medium">{formatDate(renderData.termin.datum_konec)}</span>
+        </div>
+       </div>
+      </div>
+      <div className="space-y-2">
+       <h3 className="text-lg font-semibold flex items-center gap-2">
+        <FileText className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+        Popis
+       </h3>
+       <p className="text-sm dark:text-stone-300 pl-7">
+        {renderData.termin.popis || 'Žádný popis není k dispozici.'}
+       </p>
+      </div>
+     </CardContent>
+    </Card>
+    <Table>
+     <TableHeader>
+      <TableRow>
+       <TableHead>Osobní číslo</TableHead>
+       <TableHead>Jméno</TableHead>
+       <TableHead>Příjmení</TableHead>
+       <TableHead>Email</TableHead>
+       <TableHead>
+        <div className="w-full flex justify-center items-center">Stav </div>
+       </TableHead>
+       <TableHead className="w-full flex justify-center items-center">Označit splnění</TableHead>
+      </TableRow>
+     </TableHeader>
+     <TableBody>
+      {renderData.studenti.map((student: tStudentPredmetuNaTerminu) => (
+       <TableRow key={student.osCislo}>
+        <TableCell className="font-medium">{student.osCislo}</TableCell>
+        <TableCell>{student.jmeno}</TableCell>
+        <TableCell>{student.prijmeni}</TableCell>
+        <TableCell>{student.email}</TableCell>
+        <TableCell>
+         <div className="inline-flex justify-center w-full">
+          {student.datum_splneni ? (
+           <Chip type="success">Splněno</Chip>
+          ) : (
+           <Chip type="danger">Nesplněno</Chip>
+          )}
+         </div>
+        </TableCell>
+        <TableCell className="w-full justify-center inline-grid">
+         {!student.datum_splneni ? (
+          <Splnit osCislo={student.osCislo} termin={terminID} />
+         ) : (
+          <Odebrat osCislo={student.osCislo} termin={terminID} />
+         )}
+        </TableCell>
+       </TableRow>
+      ))}
+     </TableBody>
+    </Table>
+   </>
+  )
 }
