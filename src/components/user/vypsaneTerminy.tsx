@@ -2,20 +2,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Node from '@/components/node'
 import { useCallback, useEffect, useState } from 'react'
-import { tTermin } from '@/lib/types'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/ui/header'
 import { useReloadContext } from '@/contexts/ReloadProvider'
+import { tUcitelBody, tTermin } from '@/types/next_response_types'
 
 const fetchTerminyData = async () => {
  try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/terminy`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel`)
   url.searchParams.set('t', 'vypsane')
   const res = await fetch(url, { method: 'GET', credentials: 'include' })
   if (res.status == 401) {
    window.location.href = '/logout'
   } else if (res.status == 200 || res.status == 404) {
-   return await res.json()
+   return (await res.json()) as tUcitelBody
   }
  } catch (e) {
   console.error(e)
@@ -28,12 +28,12 @@ export default function VypsaneTerminy({ typ }: { typ: string | undefined }) {
  const [fetching, setFetching] = useState<boolean>(true)
 
  // Destructure the context values
- const [reload] = useReloadContext()
+ const { reload } = useReloadContext()
 
  const fetchTerminy = useCallback(async () => {
   const data = await fetchTerminyData()
   if (data) {
-   setTerminy(data.data)
+   setTerminy(data.terminy)
   }
   setFetching(false)
  }, [reload])
@@ -65,7 +65,7 @@ export default function VypsaneTerminy({ typ }: { typ: string | undefined }) {
   <>
    <div className="w-max grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-3">
     {Terminy?.map((termin: tTermin) => (
-     <Node key={termin._id} props={{ ...termin, typ: typ || '', owned: false }} />
+     <Node key={termin.id} props={{ ...termin }} typUzivatele={'teacher'} demo={false} />
     ))}
    </div>
   </>

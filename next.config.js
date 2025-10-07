@@ -1,16 +1,16 @@
 const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
-    font-src 'self' data:;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    upgrade-insecure-requests;
-    connect-src 'self';
-`
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' blob: data:;
+      font-src 'self' data:;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      upgrade-insecure-requests;
+      connect-src 'self';
+    `
 
 const nextConfig = {
  eslint: {
@@ -19,10 +19,6 @@ const nextConfig = {
  transpilePackages: ['lucide-react'],
  env: {
   NEXT_PUBLIC_BASE: process.env.NEXT_PUBLIC_BASE,
-  NEXT_PUBLIC_TIME_GAP: process.env.NEXT_PUBLIC_TIME_GAP,
-  BASE: process.env.NEXT_PUBLIC_BASE,
-  STAG_SERVER: process.env.STAG_SERVE,
-  API: process.env.API,
  },
  async headers() {
   return [
@@ -41,10 +37,7 @@ const nextConfig = {
       key: 'Access-Control-Allow-Headers',
       value: 'Content-Type, Authorization',
      },
-     {
-      key: 'Content-Security-Policy',
-      value: cspHeader.replace(/\n/g, ''),
-     },
+
      {
       key: 'X-Frame-Options',
       value: 'SAMEORIGIN',
@@ -68,6 +61,10 @@ const nextConfig = {
      {
       key: 'Strict-Transport-Security',
       value: 'max-age=63072000; includeSubDomains; preload',
+     },
+     {
+      key: 'Content-Security-Policy',
+      value: cspHeader.replace(/\n/g, ''),
      },
     ],
    },

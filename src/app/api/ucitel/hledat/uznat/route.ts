@@ -4,7 +4,7 @@ import { getUserInfo, encodeId } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
 import { prisma } from '@/prisma'
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
  const rTicket = validateTicket(req)
  if (!rTicket) return Unauthorized()
  const info = await getUserInfo(rTicket)

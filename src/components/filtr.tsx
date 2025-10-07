@@ -21,23 +21,7 @@ import { useFilterContext } from '@/contexts/FilterProvider'
 import { Accordion, AccordionContent, AccordionTrigger } from './ui/accordion'
 import { AccordionItem } from '@radix-ui/react-accordion'
 import { tPredmet } from '@/types/next_response_types'
-
-async function fetchPredmetyData() {
- try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const res = await fetch(url.toString(), {
-   method: 'GET',
-   credentials: 'include',
-  })
-  if (!res.ok) {
-   throw new Error(`Failed to fetch: ${res.statusText}`)
-  }
-  return await res.json()
- } catch (error) {
-  console.error('Error fetching predmety:', error)
-  throw error
- }
-}
+import { fetchPredmetyData } from '@/lib/functions'
 
 const FormSchema = z.object({
  items: z.array(z.string()).default([]),
@@ -54,8 +38,8 @@ export default function Filtr() {
   async function loadPredmety() {
    try {
     setIsLoading(true)
-    const data = (await fetchPredmetyData())?.predmety
-    setPredmety(data)
+    const data = await fetchPredmetyData()
+    if (data) setPredmety(data.predmety)
    } catch (e) {
     console.error(e)
    } finally {

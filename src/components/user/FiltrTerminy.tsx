@@ -9,7 +9,7 @@ import { tTypUzivatele } from '@/types/component_types'
 
 const fetchTerminyData = async (data: string[], all: boolean) => {
  try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/filtr`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/filtr`)
   url.searchParams.set('vybrane', data.join('-'))
   url.searchParams.set('vse', all ? 'T' : 'F')
   const res = await fetch(url, { method: 'GET', credentials: 'include' })

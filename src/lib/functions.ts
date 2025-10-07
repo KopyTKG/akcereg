@@ -1,9 +1,9 @@
 import { tGetStagUserListForLoginTicketV2 } from '@/types/stag_response_types'
-import { tPredmet } from '@/types/next_response_types'
+import { tPredmetyBody } from '@/types/next_response_types'
 
-export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
+export async function fetchPredmetyData(): Promise<tPredmetyBody | undefined> {
  try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/predmety`)
   const res = await fetch(url.toString(), {
    method: 'GET',
    credentials: 'include',
@@ -12,8 +12,7 @@ export async function fetchPredmetyData(): Promise<tPredmet[] | undefined> {
    console.error(res.statusText)
    return undefined
   } else if (res.ok) {
-   const data = await res.json()
-   return data && data?.predmety ? (data?.predmety as tPredmet[]) : undefined
+   return (await res.json()) as tPredmetyBody
   }
  } catch (e) {
   console.error(e)

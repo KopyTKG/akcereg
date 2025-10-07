@@ -2,8 +2,13 @@ import { Internal } from '@/lib/http'
 import { validateTicket } from '@/lib/auth'
 
 export async function GET(req: Request) {
- let rTicket = validateTicket(req)
- if (!rTicket) rTicket = ''
+ let rTicket = ''
+ try {
+  const r = validateTicket(req)
+  if (r) rTicket = r
+ } catch (e) {
+  console.error('Error validating ticket:', e)
+ }
 
  const url = new URL(`${process.env.STAG_SERVER}/services/rest2/help/invalidateTicket`)
  url.searchParams.set('ticket', rTicket)

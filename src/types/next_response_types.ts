@@ -27,7 +27,7 @@ export type tPredmetPostBody = {
 }
 
 /*
- * route -> $HOST/api/hledat
+ * route -> $HOST/api/ucitel/hledat
  */
 
 export type tPredmetHledat = {
@@ -41,7 +41,7 @@ export type tHledatBody = {
 }
 
 /*
- * route -> $HOST/api/termin
+ * route -> $HOST/api/ucitel/termin
  */
 
 export type tTerminPatchBody = {
@@ -68,7 +68,7 @@ export type tTerminGetBody = {
 }
 
 /*
- * route -> $HOST/api/filtr
+ * route -> $HOST/api/ucitel/filtr
  */
 
 export type tFiltrBody = {
@@ -99,4 +99,21 @@ export type tTermin = {
  historie_terminu: {
   student_id: string
  } | null
+}
+
+/*
+ * route -> $HOST/api/ucitel
+ */
+
+export type tUcitelBody = {
+ terminy: tTermin[]
+}
+
+/*
+ * route -> $HOST/api/ucitel/predmety/studenti
+ */
+
+export type tStudentiBody = {
+ kod: string
+ studenti: tStudentPredmetu[]
 }

@@ -59,7 +59,7 @@ Logs out the user by clearing session cookies and requesting STAG to invalidate 
 ## Admin routes
 Routes used for administrative tasks, accessible only to users with admin privileges.
 
-### `$HOST/api/predmet`
+### `$HOST/api/katedra/predmet`
 Master route for almost all predmet (course) related operations.
 
 #### Request
@@ -106,6 +106,12 @@ Master route for almost all predmet (course) related operations.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
+
+> [!NOTE]
+> Route to create link between predmet and teacher is not yet implemented.
+> Will be added in future.
+
+
 ----------
 ----------
 
@@ -113,7 +119,25 @@ Master route for almost all predmet (course) related operations.
 ## Ucitel routes
 Routes used for teacher-specific operations, accessible only to users with teacher privileges or admin.
 
-### `$HOST/api/termin`
+> [!IMPORTANT]
+> All routes for teacher are with prefix `/api/ucitel`.
+
+### Home route (`$HOST/api/ucitel`)
+Returns all upcomming events (terminy) for the logged-in teacher. With filtering to only show events withing next 7 days.
+
+#### Request
+- `GET` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+
+#### Response
+- `200 OK`: Returns JSON array of type [`tUcitelBody`](Types.md#tUcitelBody) with event data.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `403 Forbidden`: User is student.
+
+
+### `$HOST/api/ucitel/termin`
 Master route for all termin (class session) related operations.
 
 #### Requests
@@ -150,7 +174,57 @@ Master route for all termin (class session) related operations.
 
 -----
 
-### `$HOST/api/predmety`
+### `$HOST/api/ucitel/termin/splnil`
+Marks a student as attended for a specific class session (termin).
+
+#### Request
+
+##### Mark student as attended
+- `POST` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `id_stud` (REQUIRED): Student's osCislo.
+    - `id_terminu` (REQUIRED): Termin ID.
+
+##### Delete attended mark
+- `DELETE` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `id_stud` (REQUIRED): Student's osCislo.
+    - `id_terminu` (REQUIRED): Termin ID.
+
+
+#### Response
+- `200 OK`: Returns JSON object `{}` on successful operation.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `403 Forbidden`: User is student.
+
+-----
+
+### `$HOST/api/ucitel/termin/zapis`
+Enrolls a student into a specific class session (termin). Used when a student is added manually.
+
+#### Request
+- `POST` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `id_stud` (REQUIRED): Student's osCislo.
+    - `id_terminu` (REQUIRED): Termin ID.
+
+#### Response
+- `200 OK`: Returns JSON object `{}` on successful operation.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `403 Forbidden`: User is student.
+
+-----
+
+### `$HOST/api/ucitel/predmety`
 Fetches a list of all corses (predmety) the user is teaching.
 
 #### Request
@@ -166,9 +240,27 @@ Fetches a list of all corses (predmety) the user is teaching.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
 - `500 Internal Server Error`: Unexpected error.
 
+---
+
+### `$HOST/api/ucitel/predmety/studenti`
+Fetches a list of all students that finished successfully a specific course (predmet).
+
+#### Request
+- `GET` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `kod_predmetu` (REQUIRED): Predmet ID to fetch students for
+
+#### Response
+- `200 OK`: Returns JSON array of type [`tStudentiBody`](Types.md#tStudentiBody) with students data.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `500 Internal Server Error`: Unexpected error.
+
 ----
 
-### `$HOST/api/hledat`
+### `$HOST/api/ucitel/hledat`
 Searches for users (students) by `osCislo`.
 
 #### Request
@@ -182,11 +274,32 @@ Searches for users (students) by `osCislo`.
 #### Response
 - `200 OK`: Returns JSON object of type [`tHledatBody`](Types.md#tHledatBody) with user data.
 - `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `403 Forbidden`: User is student.
+- `500 Internal Server Error`: Unexpected error.
+
+----
+
+### `$HOST/api/ucitel/hledat/uznat`
+Used for marking whole subject (predmet) as completed for a student based on `osCislo` search.
+
+#### Request
+- `POST` request
+- `Cookies`:
+    - `x-svt` (REQUIRED): "HARD" / Encrypted session
+    - `x-svh` (REQUIRED): "soft" ticket
+- `Search Params`:
+    - `id_stud` (REQUIRED): User's osCislo to search for.
+    - `kod_predmetu` (REQUIRED): Predmet ID to mark as completed.
+
+#### Response
+- `200 OK`: Returns JSON object `{}` on successful operation.
+- `401 Unauthorized`: Missing or invalid cookies, or insufficient privileges.
+- `403 Forbidden`: User is student.
 - `500 Internal Server Error`: Unexpected error.
 
 ----
  
-### `$HOST/api/filtr`
+### `$HOST/api/ucitel/filtr`
 Fetches a list of all events (terminy) based on provided filters. Default filter is show all upcomming events.
 
 #### Request

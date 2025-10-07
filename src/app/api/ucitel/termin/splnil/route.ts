@@ -1,6 +1,6 @@
 import { isStudent } from '@/lib/functions'
-import { Unauthorized, NotFound, Success, Internal, Forbidden } from '@/lib/http'
-import { validateTicket, fastHeaders } from '@/lib/auth'
+import { Unauthorized, NotFound, Success, Forbidden } from '@/lib/http'
+import { validateTicket } from '@/lib/auth'
 import { encodeId, getUserInfo } from '@/lib/stag'
 import { prisma } from '@/prisma'
 

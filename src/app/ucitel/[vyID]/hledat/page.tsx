@@ -45,7 +45,7 @@ export default function Page() {
  })
 
  async function fetchData(id_stud: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/hledat`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/hledat`)
   url.searchParams.set('id_stud', id_stud)
 
   try {
@@ -75,13 +75,13 @@ export default function Page() {
  }
 
  async function onUznat(kod_predmetu: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/uznat`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/hledat/uznat`)
   url.searchParams.set('id_stud', student.osCislo)
   url.searchParams.set('kod_predmetu', kod_predmetu)
 
   try {
    const res = await fetch(url.toString(), {
-    method: 'GET',
+    method: 'POST',
     credentials: 'include',
    })
    if (!res.ok) {

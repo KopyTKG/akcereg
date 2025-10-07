@@ -4,6 +4,8 @@ import { getUserInfo } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
 import { prisma } from '@/prisma'
 
+// TODO: add logic for multi-role users (e.g. admin + vyucujici)
+
 export async function GET(req: Request) {
  const rTicket = validateTicket(req)
  if (!rTicket) return Unauthorized()

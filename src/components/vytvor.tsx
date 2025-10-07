@@ -11,7 +11,7 @@ export function Vytvor() {
  const [loading, setLoading] = useState<boolean>(true)
 
  const { setOpen, setPredmety, setFormData, setType, predmety } = useFormContext()
- const [reload] = useReloadContext()
+ const { reload } = useReloadContext()
 
  const fetchPredmety = useCallback(async () => {
   try {

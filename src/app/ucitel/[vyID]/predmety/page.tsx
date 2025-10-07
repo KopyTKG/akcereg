@@ -1,17 +1,19 @@
-import { Get } from '@/app/actions'
+'use client'
 import AdminToolbar from '@/components/adminToolbar'
 import Predmety from '@/components/predmety'
 import { Header } from '@/components/ui/header'
+import { useUserContext } from '@/contexts/UserProvider'
+import { isAdmin } from '@/lib/functions'
 
-export default async function Page() {
- const ticket = (await Get('x-cvt'))?.value || ''
+export default function Page() {
+ const { userInfo } = useUserContext()
  return (
   <div className="w-max mx-auto flex flex-col items-center gap-2">
    <Header underline="fade" className="w-max">
     Předměty
    </Header>
-   {ticket && <AdminToolbar />}
-   <Predmety isAdmin={ticket ? true : false} />
+   {isAdmin(userInfo) && <AdminToolbar />}
+   <Predmety isAdmin={isAdmin(userInfo)} />
   </div>
  )
 }

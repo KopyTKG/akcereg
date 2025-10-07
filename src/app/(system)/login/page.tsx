@@ -6,7 +6,7 @@ export default async function LoginPage({
  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
  const stagServer = process.env.STAG_SERVER
- const baseUrl = process.env.BASE
+ const baseUrl = process.env.NEXT_PUBLIC_AUTH
 
  if (!stagServer || !baseUrl) {
   throw new Error('Missing environment variables')

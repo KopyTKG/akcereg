@@ -1,22 +1,12 @@
-'use client'
-import { useLayoutEffect } from 'react'
+import { redirect } from 'next/navigation'
 
-export default function LogoutPage() {
- useLayoutEffect(() => {
-  const apiUrl: string = process.env.NEXT_PUBLIC_BASE || ''
-  const url = new URL(`${apiUrl}/api/auth/logout`)
+export default async function LogoutPage() {
+ const url = new URL(`${process.env.BASE || ''}/api/auth/logout`)
 
-  fetch(url, {
-   method: 'GET',
-   credentials: 'include',
-  }).then((data) => {
-   if (!data.ok) {
-    window.location.href = '/'
-   } else {
-    window.location.href = '/standby'
-   }
-  })
- }, [])
-
- return <main>...</main>
+ const res = await fetch(url, {
+  method: 'GET',
+  credentials: 'include',
+ })
+ if (!res.ok) redirect('/logout')
+ redirect('/standby')
 }

@@ -68,7 +68,7 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
  const { toast } = useToast()
  const [loading, setLoading] = useState<boolean>(false)
 
- const [reload, setReload] = useReloadContext()
+ const { reload, setReload } = useReloadContext()
  const { open, setOpen, predmety, formData, predmet, setPredmet, terminID, type } = useFormContext()
 
  const form = useForm<z.infer<typeof formSchema>>({

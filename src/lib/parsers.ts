@@ -1,4 +1,4 @@
-import { tTermin, tUser } from '@/lib/types'
+import { tTermin } from '@/lib/types'
 
 export function resTotTermin(data: any): tTermin[] {
  const terminy: tTermin[] = []
@@ -23,12 +23,4 @@ export function resTotTermin(data: any): tTermin[] {
   terminy.push(tmp)
  })
  return terminy
-}
-
-export function setupParser(data: [string, string[], string]): tUser {
- return {
-  id: data[0],
-  role: data[1] as string[],
-  hash: data[2],
- }
 }

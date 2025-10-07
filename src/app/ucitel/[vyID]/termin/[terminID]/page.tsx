@@ -20,7 +20,7 @@ import { fetchPredmetyData, Time } from '@/lib/functions'
 import { Chip } from '@/components/ui/chip'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import {
- tStudentPredemtyNaTerminu,
+ tStudentPredmetuNaTerminu,
  tTermin,
  tTerminGetBody,
  tPredmet,
@@ -28,7 +28,7 @@ import {
 
 const fetchTerminData = async (id: string) => {
  try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin`)
   url.searchParams.set('id', id)
   const res = await fetch(url.toString(), {
    method: 'GET',
@@ -51,13 +51,13 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
   form: DefaultForm,
   terminId: '',
  })
- const [Studenti, setStudenti] = useState<tStudentPredemtyNaTerminu[]>([])
+ const [Studenti, setStudenti] = useState<tStudentPredmetuNaTerminu[]>([])
  const [noData, setNull] = useState<boolean>(false)
  const [fetching, setFetching] = useState<boolean>(true)
  const router = useRouter()
 
  const { setPredmety, setPredmet } = useFormContext()
- const [reload, setReload] = useReloadContext()
+ const { reload, setReload } = useReloadContext()
 
  const fetchData = useCallback(async () => {
   const terminData = await fetchTerminData(params.terminID)
@@ -66,9 +66,10 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
    const termin = terminData.termin
    setTermin(termin)
    setStudenti(terminData.studenti)
-   setPredmety(predmety)
+   setPredmety(predmety.predmety)
    setPredmet(
-    predmety.find((a: tPredmet) => a.kod_predmetu === termin.kod_predmet) || DefaultPredmet,
+    predmety.predmety.find((a: tPredmet) => a.kod_predmetu === termin.kod_predmet) ||
+     DefaultPredmet,
    )
    setStorage({
     form: {
@@ -114,7 +115,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
 
  const sendStudent = async (osCislo: string, state: boolean) => {
   try {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/splnil`)
+   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin/splnil`)
    url.searchParams.set('id_stud', osCislo)
    url.searchParams.set('id_terminu', params.terminID)
    const res = await fetch(url.toString(), {
@@ -158,7 +159,7 @@ export default function TerminPage(props: { params: Promise<{ terminID: string }
      </TableRow>
     </TableHeader>
     <TableBody>
-     {Studenti.map((student: tStudentPredemtyNaTerminu) => (
+     {Studenti.map((student: tStudentPredmetuNaTerminu) => (
       <TableRow key={student.osCislo}>
        <TableCell className="font-medium">{student.osCislo}</TableCell>
        <TableCell>{student.jmeno}</TableCell>

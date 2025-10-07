@@ -34,7 +34,7 @@ export function Zapsat({
  volno: boolean
  demo?: boolean
 }) {
- const [reload, setReload] = useReloadContext()
+ const { reload, setReload } = useReloadContext()
 
  async function APIcall(id: string, setReload: React.Dispatch<React.SetStateAction<boolean>>) {
   try {

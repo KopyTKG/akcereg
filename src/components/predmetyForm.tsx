@@ -37,7 +37,7 @@ export default function PredmetForm() {
  const [loading, setLoading] = useState<boolean>(false)
 
  const { open, setOpen, storage } = useAdminContext()
- const [reload, setReload] = useReloadContext()
+ const { reload, setReload } = useReloadContext()
 
  const form = useForm<z.infer<typeof predmetSchema>>({
   resolver: zodResolver(predmetSchema),
@@ -52,7 +52,7 @@ export default function PredmetForm() {
    cviceni: values.cviceni,
   }
 
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmet`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/katedra/predmet`)
   if (values.kod) {
    url.searchParams.set('kod_predmetu', values.kod)
   }

@@ -4,7 +4,7 @@ import { encodeId, getStudentiByPredmet, getUserInfo } from '@/lib/stag'
 import { validateTicket } from '@/lib/auth'
 import { tCreate } from '@/lib/types'
 import { tGetStudentiByPredmet, tStudentPredmetu } from '@/types/stag_response_types'
-import { tStudentPredemtyNaTerminu } from '@/types/next_response_types'
+import { tStudentPredmetuNaTerminu } from '@/types/next_response_types'
 import { prisma } from '@/prisma'
 import crypto from 'crypto'
 
@@ -116,7 +116,7 @@ export async function GET(req: Request) {
   data.kod_predmet.split('/')[0],
  )
  if (!allStudents) return NotFound()
- const studenti: tStudentPredemtyNaTerminu[] = []
+ const studenti: tStudentPredmetuNaTerminu[] = []
  if (data.historie_terminu && data.historie_terminu.length > 0) {
   for (let s of data.historie_terminu) {
    s = s as tHistorieWithStudent

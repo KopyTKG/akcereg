@@ -29,7 +29,7 @@ import { Input } from './ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import { useFormContext } from '@/contexts/FormProvider'
-import { tStudentPredemtyNaTerminu, tTermin } from '@/types/next_response_types'
+import { tStudentPredmetuNaTerminu, tTermin } from '@/types/next_response_types'
 
 export default function TerminInfo({
  Termin,
@@ -42,11 +42,11 @@ export default function TerminInfo({
  id: string
  setNull: React.Dispatch<boolean>
  storage: { form: tForm; terminId: string }
- studenti?: tStudentPredemtyNaTerminu[]
+ studenti?: tStudentPredmetuNaTerminu[]
 }) {
  const { toast } = useToast()
 
- const [reload, setReload] = useReloadContext()
+ const { reload, setReload } = useReloadContext()
  const { setOpen, setFormData, setTerminID, setType } = useFormContext()
 
  const formatDate = (dateString: Date) => {
@@ -62,7 +62,7 @@ export default function TerminInfo({
 
  async function fetchDelete() {
   try {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/termin`)
+   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin`)
    url.searchParams.set('id', id)
    const res = await fetch(url.toString(), {
     method: 'DELETE',
@@ -88,11 +88,11 @@ export default function TerminInfo({
    e.preventDefault()
    const formData = new FormData(e.currentTarget)
    const studId = formData.get('stud_id')?.toString()
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/zapis`)
+   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin/zapis`)
    url.searchParams.set('id_terminu', id)
    url.searchParams.set('id_stud', studId || '')
    const res = await fetch(url.toString(), {
-    method: 'GET',
+    method: 'POST',
     credentials: 'include',
     redirect: 'manual',
    })
@@ -113,7 +113,7 @@ export default function TerminInfo({
 
  function PrintMails() {
   const mails: string[] = [] as string[]
-  studenti?.forEach((student: tStudentPredemtyNaTerminu) => {
+  studenti?.forEach((student: tStudentPredmetuNaTerminu) => {
    mails.push(student.email)
   })
 

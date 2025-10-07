@@ -7,7 +7,7 @@ import { Providers } from './providers'
 
 export const metadata: Metadata = {
  title: 'UJEP AkceReg - registrační systém na mimorozvrhové akce',
- description: 'akcereg.ujep.cz',
+ description: 'akcereg.rqa.cz',
  manifest: '/manifest.json',
  icons: {
   icon: [
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
  return (
   <html lang="cs">
    <head>
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-32x32.png" />
    </head>
    <body className={GeistSans.className}>
     <Providers attribute="class" defaultTheme="light" disableTransitionOnChange>

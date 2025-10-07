@@ -11,6 +11,8 @@ Table of Contents
     - [`tTerminGetBody`](#ttermingetbody)
     - [`tTermin`](#ttermin)
     - [`tFiltrBody`](#tfiltrbody)
+    - [`tUcitelBody`](#tucitelbody)
+    - [`tStudentiBody`](#tstudentibody)
 - [STAG API Types](#stag-api-types)
     - [`tGetStudentiByPredmet`](#tgetstudentibypredmet)
     - [`tStudentPredmetu`](#tstudentpredmetu)
@@ -116,7 +118,7 @@ type tTerminPatchBody = {
 ### `tStudentPredmetuNaTerminu`
 > [!NOTE]
 > Type used in `tTerminGetBody`.
-> `tStudentPredemtyNaTerminu` extends [`tStudentPredmetu`](#) from STAG API types.
+> `tStudentPredemtyNaTerminu` extends [`tStudentPredmetu`](#tstudentpredmetu) from STAG API types.
 ```ts
 interface tStudentPredmetuNaTerminu extends tStudentPredmetu {
  datum_splneni: Date | null
@@ -172,6 +174,30 @@ type tTermin = {
 ```ts
 type tFiltrBody = {
  terminy: tTermin[]
+}
+```
+
+<!-- /api/ucitel -->
+
+### `tUcitelBody`
+> [!NOTE]
+> Type used as return body from `$HOST/api/ucitel` route.
+```ts
+type tUcitelBody = {
+ terminy: tTermin[]
+}
+```
+
+<!-- api/ucitel/predmety/studenti -->
+
+### `tStudentiBody`
+> [!NOTE]
+> Type used as return body from `$HOST/api/ucitel/predmety/studenti` route.
+> `tStudentiBody` contains array of [`tStudentPredmetu`](#tstudentpredmetu) from STAG API types.
+```ts
+type tStudentiBody = {
+ kod: string
+ studenti: tStudentPredmetu[]
 }
 ```
 

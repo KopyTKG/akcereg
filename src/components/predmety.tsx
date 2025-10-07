@@ -9,7 +9,7 @@ import {
  TableCell,
 } from '@/components/ui/table'
 import { useReloadContext } from '@/contexts/ReloadProvider'
-import { tPredmetBody, tStudent } from '@/lib/types'
+import { tPredmetBody } from '@/lib/types'
 import { FileInput, LoaderCircle, Pencil, Trash } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import {
@@ -25,30 +25,14 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useAdminContext } from '@/contexts/AdminProvider'
 import { useToast } from '@/hooks/use-toast'
-import { tPredmetyBody, tPredmet } from '@/types/next_response_types'
-
-const fetchPredmetyData = async () => {
- try {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmety`)
-  const res = await fetch(url.toString(), {
-   method: 'GET',
-   credentials: 'include',
-  })
-  if (res.status == 401) {
-   window.location.href = '/logout'
-  } else if (res.status == 200 || res.status == 404) {
-   const data = await res.json()
-   return data as tPredmetyBody
-  }
- } catch (e) {
-  console.error(e)
- }
-}
+import { tPredmet, tStudentiBody } from '@/types/next_response_types'
+import { fetchPredmetyData } from '@/lib/functions'
+import { tStudentPredmetu } from '@/types/stag_response_types'
 
 export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
  const [Predmety, setPredmety] = useState<tPredmet[]>([])
 
- const [reload] = useReloadContext()
+ const { reload } = useReloadContext()
 
  const fetchPredmety = useCallback(async () => {
   const data = await fetchPredmetyData()
@@ -96,7 +80,7 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
  const [loading, setLoading] = useState<boolean>(false)
  async function PrintStudnets() {
   setLoading(true)
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/studenti`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/predmety/studenti`)
   url.searchParams.set('kod_predmetu', predmet.kod_predmetu)
 
   const res = await fetch(url.toString(), {
@@ -105,16 +89,23 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
   })
   if (!res.ok) throw new Error('fetch failed')
 
-  const data = await res.json()
+  const data = (await res.json()) as tStudentiBody
   if (!data) throw new Error('missing data')
 
   const kod = data.kod
   const studenti = data.studenti
 
   const csv: string[][] = [] as string[][]
-  csv.push(['osCislo', 'jmeno', 'prijmeni', 'email'])
-  studenti?.forEach((student: tStudent) => {
-   const tmp = [student.osCislo, student.jmeno, student.prijmeni, student.email]
+  csv.push(['osCislo', 'titulPred', 'jmeno', 'prijmeni', 'titulZa', 'email'])
+  studenti?.forEach((student: tStudentPredmetu) => {
+   const tmp = [
+    student.osCislo || '',
+    student.titulPred || '',
+    student.jmeno || '',
+    student.prijmeni || '',
+    student.titulZa || '',
+    student.email || '',
+   ]
    csv.push(tmp)
   })
 
@@ -161,10 +152,10 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
 function ToolkitAdmin({ predmet }: { predmet: tPredmet }) {
  const { toast } = useToast()
  const { open, setOpen, setStorage } = useAdminContext()
- const [reload, setReload] = useReloadContext()
+ const { reload, setReload } = useReloadContext()
 
  async function onDelete(kod: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/predmet`)
+  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/katedra/predmet`)
   kod ? url.searchParams.set('kod_predmetu', kod) : url.searchParams.set('kod_predmetu', '')
 
   const res = await fetch(url.toString(), {

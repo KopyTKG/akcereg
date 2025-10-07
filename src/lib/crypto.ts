@@ -10,6 +10,7 @@ export function encrypt(req: Request, ticket: string): string | null {
  const hash = new SHA3(512)
 
  const headers = req.headers
+ console.log(headers)
  const ip = headers.get('x-forwarded-for') || ''
  const ua = headers.get('host') || ''
 
