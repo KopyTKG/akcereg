@@ -17,7 +17,7 @@ export function Vytvor() {
   try {
    const data = await fetchPredmetyData()
    if (data) {
-    setPredmety(data)
+    setPredmety(data.predmety)
     setLoading(false)
    }
   } catch (e) {

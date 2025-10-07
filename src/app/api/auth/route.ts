@@ -10,8 +10,6 @@ import { prisma } from '@/prisma'
 import { tGetStagUserListForLoginTicketV2, tStagUserInfo } from '@/types/stag_response_types'
 
 export async function GET(req: Request) {
- console.log(req)
-
  const rTicket = validateSoftTicket(req)
  if (!rTicket) return Unauthorized()
 

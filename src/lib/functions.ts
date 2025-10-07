@@ -63,3 +63,32 @@ export function addHours(date: Date, hours: number) {
  result.setHours(result.getHours() + hours)
  return result
 }
+
+export function createDateString(): string {
+ return new Date(Date.now())
+  .toLocaleString('en-GB', {
+   year: 'numeric',
+   month: '2-digit',
+   day: '2-digit',
+   hour: '2-digit',
+   minute: '2-digit',
+   second: '2-digit',
+  })
+  .replace(',', '')
+  .replace(/:/g, '-')
+  .replace(/\//g, '-')
+  .replace(' ', '_')
+}
+
+export function createCSV(data: string[][], filename: string) {
+ const csvContent = data.map((row) => row.join(',')).join('\n')
+ const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+ const link = document.createElement('a')
+ const url = URL.createObjectURL(blob)
+ link.setAttribute('href', url)
+ link.setAttribute('download', filename)
+ link.style.visibility = 'hidden'
+ document.body.appendChild(link)
+ link.click()
+ document.body.removeChild(link)
+}

@@ -1,6 +1,6 @@
 'use client'
 import { DefaultPredmet, useAdminContext } from '@/contexts/AdminProvider'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 import { Grid2x2Plus } from 'lucide-react'
 
 export default function AdminToolbar() {

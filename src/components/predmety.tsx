@@ -26,7 +26,7 @@ import {
 import { useAdminContext } from '@/contexts/AdminProvider'
 import { useToast } from '@/hooks/use-toast'
 import { tPredmet, tStudentiBody } from '@/types/next_response_types'
-import { fetchPredmetyData } from '@/lib/functions'
+import { createCSV, createDateString, fetchPredmetyData } from '@/lib/functions'
 import { tStudentPredmetu } from '@/types/stag_response_types'
 
 export default function Predmety({ isAdmin }: { isAdmin: boolean }) {
@@ -95,6 +95,9 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
   const kod = data.kod
   const studenti = data.studenti
 
+  const date = createDateString()
+  const filename = `UspesniStudenti-${kod}_${date}.csv`
+
   const csv: string[][] = [] as string[][]
   csv.push(['osCislo', 'titulPred', 'jmeno', 'prijmeni', 'titulZa', 'email'])
   studenti?.forEach((student: tStudentPredmetu) => {
@@ -109,27 +112,8 @@ function ToolkitUcitel({ predmet }: { predmet: tPredmet }) {
    csv.push(tmp)
   })
 
-  const file = new Blob([csv.join('\n')], { type: 'text/csv' })
-  const fileURL = URL.createObjectURL(file)
+  createCSV(csv, filename)
 
-  const anchor = document.createElement('a')
-  anchor.href = fileURL
-  const date = new Date(Date.now())
-   .toLocaleString('en-GB', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-   })
-   .replace(',', '')
-   .replace(/:/g, '-')
-   .replace(/\//g, '-')
-   .replace(' ', '_')
-  anchor.download = `UspesniStudenti-${kod}_${date}`
-  anchor.click()
-  URL.revokeObjectURL(fileURL)
   setLoading(false)
  }
 

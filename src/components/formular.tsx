@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { format } from 'date-fns'
-import { cs } from 'date-fns/locale'
+import { cs, fi } from 'date-fns/locale'
 import { Calendar as CalendarIcon, LoaderCircle } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
@@ -38,31 +38,12 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { tCreate } from '@/lib/types'
-import { DateTime } from '@/lib/functions'
+import { createCSV, createDateString, DateTime } from '@/lib/functions'
 import { DefaultForm, DefaultPredmet, useFormContext } from '@/contexts/FormProvider'
 import { Accordion, AccordionTrigger, AccordionContent, AccordionItem } from './ui/accordion'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import { tPredmet } from '@/types/next_response_types'
-
-const formSchema = z.object({
- _id: z.string().min(1, { message: 'Předmět je povinný' }),
- cviceni: z.string().optional(),
- nazev: z.string().optional(),
- tema: z.string().min(1, { message: 'Téma je povinné' }),
- ucebna: z.string().min(1, { message: 'Učebna je povinná' }),
- kapacita: z.number().min(1, { message: 'Kapacita musí být alespoň 1' }),
- startDatum: z.date({ required_error: 'Datum začátku je povinné' }),
- startCas: z
-  .string()
-  .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, { message: 'Neplatný formát času' }),
- konecDatum: z.date({ required_error: 'Datum konce je povinné' }),
- konecCas: z
-  .string()
-  .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, { message: 'Neplatný formát času' }),
- upozornit: z.boolean().default(true),
- vJmeno: z.string().optional(),
- vPrijmeni: z.string().optional(),
-})
+import { ZodFormTermin } from '@/types/zod'
 
 export default function Formular({ isAdmin }: { isAdmin: boolean }) {
  const { toast } = useToast()
@@ -71,13 +52,13 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
  const { reload, setReload } = useReloadContext()
  const { open, setOpen, predmety, formData, predmet, setPredmet, terminID, type } = useFormContext()
 
- const form = useForm<z.infer<typeof formSchema>>({
-  resolver: zodResolver(formSchema),
+ const form = useForm<z.infer<typeof ZodFormTermin>>({
+  resolver: zodResolver(ZodFormTermin),
   defaultValues: DefaultForm,
   values: formData,
  })
 
- async function onSubmit(values: z.infer<typeof formSchema>) {
+ async function onSubmit(values: z.infer<typeof ZodFormTermin>) {
   setLoading(true)
   const body: tCreate = {
    _id: values._id,
@@ -116,28 +97,9 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
     if (values.upozornit) {
      const data = await res.json()
      const mails = data.mails
+     const filename = `${body._id}-${body.cviceni || '0'}-${createDateString()}.csv`
      if (mails.length > 0) {
-      const file = new Blob([mails.join('\n')], { type: 'text/csv' })
-      const fileURL = URL.createObjectURL(file)
-
-      const anchor = document.createElement('a')
-      anchor.href = fileURL
-      const date = new Date(Date.now())
-       .toLocaleString('en-GB', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-       })
-       .replace(',', '')
-       .replace(/:/g, '-')
-       .replace(/\//g, '-')
-       .replace(' ', '_')
-      anchor.download = `${body._id}-${body.cviceni}_${date}`
-      anchor.click()
-      URL.revokeObjectURL(fileURL)
+      createCSV(mails, filename)
      }
     }
    } else {
@@ -308,8 +270,15 @@ export default function Formular({ isAdmin }: { isAdmin: boolean }) {
            <Input
             type="number"
             placeholder="20"
+            min={1}
             {...field}
-            onChange={(e) => field.onChange(+e.target.value)}
+            onChange={(e) => {
+             const val = e.target.value
+             if (val[0] === '0' && val.length > 1) {
+              e.target.value = val.substring(1)
+             }
+             field.onChange(+e.target.value)
+            }}
            />
           </FormControl>
           <FormMessage />

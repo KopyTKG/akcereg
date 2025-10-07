@@ -1,3 +1,5 @@
+'use client'
+
 import {
  Calendar,
  Clock,
@@ -30,6 +32,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useReloadContext } from '@/contexts/ReloadProvider'
 import { useFormContext } from '@/contexts/FormProvider'
 import { tStudentPredmetuNaTerminu, tTermin } from '@/types/next_response_types'
+import { createCSV } from '@/lib/functions'
 
 export default function TerminInfo({
  Termin,
@@ -116,28 +119,8 @@ export default function TerminInfo({
   studenti?.forEach((student: tStudentPredmetuNaTerminu) => {
    mails.push(student.email)
   })
-
-  const file = new Blob([mails.join('\n')], { type: 'text/csv' })
-  const fileURL = URL.createObjectURL(file)
-
-  const anchor = document.createElement('a')
-  anchor.href = fileURL
-  const date = new Date(Date.now())
-   .toLocaleString('en-GB', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-   })
-   .replace(',', '')
-   .replace(/:/g, '-')
-   .replace(/\//g, '-')
-   .replace(' ', '_')
-  anchor.download = `Studenti-${Termin.kod_predmet}-${Termin.cislo_cviceni}_${date}`
-  anchor.click()
-  URL.revokeObjectURL(fileURL)
+  const filename = `Studenti-${Termin.kod_predmet}-${Termin.cislo_cviceni}.csv`
+  createCSV([mails], filename)
  }
 
  return (
