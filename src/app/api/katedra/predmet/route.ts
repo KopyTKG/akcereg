@@ -120,31 +120,3 @@ export async function PATCH(req: Request) {
 
  return Success()
 }
-
-/* ----------------------------------------------------------------------------------------------- */
-// Delete
-export async function DELETE(req: Request) {
- const rTicket = validateTicket(req)
- if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
- if (!info) return Unauthorized()
- if (!isAdmin(info)) return Forbidden()
-
- const base = new URL(req.url)
- const rKod_predmetu = base.searchParams.get('kod_predmetu') || ''
- if (!rKod_predmetu) return NotFound()
-
- await prisma.predmet.delete({
-  where: {
-   kod_predmetu: rKod_predmetu,
-  },
- })
-
- const course = await prisma.predmet.findUnique({
-  where: {
-   kod_predmetu: rKod_predmetu,
-  },
- })
- if (course) return Internal() // If course still exists, return error
- return Success()
-}

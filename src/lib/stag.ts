@@ -127,6 +127,13 @@ export async function getRovrhByStudent(
  ticket: string,
  studentId: string,
 ): Promise<tGetRozvrhByStudent | null> {
+ return getRozvrhByStudent(ticket, studentId)
+}
+
+export async function getRozvrhByStudent(
+ ticket: string,
+ studentId: string,
+): Promise<tGetRozvrhByStudent | null> {
  const url = new URL(`${process.env.STAG_SERVER}/services/rest2/rozvrhy/getRozvrhByStudent`)
  url.searchParams.set('osCislo', studentId)
 

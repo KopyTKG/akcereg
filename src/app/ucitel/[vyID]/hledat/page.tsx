@@ -1,21 +1,5 @@
-'use client'
 import { Header } from '@/components/ui/header'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import {
- Form,
- FormControl,
- FormField,
- FormItem,
- FormLabel,
- FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Divider } from '@/components/ui/divider'
-import { useToast } from '@/hooks/use-toast'
 import {
  Table,
  TableBody,
@@ -25,109 +9,90 @@ import {
  TableRow,
 } from '@/components/ui/table'
 import { Chip } from '@/components/ui/chip'
-import { Check } from 'lucide-react'
 import { tGetStudentInfo } from '@/types/stag_response_types'
-import { tHledatBody, tPredmetHledat } from '@/types/next_response_types'
+import { tPredmetHledat } from '@/types/next_response_types'
+import { FormHledat, Uznat } from './csr'
+import { prisma } from '@/prisma'
+import { encodeId, getStudentInfo } from '@/lib/stag'
+import { Get } from '@/app/actions'
+import { decrypt } from '@/lib/crypto'
 
-const formSchema = z.object({
- id_stud: z.string().min(6, { message: 'osČíslo je povinný' }),
-})
+export default async function HledatPage({ searchParams }: { searchParams: { osCislo?: string } }) {
+ const student = {} as tGetStudentInfo
+ const predmety: tPredmetHledat[] = []
 
-export default function Page() {
- const [student, setStudent] = useState<tGetStudentInfo>({} as tGetStudentInfo)
- const [predmety, setPredmety] = useState<tPredmetHledat[]>([])
+ const ticket = await Get('x-svt')
+ if (!ticket) return
+ const rawTicket = decrypt(ticket.value)
+ if (!rawTicket) return
 
- const { toast } = useToast()
+ const search = await searchParams
+ const stud_id = search.osCislo
 
- const form = useForm<z.infer<typeof formSchema>>({
-  resolver: zodResolver(formSchema),
-  defaultValues: { id_stud: '' },
- })
+ if (stud_id) {
+  const studentInfo = await getStudentInfo(rawTicket, stud_id)
+  if (!studentInfo) return
+  Object.assign(student, studentInfo)
 
- async function fetchData(id_stud: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/hledat`)
-  url.searchParams.set('id_stud', id_stud)
+  const predmetyStudenta = await prisma.predmet_student.findMany({
+   where: { student_id: encodeId(stud_id) },
+   select: { predmet: { select: { kod_predmetu: true, pocet_cviceni: true } } },
+  })
 
-  try {
-   const res = await fetch(url.toString(), {
-    method: 'GET',
-    credentials: 'include',
-    redirect: 'manual',
-   })
-   if (!res.ok) {
-    toast({
-     title: 'Hledání se nepovedlo',
-     description: 'Server nedokázal dokončit hledání',
-     variant: 'destructive',
+  if (!predmetyStudenta || predmetyStudenta.length === 0) return
+
+  await Promise.all(
+   predmetyStudenta.map(async (p) => {
+    const terminy = await prisma.historie_terminu.findMany({
+     select: {
+      datum_splneni: true,
+      termin: { select: { kod_predmet: true, cislo_cviceni: true } },
+     },
+     where: {
+      student_id: encodeId(stud_id),
+      datum_splneni: { not: null },
+      termin: { cislo_cviceni: -1, kod_predmet: p.predmet.kod_predmetu },
+     },
+     orderBy: { datum_splneni: 'desc' },
     })
-   } else {
-    const data = (await res.json()) as tHledatBody
-    setPredmety(data.predmety)
-    setStudent(data.student)
-   }
-  } catch (e) {
-   console.error(e)
-  }
- }
-
- async function onSubmit(values: z.infer<typeof formSchema>) {
-  await fetchData(values.id_stud)
- }
-
- async function onUznat(kod_predmetu: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/hledat/uznat`)
-  url.searchParams.set('id_stud', student.osCislo)
-  url.searchParams.set('kod_predmetu', kod_predmetu)
-
-  try {
-   const res = await fetch(url.toString(), {
-    method: 'POST',
-    credentials: 'include',
-   })
-   if (!res.ok) {
-    toast({
-     title: 'Hledání se nepovedlo',
-     description: 'Server nedokázal dokončit hledání',
-     variant: 'destructive',
-    })
-   } else {
-    toast({
-     title: 'Povedlo se',
-     description: 'Předmět byl úspěšně uznán',
-    })
-    await fetchData(student.osCislo)
-   }
-  } catch (e) {
-   console.error(e)
-  }
+    if (terminy.length > 0) {
+     predmety.push({
+      kod_predmetu: p.predmet.kod_predmetu,
+      cviceni: [...Array(p.predmet.pocet_cviceni)].map(() => -1),
+     })
+    } else {
+     const splnenyTerminy = await prisma.historie_terminu.findMany({
+      select: {
+       datum_splneni: true,
+       termin: { select: { kod_predmet: true, cislo_cviceni: true } },
+      },
+      where: {
+       student_id: encodeId(stud_id),
+       datum_splneni: { not: null },
+       termin: { cislo_cviceni: { not: -1 }, kod_predmet: p.predmet.kod_predmetu },
+      },
+      orderBy: { datum_splneni: 'desc' },
+     })
+     const cviceni = [...Array(p.predmet.pocet_cviceni)].map(() => 0)
+     if (splnenyTerminy) {
+      splnenyTerminy.forEach((t) => {
+       if (t.termin.cislo_cviceni) {
+        const index = t.termin.cislo_cviceni - 1
+        if (t.datum_splneni) cviceni[index] = new Date(t.datum_splneni).getTime()
+       }
+      })
+     }
+     predmety.push({ kod_predmetu: p.predmet.kod_predmetu, cviceni })
+    }
+   }),
+  )
  }
 
  return (
   <section className="w-full grid px-4 lg:px-0  lg:grid-cols-2 gap-4 min-h-[90svh]">
    <div className="flex flex-col w-full gap-10">
     <Header underline="fade">Hlednání studenta</Header>
-    <Form {...form}>
-     <form className="w-max mx-auto" onSubmit={form.handleSubmit(onSubmit)}>
-      <FormItem className="flex flex-row gap-4">
-       <FormField
-        control={form.control}
-        name="id_stud"
-        render={({ field }) => (
-         <FormItem className="flex flex-col">
-          <FormLabel className="text-xl">Zadejte osobní číslo studenta</FormLabel>
-          <FormControl>
-           <Input placeholder="např.: Fxxxxx" {...field} />
-          </FormControl>
-          <FormMessage />
-         </FormItem>
-        )}
-       />
-       <Button className="self-end" type="submit">
-        Vyhledat
-       </Button>
-      </FormItem>
-     </form>
-    </Form>
+    <FormHledat />
    </div>
    <div className="flex flex-col gap-10">
     <Header underline="fade">Student</Header>
@@ -158,13 +123,7 @@ export default function Page() {
         <div className="w-full flex flex-row justify-between">
          <h3 className="font-bold text-xl ">{predmet.kod_predmetu}</h3>
          {predmet.cviceni.includes(0) ? (
-          <Button
-           variant="ghost"
-           size="sm"
-           className="text-xl font-bold text-green-500"
-           onClick={() => onUznat(predmet.kod_predmetu)}>
-           <Check className="w-8" />
-          </Button>
+          <Uznat predmet={predmet.kod_predmetu} osCislo={student.osCislo} />
          ) : null}
         </div>
         <div className="w-full h-max rounded-2xl flex flex-col dark:bg-zinc-950 dark:text-stone-50 border-1 border-stone-300  shadow-md dark:border-zinc-800 dark:shadow-neutral-950">

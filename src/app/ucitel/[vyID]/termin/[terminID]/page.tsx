@@ -68,6 +68,7 @@ export default async function TerminPage({ params }: { params: { terminID: strin
   termin?.kod_predmet.split('/')[1] || '',
   termin?.kod_predmet.split('/')[0] || '',
  )
+ console.log(studenti)
 
  if (!termin) return <div>Termin not found</div>
 

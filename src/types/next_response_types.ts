@@ -5,10 +5,10 @@ import { tGetStudentInfo, tStudentPredmetu } from './stag_response_types'
  */
 
 export type tPredmet = {
- kod_predmetu: string
- zkratka_predmetu: string
- katedra: string
- pocet_cviceni: number
+ kod_predmetu: string | null
+ zkratka_predmetu: string | null
+ katedra: string | null
+ pocet_cviceni: number | null
 }
 
 export type tPredmetyBody = {

@@ -17,31 +17,27 @@ import { tForm } from '@/lib/types'
 import { tStudentPredmetuNaTerminu } from '@/types/next_response_types'
 import { Check, Mails, Pencil, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { addStudentToTermin, deleteTermin, markAsCompleted, removeCompletion } from './actions'
 
 export function Splnit({ osCislo, termin }: { osCislo: string; termin: string }) {
  const { toast } = useToast()
  const router = useRouter()
 
  const HandleCLick = async () => {
-  try {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin/splnil`)
-   url.searchParams.set('id_stud', osCislo)
-   url.searchParams.set('id_terminu', termin)
-   const res = await fetch(url.toString(), {
-    method: 'POST',
-    credentials: 'include',
+  const res = await markAsCompleted(osCislo, termin)
+  router.refresh()
+  if (!res.success) {
+   if (res.error) console.error(res.error)
+   return toast({
+    title: 'Neprošlo',
+    description: res.message || 'Server nebyl schopný zapsat splnění',
+    variant: 'destructive',
    })
-   if (!res.ok) {
-    return null
-   }
-   router.refresh()
+  } else {
    toast({
     title: 'Úspěch',
     description: 'Splnění termínu zapsáno',
    })
-  } catch (e) {
-   console.error(e)
-   return null
   }
  }
 
@@ -57,26 +53,22 @@ export function Odebrat({ osCislo, termin }: { osCislo: string; termin: string }
  const router = useRouter()
 
  const HandleCLick = async () => {
-  try {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin/splnil`)
-   url.searchParams.set('id_stud', osCislo)
-   url.searchParams.set('id_terminu', termin)
-   const res = await fetch(url.toString(), {
-    method: 'DELETE',
-    credentials: 'include',
+  const res = await removeCompletion(osCislo, termin)
+  router.refresh()
+  if (!res.success) {
+   if (res.error) console.error(res.error)
+   toast({
+    title: 'Neprošlo',
+    description: res.message || 'Server nebyl schopný odebrat splnění',
+    variant: 'destructive',
    })
-   if (!res.ok) {
-    return null
-   }
-   router.refresh()
+  } else {
    toast({
     title: 'Úspěch',
     description: 'Splnění termínu zapsáno',
    })
-  } catch (e) {
-   console.error(e)
-   return null
   }
+  return
  }
 
  return (
@@ -143,25 +135,22 @@ export function DeleteTerminu({ id }: { id: string }) {
  const router = useRouter()
 
  const HandleDelete = async () => {
-  try {
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin`)
-   url.searchParams.set('id', id)
-   const res = await fetch(url.toString(), {
-    method: 'DELETE',
-    credentials: 'include',
+  const res = await deleteTermin(id)
+  router.push('/')
+  if (!res.success) {
+   if (res.error) console.error(res.error)
+   toast({
+    title: 'Neprošlo',
+    description: res.message || 'Server nebyl schopný smazat termín',
+    variant: 'destructive',
    })
-   if (!res.ok) {
-    return null
-   }
-   router.push('/')
+  } else {
    toast({
     title: 'Úspěch',
     description: 'Termín smazán',
    })
-  } catch (e) {
-   console.error(e)
-   return null
   }
+  return
  }
 
  return (
@@ -191,30 +180,23 @@ export function AddStudenta({ terminId }: { terminId: string }) {
  const router = useRouter()
 
  const HandleSubmit = async (e: React.FormEvent) => {
-  try {
-   e.preventDefault()
-   const formData = new FormData(e.currentTarget as HTMLFormElement)
-   const studId = formData.get('stud_id')?.toString()
-   const url = new URL(`${process.env.NEXT_PUBLIC_BASE}/api/ucitel/termin/zapis`)
-   url.searchParams.set('id_terminu', terminId)
-   url.searchParams.set('id_stud', studId || '')
-   const res = await fetch(url.toString(), {
-    method: 'POST',
-    credentials: 'include',
-    redirect: 'manual',
+  e.preventDefault()
+  const formData = new FormData(e.currentTarget as HTMLFormElement)
+  const studId = formData.get('stud_id')?.toString()
+  const res = await addStudentToTermin(studId || '', terminId)
+  if (!res.success) {
+   console.error(res.message)
+   toast({
+    title: 'Neprošlo',
+    description: res.message || 'Server nebyl schopný přidat studenta',
+    variant: 'destructive',
    })
-   if (!res.ok) {
-    toast({
-     title: 'Neprošlo',
-     description: 'Server nebyl schopný zapsat studenta',
-     variant: 'destructive',
-    })
-    console.error(res.statusText)
-   } else {
-    router.refresh()
-   }
-  } catch (e) {
-   console.error(e)
+  } else {
+   router.refresh()
+   toast({
+    title: 'Úspěch',
+    description: 'Student přidán',
+   })
   }
  }
 

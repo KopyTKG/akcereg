@@ -90,51 +90,6 @@ type tHistorieWithStudent = {
  }
 }
 
-export async function GET(req: Request) {
- const rTicket = validateTicket(req)
- if (!rTicket) return Unauthorized()
- const info = await getUserInfo(rTicket)
- if (!info) return Unauthorized()
- if (isStudent(info)) return Forbidden()
-
- const base = new URL(req.url)
- const rID = base.searchParams.get('id') || ''
- if (!rID) return NotFound()
-
- const data = await prisma.termin.findUnique({
-  where: { id: rID },
-  include: {
-   historie_terminu: {
-    include: { student: true },
-   },
-  },
- })
- if (!data) return NotFound()
- const allStudents = await getStudentiByPredmet(
-  rTicket,
-  data.kod_predmet.split('/')[1],
-  data.kod_predmet.split('/')[0],
- )
- if (!allStudents) return NotFound()
- const studenti: tStudentPredmetuNaTerminu[] = []
- if (data.historie_terminu && data.historie_terminu.length > 0) {
-  for (let s of data.historie_terminu) {
-   s = s as tHistorieWithStudent
-   for (let st of allStudents.studentPredmetu) {
-    st = st as tStudentPredmetu
-    if (s.student_id === encodeId(st.osCislo)) {
-     studenti.push({ ...st, datum_splneni: s.datum_splneni })
-     break
-    }
-   }
-  }
- }
-
- if (data.cislo_cviceni === -1) return NotFound()
-
- return Success({ termin: data, studenti: studenti })
-}
-
 /* ----------------------------------------------------------------------------------------------- */
 // Update
 export async function PATCH(req: Request) {
